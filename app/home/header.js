@@ -113,9 +113,9 @@ export default function Header({
             display: "flex",
             height: 150,
             width: "100%",
-            marginTop: 10,
             borderRadius: 8,
             ...HeaderComponentStyles,
+            ...scalePadding(12),
           }}
         >
           <HeaderComponent {...HeaderComponentData} />

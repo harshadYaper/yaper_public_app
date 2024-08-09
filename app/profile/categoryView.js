@@ -36,7 +36,7 @@ export default function CategoryView({ category, options, backgroundImage }) {
             }}
             onPress={onPress}
             disabled={!onPress}
-            key={label}
+            key={label + ind}
           >
             <Text
               style={{

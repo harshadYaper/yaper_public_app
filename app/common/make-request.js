@@ -23,13 +23,7 @@ export const checkToken = async () => {
     router.replace({ pathname: "/auth" });
 };
 
-export async function makeRequest({
-  baseURL,
-  url,
-  payload,
-  method,
-  identifier,
-}) {
+export async function makeRequest({ baseURL, url, payload, method }) {
   try {
     !TOKEN_EXEMPT_URLS.includes(url) && (await checkToken());
 

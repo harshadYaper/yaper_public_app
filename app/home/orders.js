@@ -9,21 +9,18 @@ import { Image } from "expo-image";
 
 import { capitalize, snakeToTitleize, truncate } from "../utils/helper";
 import { router } from "expo-router";
+import Timer from "../common/timer";
 
 export default function Orders({ data, openFilters, setPageNumber }) {
-  const timeFormatter = (val) => {
-    return val <= 9 ? "0" + val.toString() : val;
-  };
-
   return (
     <FlatList
-      contentContainerStyle={{}}
+      contentContainerStyle={{ height: "100%" }}
       showsVerticalScrollIndicator={false}
       style={{
         width: "100%",
         opacity: openFilters ? 0.1 : 1,
-
         marginBottom: scaleHeight(100),
+        ...scalePadding(12),
       }}
       data={data || []}
       renderItem={({ item }) => (
@@ -42,7 +39,6 @@ export default function Orders({ data, openFilters, setPageNumber }) {
               params,
               payload: { variant_id },
               timer,
-              ...p
             },
           }) => (
             <TouchableOpacity
@@ -96,23 +92,17 @@ export default function Orders({ data, openFilters, setPageNumber }) {
                     <Text
                       style={{
                         fontSize: 10,
-
                         color: "#F04438",
                       }}
                     >
                       Ends in{" "}
                     </Text>
-                    <Text
-                      style={{
-                        fontSize: 10,
-
-                        fontWeight: "700",
+                    <Timer
+                      time={timer.remaining_time}
+                      styles={{
                         color: "#F04438",
                       }}
-                    >
-                      {timeFormatter(parseInt(timer?.remaining_time / 60))}:
-                      {timeFormatter(parseInt(timer?.remaining_time % 60))} mins
-                    </Text>
+                    />
                   </Text>
                 )}
               </View>

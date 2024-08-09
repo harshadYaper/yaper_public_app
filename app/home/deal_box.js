@@ -1,8 +1,14 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   scaleFont,
   scaleHeight,
-  scaleMargin,
+  scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { router } from "expo-router";
@@ -23,6 +29,7 @@ export default function DealBox({
   disabled = false,
   price,
   quantity,
+  showCancel,
 }) {
   return (
     <TouchableOpacity
@@ -40,23 +47,27 @@ export default function DealBox({
       onPress={() => router.push({ pathname: "/details", params: { id } })}
     >
       {image && (
-        <Image
-          contentFit={"contain"}
-          source={{ uri: image }}
+        <View
           style={{
-            width: scaleWidth(120),
-            maxHeight: scaleHeight(120),
+            ...scalePadding(8),
           }}
-          alt="Some image here"
-        />
+        >
+          <Image
+            contentFit={"contain"}
+            source={{ uri: image }}
+            style={{
+              width: scaleWidth(120),
+              height: scaleHeight(110),
+            }}
+            alt="Some image here"
+          />
+        </View>
       )}
       <View
         style={{
-          display: "flex",
-          height: "100%",
           width: "100%",
           justifyContent: "space-around",
-          flexWrap: "wrap",
+          flexShrink: 1,
         }}
       >
         {content && (
@@ -65,7 +76,7 @@ export default function DealBox({
               fontSize: scaleFont(12),
               fontWeight: "700",
               color: "#101828",
-              ...scaleMargin(4),
+              ...scalePadding(8),
             }}
           >
             Earn {content}
@@ -74,7 +85,7 @@ export default function DealBox({
         {card_meta && (
           <Text
             style={{
-              ...scaleMargin(4),
+              ...scalePadding(8),
               ...styles.LABEL,
             }}
           >
@@ -85,8 +96,9 @@ export default function DealBox({
           <Text
             style={{
               fontSize: 10,
-              ...scaleMargin(4),
+              ...scalePadding(8),
               color: "#101828",
+              flexShrink: 1,
             }}
           >
             {truncate(title)}
@@ -97,7 +109,7 @@ export default function DealBox({
           <View style={styles.FLEX}>
             <Text
               style={{
-                ...scaleMargin(4),
+                ...scalePadding(8),
                 ...styles.LABEL,
               }}
             >
@@ -111,7 +123,7 @@ export default function DealBox({
             )}
           </View>
         )}
-        <View style={{ ...styles.FLEX, ...scaleMargin(4) }}>
+        <View style={{ ...styles.FLEX, ...scalePadding(8) }}>
           {color_code?.includes("#") && (
             <View
               style={{
@@ -121,7 +133,7 @@ export default function DealBox({
                 borderWidth: 1,
                 borderRadius: 20,
                 borderColor: GRAY,
-                marginRight: scaleWidth(8),
+                paddingRight: scaleWidth(8),
               }}
             ></View>
           )}
@@ -131,14 +143,14 @@ export default function DealBox({
         </View>
 
         {price && (
-          <View style={{ ...styles.FLEX, ...scaleMargin(4) }}>
+          <View style={{ ...styles.FLEX, ...scalePadding(8) }}>
             <Text style={styles.LABEL}>Price: </Text>
             <Text style={{ ...styles.LABEL, color: "#101828" }}>{price}</Text>
           </View>
         )}
 
         {quantity && (
-          <View style={{ ...styles.FLEX, ...scaleMargin(4) }}>
+          <View style={{ ...styles.FLEX, ...scalePadding(8) }}>
             <Text style={styles.LABEL}>Quantity: </Text>
             <Text style={{ ...styles.LABEL, color: "#101828" }}>
               {quantity}
@@ -147,17 +159,28 @@ export default function DealBox({
         )}
 
         {url && (
-          <View style={{ ...scaleMargin(4), ...styles.FLEX }}>
+          <View style={{ ...scalePadding(8), ...styles.FLEX }}>
             <Text style={styles.LABEL}>Order on</Text>
 
             <Image
               contentFit={"contain"}
               source={{ uri: url }}
-              height={scaleHeight(16)}
-              width={scaleWidth(64)}
+              style={{ height: scaleHeight(16), width: scaleWidth(64) }}
               alt="Store Image"
             />
           </View>
+        )}
+        {showCancel && (
+          <Pressable
+            style={{ ...styles.FLEX, ...scalePadding(8) }}
+            onPress={() => showCancel.onCancel()}
+          >
+            <Text
+              style={{ ...styles.LABEL, fontWeight: "500", color: "#F04438" }}
+            >
+              {showCancel.label}
+            </Text>
+          </Pressable>
         )}
       </View>
     </TouchableOpacity>

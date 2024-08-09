@@ -16,6 +16,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
         opacity: openFilters ? 0.1 : 1,
         marginTop: scaleHeight(10),
         marginBottom: scaleHeight(100),
+        ...scalePadding(12),
       }}
       data={data || []}
       renderItem={({
@@ -34,6 +35,9 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
               backgroundColor: "#FFFFFF",
               marginTop: scaleHeight(16),
               ...scalePadding(16),
+              borderColor: "#E4E4E4",
+              borderRadius: 8,
+              borderWidth: 1,
             }}
           >
             {status == "payment received" && (
@@ -255,11 +259,11 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                 </View>
               </>
             )}
-            {status == "payment withdrawn" && (
+            {/* {status == "payment withdrawn" && (
               <>
                 <View style={{ backgroundColor: "red", height: 100 }}></View>
               </>
-            )}
+            )} */}
           </View>
         );
       }}

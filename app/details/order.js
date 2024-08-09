@@ -24,6 +24,7 @@ import Input from "../common/input";
 import { FullButton } from "../common/button";
 import { WHITE } from "../constants/colors";
 import { getDocumentAsync } from "expo-document-picker";
+import { PrimaryCheckBox } from "../common/checkbox";
 
 export default function Order() {
   const { id, order_number, variant_id } = useLocalSearchParams();
@@ -31,7 +32,6 @@ export default function Order() {
   const [expanded, setExpanded] = useState();
   const [modal, setModal] = useState([]);
   const [Modal] = modal;
-  // need to check deal?.data?.fullfilled for if fullfiled exit
 
   const {
     store,
@@ -69,6 +69,7 @@ export default function Order() {
           width: "100%",
           height: "100%",
           opacity: Modal ? 0.1 : 1,
+          ...scalePadding(8),
         }}
       >
         {name && (
@@ -83,6 +84,84 @@ export default function Order() {
             disabled={true}
             price={properties.find((p) => p.label == "price/unit").value}
             quantity={properties.find((p) => p.label == "quantity").value}
+            showCancel={{
+              label: "Cancel Order",
+              onCancel: () =>
+                setModal([
+                  () => (
+                    <Pressable
+                      style={{
+                        display: "flex",
+                        width: "100%",
+                        position: "absolute",
+                        height: "100%",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      onPress={() => setModal([])}
+                    >
+                      <Pressable
+                        style={{
+                          display: "flex",
+                          backgroundColor: WHITE,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "80%",
+                          ...scalePadding(8),
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "#000000",
+                            fontSize: 14,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Reason for Cancellation
+                        </Text>
+                        {[
+                          "Cashback too less",
+                          "Price Mismatch",
+                          "Pin code Not Serviceable",
+                          "Out of Stock",
+                          "Other",
+                        ].map((reason) => (
+                          <View
+                            style={{
+                              width: "80%",
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                fontWeight: "400",
+                                color: "#101828",
+                              }}
+                            >
+                              {reason}
+                            </Text>
+                            <PrimaryCheckBox onPress={() => {}} />
+                          </View>
+                        ))}
+                        <Pressable onPress={() => setModal([])}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: "500",
+                              color: "#025ACE",
+                            }}
+                          >
+                            Submit
+                          </Text>
+                        </Pressable>
+                      </Pressable>
+                    </Pressable>
+                  ),
+                ]),
+            }}
           />
         )}
         <DealStatus
@@ -143,7 +222,7 @@ const DealStatus = ({
         Deal Status
       </Text>
       {order_states.map(({ green, label, state_at }, ind) => (
-        <View>
+        <View key={label}>
           <View
             style={{
               display: "flex",
@@ -245,24 +324,14 @@ const OrderComponent = ({
 }) => {
   const [val, setVal] = useState({});
 
-  const orderNumber =
-    fields.find((f) => f.key == "order_number") ||
-    order_meta.find((o) => o.key == "order_number");
-  const trackingNumber =
-    fields.find((f) => f.key == "tracking_number") ||
-    order_meta.find((o) => o.key == "tracking_number");
+  const getData = (key) =>
+    fields.find((f) => f.key == key) || order_meta.find((o) => o.key == key);
 
-  const deliverySupport =
-    fields.find((f) => f.key == "delivery_support") ||
-    order_meta.find((o) => o.key == "delivery_support");
-
-  const addDeliverySupport =
-    fields.find((f) => f.key == "add_delivery_support") ||
-    order_meta.find((o) => o.key == "add_delivery_support");
-
-  const uploadInvoice =
-    fields.find((f) => f.key == "invoice") ||
-    order_meta.find((o) => o.key == "invoice");
+  const orderNumber = getData("order_number");
+  const trackingNumber = getData("tracking_number");
+  const deliverySupport = getData("delivery_support");
+  const addDeliverySupport = getData("add_delivery_support");
+  const uploadInvoice = getData("invoice");
 
   const [expand, setExpand] = useState(!orderNumber.value);
 
@@ -303,8 +372,8 @@ const OrderComponent = ({
           uploadInvoice &&
             setVal({
               info: {
-                file_type: uploadInvoice.file_type,
-                info_text: uploadInvoice.info_text,
+                // type: `Only allowed ${uploadInvoice.file_type.join()}`,
+                size: uploadInvoice.info_text,
               },
             });
         }}
@@ -407,9 +476,7 @@ const OrderComponent = ({
                     inputArray={[val[key]]}
                     width={280}
                     onChange={(val) => {
-                      if (val.match(regex)) {
-                        setVal({ [key]: val });
-                      }
+                      setVal({ [key]: val });
                     }}
                     placeholder={placeholder}
                     style={{
@@ -434,6 +501,7 @@ const OrderComponent = ({
                           setVal({});
                         }
                       }}
+                      disabled={val[key] == undefined || !val[key].match(regex)}
                       title={button.label}
                     />
                   )}
@@ -482,7 +550,7 @@ const OrderComponent = ({
                               <Pressable
                                 key={label + value}
                                 onPress={() => {
-                                  setTrackingPlatform(value);
+                                  setTrackingPlatform({ regex, value });
                                   setModal([]);
                                 }}
                                 style={{
@@ -512,12 +580,12 @@ const OrderComponent = ({
                           color: "#101828",
                           paddingRight: scaleHeight(8),
                         },
-                        ...(trackingPlatform
+                        ...(trackingPlatform?.value
                           ? { textDecorationLine: "underline" }
                           : {}),
                       }}
                     >
-                      {trackingPlatform || "Select Tracking  ID"}
+                      {trackingPlatform?.value || "Select Tracking  ID"}
                     </Text>
                     <Image
                       source={require("../../assets/CaretDown.svg")}
@@ -529,7 +597,7 @@ const OrderComponent = ({
                   </>
                 </Pressable>
               )}
-              {(trackingPlatform || value) && (
+              {(trackingPlatform?.value || value) && (
                 <>
                   <View
                     style={{
@@ -593,9 +661,7 @@ const OrderComponent = ({
                         inputArray={[val[key]]}
                         width={280}
                         onChange={(val) => {
-                          if (val.match(regex)) {
-                            setVal({ [key]: val });
-                          }
+                          setVal({ [key]: val });
                         }}
                         placeholder={placeholder}
                         style={{
@@ -617,6 +683,10 @@ const OrderComponent = ({
                           setOrder((await getOrder({ yaper_id }))?.data);
                           setVal({});
                         }}
+                        disabled={
+                          val[key] == undefined ||
+                          !val[key].match(trackingPlatform?.regex)
+                        }
                         title={button.label}
                       />
                     </>
@@ -693,9 +763,7 @@ const OrderComponent = ({
                             inputArray={[val[deliverySupport.key]]}
                             width={280}
                             onChange={(val) => {
-                              if (val.match(deliverySupport.regex)) {
-                                setVal({ [deliverySupport.key]: val });
-                              }
+                              setVal({ [deliverySupport.key]: val });
                             }}
                             placeholder={deliverySupport?.placeholder}
                             style={{
@@ -717,6 +785,12 @@ const OrderComponent = ({
                               setOrder((await getOrder({ yaper_id }))?.data);
                               setVal({});
                             }}
+                            disabled={
+                              val[deliverySupport.key] == undefined ||
+                              !val[deliverySupport.key].match(
+                                deliverySupport.regex
+                              )
+                            }
                             title={button.label}
                           />
                         </>
@@ -851,7 +925,6 @@ const OrderComponent = ({
                   title={button.label}
                 />
               )}
-              {console.log(button)}
               {uploadInvoice &&
                 (button && button.button_type == "save" ? (
                   <View>
@@ -890,9 +963,8 @@ const OrderComponent = ({
                           ) {
                             setVal({
                               error: {
-                                // file_type_error: uploadInvoice.file_type_error,
-                                max_file_size_error:
-                                  uploadInvoice.max_file_size_error,
+                                // type: uploadInvoice.file_type_error,
+                                size: uploadInvoice.max_file_size_error,
                               },
                             });
                           } else {
@@ -937,62 +1009,13 @@ const OrderComponent = ({
                         </View>
                       )}
                     </Pressable>
-
-                    {val.info && (
-                      <View>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            color: "#101828",
-                            fontWeight: "500",
-                            paddingTop: scaleHeight(4),
-                            paddingBottom: scaleHeight(8),
-                          }}
-                        >
-                          Only allowed {val.info.file_type.join()}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            color: "#101828",
-                            fontWeight: "500",
-                            paddingTop: scaleHeight(4),
-                            paddingBottom: scaleHeight(8),
-                          }}
-                        >
-                          {" "}
-                          {val.info.info_text}
-                        </Text>
-                      </View>
-                    )}
-
-                    {val.error && (
-                      <View>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            color: "#F04438",
-                            fontWeight: "500",
-                            paddingTop: scaleHeight(4),
-                            paddingBottom: scaleHeight(8),
-                          }}
-                        >
-                          {val.error.file_type_error}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            color: "#F04438",
-                            fontWeight: "500",
-                            paddingTop: scaleHeight(4),
-                            paddingBottom: scaleHeight(8),
-                          }}
-                        >
-                          {" "}
-                          {val.error.max_file_size_error}
-                        </Text>
-                      </View>
-                    )}
+                    <InvoiceInfo
+                      val={val.info}
+                      styles={{
+                        color: "#101828",
+                      }}
+                    />
+                    <InvoiceInfo val={val.error} />
 
                     <FullButton
                       width={scaleWidth(280)}
@@ -1008,6 +1031,7 @@ const OrderComponent = ({
                         setVal({});
                       }}
                       title={button.label}
+                      disabled={val[uploadInvoice.key] == undefined}
                     />
                   </View>
                 ) : (
@@ -1082,3 +1106,39 @@ const OrderComponent = ({
     </View>
   );
 };
+
+function InvoiceInfo({ val, styles }) {
+  if (val)
+    return (
+      <View>
+        {val.type && (
+          <Text
+            style={{
+              fontSize: 12,
+              color: "#F04438",
+              fontWeight: "500",
+              paddingTop: scaleHeight(4),
+              paddingBottom: scaleHeight(8),
+              ...styles,
+            }}
+          >
+            {val.type}
+          </Text>
+        )}
+        {val.size && (
+          <Text
+            style={{
+              fontSize: 12,
+              color: "#F04438",
+              fontWeight: "500",
+              paddingTop: scaleHeight(4),
+              paddingBottom: scaleHeight(8),
+              ...styles,
+            }}
+          >
+            {val.size}
+          </Text>
+        )}
+      </View>
+    );
+}

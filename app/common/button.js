@@ -38,7 +38,6 @@ function Button({
           style={{
             textAlign: "center",
             textAlignVertical: "center",
-            height: "100%",
             color: textColor,
             fontSize,
           }}

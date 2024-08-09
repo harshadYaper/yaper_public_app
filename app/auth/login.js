@@ -98,17 +98,29 @@ function CountryInfo({ countryCode }) {
         display: "flex",
         flexDirection: "row",
         position: "absolute",
+        justifyContent: "center",
+        alignContent: "center",
         left: 10,
         zIndex: 10,
       }}
     >
-      <Image
-        source={require("../../assets/india-flag.svg")}
-        style={{ height: scaleHeight(24), width: scaleWidth(24) }}
-      />
+      <View
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
+        <Image
+          source={require("../../assets/india-flag.svg")}
+          style={{ height: scaleHeight(20), width: scaleWidth(24) }}
+        />
+      </View>
       <Text
         style={{
           fontSize: scaleFont(16),
+          textAlign: "center",
+          textAlignVertical: "center",
         }}
       >
         {" "}

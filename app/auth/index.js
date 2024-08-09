@@ -6,7 +6,7 @@ import Login from "./login";
 
 export default function Auth() {
   const [loading, setLoading] = useState(true);
-  const [component, setComponent] = useState([Login, { mobile: "9130103785" }]);
+  const [component, setComponent] = useState([Login, {}]);
   const [Component, params] = component;
 
   useEffect(() => {
@@ -19,6 +19,7 @@ export default function Auth() {
       Splash={<></>}
       styles={customeStyles}
       loading={loading}
+      nestMode="scroll"
     />
   );
 }

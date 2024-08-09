@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import { getDeal } from "../api";
 import DealBox from "../home/deal_box";
 import GetDetails from "./get_details";
@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 export default function Deal() {
   const { id } = useLocalSearchParams();
   const [deal, setDeal] = useState();
-  // need to check deal?.data?.fullfilled for if fullfiled exit
+
   const { pan_verified } = useSelector((state) => state.user) || {};
 
   const {
@@ -40,6 +40,13 @@ export default function Deal() {
       id && setDeal(await getDeal({ id }));
     })();
   }, []);
+  useEffect(() => {
+    deal?.data?.fullfilled &&
+      (() => {
+        Alert.alert("Already Fulfilled");
+        router.back();
+      })();
+  }, [deal]);
 
   return (
     <>
@@ -49,6 +56,7 @@ export default function Deal() {
           backgroundColor: "#F9FAFB",
           width: "100%",
           height: "100%",
+          ...scalePadding(8),
         }}
       >
         {name && (
@@ -70,35 +78,37 @@ export default function Deal() {
         {items && <Earnings items={items} />}
         {deal && <FAQs videos={deal?.data?.actions?.videos} />}
       </ScrollView>
-      <View
-        style={{
-          height: scaleHeight(90),
-          width: FULL_WIDTH,
-          backgroundColor: WHITE,
-          position: "absolute",
-          bottom: 0,
-          ...scalePadding(12),
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <FullButton
-          title="Accept Deal"
-          onPress={async () => {
-            await putData("PARAMS", { deal_id: id, deal_name: name });
-            if (pan_verified) {
-              router.navigate({
-                pathname: "/ecommerce-view",
-              });
-            } else {
-              router.navigate({
-                pathname: "/kyc",
-              });
-            }
+      {deal && (
+        <View
+          style={{
+            height: scaleHeight(90),
+            width: FULL_WIDTH,
+            backgroundColor: WHITE,
+            position: "absolute",
+            bottom: 0,
+            ...scalePadding(12),
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-        />
-      </View>
+        >
+          <FullButton
+            title="Accept Deal"
+            onPress={async () => {
+              await putData("PARAMS", { deal_id: id, deal_name: name });
+              if (pan_verified) {
+                router.navigate({
+                  pathname: "/ecommerce-view",
+                });
+              } else {
+                router.navigate({
+                  pathname: "/kyc",
+                });
+              }
+            }}
+          />
+        </View>
+      )}
     </>
   );
 }

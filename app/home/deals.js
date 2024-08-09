@@ -1,5 +1,5 @@
 import { FlatList } from "react-native";
-import { scaleHeight } from "../utils/getScaledDimensions";
+import { scaleHeight, scalePadding } from "../utils/getScaledDimensions";
 
 import DealBox from "./deal_box";
 
@@ -11,6 +11,8 @@ export default function Deals({ data, openFilters }) {
       style={{
         opacity: openFilters ? 0.1 : 1,
         marginBottom: scaleHeight(100),
+        ...scalePadding(12),
+        width: "100%",
       }}
       data={data || []}
       renderItem={({
@@ -18,7 +20,7 @@ export default function Deals({ data, openFilters }) {
           id,
           title,
           image,
-          store: { url },
+          store,
           card_meta,
           content,
           color_code,
@@ -29,7 +31,7 @@ export default function Deals({ data, openFilters }) {
           id={id}
           title={title}
           image={image}
-          url={url}
+          url={store?.url}
           card_meta={card_meta}
           content={content}
           color_code={color_code}

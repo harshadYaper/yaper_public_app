@@ -15,20 +15,17 @@ import App from "../app";
 import { router } from "expo-router";
 import { scaleHeight, scalePadding } from "../utils/getScaledDimensions";
 import { FullButton } from "../common/button";
-import { range } from "../utils/helper";
+import { range, truncate } from "../utils/helper";
 import CopyToClipboard from "../common/copy-to-clipboard";
+import Timer from "../common/timer";
 
 export default function EcommerceView() {
   const [params, setParams] = useState();
   const [order, setOrder] = useState();
-  const [timer, setTimer] = useState();
   const [screen, setScreen] = useState(0);
   const [proceed, setProceed] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const MAX_SCREENS = 2;
-  const timeFormatter = (val) => {
-    return val <= 9 ? "0" + val.toString() : val;
-  };
 
   function addressFormatter(address) {
     return [
@@ -79,31 +76,38 @@ export default function EcommerceView() {
           display: "flex",
           flexDirection: "row",
           width: "50%",
-
+          flexShrink: 1,
+          ...scalePadding(4),
           alignItems: "center",
         }}
       >
         <Text
           style={{
             fontSize: 10,
-
             color: "#FFFFFF",
-            ...scalePadding(4),
           }}
         >
           {label}
         </Text>
-        <Text
+        <View
           style={{
-            fontSize: 10,
-
-            color: "#FFFFFF",
-            ...scalePadding(4),
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            width: "80%",
           }}
         >
-          {value}
-        </Text>
-        {showAdditional && <CopyToClipboard value={value} />}
+          <Text
+            style={{
+              fontSize: 12,
+              flexShrink: 1,
+              color: "#FFFFFF",
+            }}
+          >
+            {truncate(value)}
+          </Text>
+          {showAdditional && <CopyToClipboard value={value} />}
+        </View>
       </View>
     );
   };
@@ -123,27 +127,15 @@ export default function EcommerceView() {
   }, [address]);
 
   useEffect(() => {
-    order && setTimer(order?.timer?.remaining_time);
-  }, [order]);
-
-  useEffect(() => {
     (async () => {
       deal_id && setOrder(await createOrder({ deal_id }));
     })();
   }, [params]);
 
-  useEffect(() => {
-    timer &&
-      timer > 0 &&
-      setTimeout(() => {
-        setTimer((p) => p - 1);
-      }, 1000);
-  }, [timer]);
-
   return (
     <App
       Component={
-        <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ flex: 1 }}>
           <WebView
             uri={order?.url}
             styles={{ ...(proceed ? {} : { opacity: 0.1 }) }}
@@ -159,19 +151,23 @@ export default function EcommerceView() {
                 alignItems: "center",
               }}
             >
-              <Text
-                style={{
-                  color: "#101828",
-                  fontWeight: "700",
-                  borderTopLeftRadius: 8,
-                  borderTopRightRadius: 8,
-                  textAlign: "center",
-                  paddingBottom: scaleHeight(20),
-                }}
-              >
-                {address?.user_message}
-              </Text>
-              <FullButton onPress={() => setProceed(true)} />
+              {address?.user_message && (
+                <>
+                  <Text
+                    style={{
+                      color: "#101828",
+                      fontWeight: "700",
+                      borderTopLeftRadius: 8,
+                      borderTopRightRadius: 8,
+                      textAlign: "center",
+                      paddingBottom: scaleHeight(20),
+                    }}
+                  >
+                    {address.user_message}
+                  </Text>
+                  <FullButton onPress={() => setProceed(true)} />
+                </>
+              )}
             </View>
           ) : (
             <View
@@ -179,9 +175,9 @@ export default function EcommerceView() {
                 position: "absolute",
                 bottom: 0,
                 backgroundColor: showDetails ? "transparent" : "#101828",
-
-                width: showDetails ? 80 : "100%",
+                width: "100%",
                 alignItems: "center",
+                ...scalePadding(4),
               }}
             >
               <Pressable
@@ -193,7 +189,6 @@ export default function EcommerceView() {
                   borderWidth: 2,
                   borderRadius: 50,
                   justifyContent: "center",
-
                   alignItems: "center",
                 }}
                 onPress={() => setShowDetails((p) => !p)}
@@ -209,29 +204,27 @@ export default function EcommerceView() {
                     alignItems: "center",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 10,
-
-                      fontWeight: "700",
-                      textAlign: "center",
-                      textAlignVertical: "center",
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    {timeFormatter(parseInt(timer / 60))}:
-                    {timeFormatter(parseInt(timer % 60))}
-                  </Text>
+                  {order?.timer?.remaining_time && (
+                    <Timer
+                      time={order.timer.remaining_time}
+                      styles={{
+                        color: "#FFFFFF",
+                      }}
+                      showMins={false}
+                    />
+                  )}
                 </View>
               </Pressable>
               {!showDetails && (
-                <View
+                <TouchableOpacity
                   style={{
                     display: "flex",
                     width: "100%",
                     justifyContent: "center",
                     alignItems: "center",
+                    height: scaleHeight(120),
                   }}
+                  onPress={() => setScreen((s) => 1 - s)}
                 >
                   <View
                     style={{
@@ -265,8 +258,13 @@ export default function EcommerceView() {
                       }
                       numColumns={2}
                       renderItem={({ item: { label, value } }) => (
-                        <DetailsComp label={label} value={value} />
+                        <DetailsComp
+                          label={label}
+                          value={value}
+                          showAdditional={screen !== 0}
+                        />
                       )}
+                      keyExtractor={({ label }) => label}
                     />
                   </View>
                   <View
@@ -280,6 +278,7 @@ export default function EcommerceView() {
                   >
                     {range(MAX_SCREENS).map((i) => (
                       <Pressable
+                        key={"SCREENS" + i}
                         style={{
                           height: 4,
                           borderRadius: 2,
@@ -292,7 +291,7 @@ export default function EcommerceView() {
                       />
                     ))}
                   </View>
-                </View>
+                </TouchableOpacity>
               )}
             </View>
           )}

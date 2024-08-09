@@ -88,6 +88,7 @@ const customStyles = StyleSheet.create({
     width: scaleWidth(width),
     backgroundColor: "white",
     height: scaleHeight(44),
+    textAlignVertical: "center",
     borderRadius: 8,
     borderColor: "#D0D5DD",
     borderWidth: 1,

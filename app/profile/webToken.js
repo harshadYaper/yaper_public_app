@@ -92,7 +92,7 @@ export default function WebToken({
             maxLength={1}
             usageType="LOGIN CODE"
             errorMessage=""
-            width={"18%"}
+            width={44}
             style={{
               Input: {
                 textAlign: "center",

@@ -1,7 +1,14 @@
 import { Stack } from "expo-router";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
-export default function App({ Component, Splash, loading, styles, options }) {
+export default function App({
+  Component,
+  Splash,
+  loading,
+  styles,
+  options,
+  nestMode = "safearea",
+}) {
   return loading ? (
     <View style={{ ...styles.LoadingSplash, ...customeStyles.LoadingSplash }}>
       <Stack.Screen
@@ -14,7 +21,16 @@ export default function App({ Component, Splash, loading, styles, options }) {
     </View>
   ) : (
     <SafeAreaView style={{ ...customeStyles.Component }}>
-      {Component}
+      {nestMode == "safearea" ? (
+        Component
+      ) : (
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+        >
+          {Component}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }

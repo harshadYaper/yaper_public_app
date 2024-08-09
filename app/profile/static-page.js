@@ -42,29 +42,41 @@ export default function StaticPage({ showStaticPage, setShowStaticPage }) {
             backgroundColor: WHITE,
             position: "absolute",
             bottom: 0,
-            justifyContent: "center",
-            alignItems: "center",
             ...scalePadding(16),
           }}
         >
           <View
             style={{
-              backgroundColor: "#E2E2E5",
-              width: scaleWidth(30),
-              height: scaleHeight(4),
-            }}
-          />
-          <Text
-            style={{
-              fontSize: 20,
-
-              fontWeight: "600",
-              color: "#0D1F3C",
-              ...scalePadding(12),
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            {showStaticPage}
-          </Text>
+            <View
+              style={{
+                backgroundColor: "#E2E2E5",
+                width: scaleWidth(30),
+                height: scaleHeight(4),
+              }}
+            />
+          </View>
+
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "600",
+                color: "#0D1F3C",
+                ...scalePadding(12),
+              }}
+            >
+              {showStaticPage}
+            </Text>
+          </View>
           <View
             style={{
               flex: 1,

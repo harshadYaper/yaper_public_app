@@ -48,7 +48,7 @@ const navMenu = [
 ];
 
 export default function Template({}) {
-  const [nav, setNav] = useState(navMenu[1].navigation);
+  const [nav, setNav] = useState(navMenu[0].navigation);
   const [filters, setFilters] = useState([]);
   const [fetching, setFetching] = useState(false);
   const [data, setData] = useState({ data: [], filter: [] });

@@ -9,6 +9,7 @@ import { login, otp_verify } from "../api";
 import DataRoute from "./data_route";
 import saveData from "./save_data";
 import { useDispatch } from "react-redux";
+import Timer from "../common/timer";
 
 export default function OTP({ mobile_number, setComponent }) {
   const OTP_LENGTH = 4;
@@ -38,10 +39,6 @@ export default function OTP({ mobile_number, setComponent }) {
     ]);
 
     ref.current[ind + (isDigit(val) ? 1 : -1)]?.focus();
-  };
-
-  const timeFormatter = (val) => {
-    return val <= 9 ? "0" + val.toString() : val;
   };
 
   const handleSubmit = async () => {
@@ -123,20 +120,16 @@ export default function OTP({ mobile_number, setComponent }) {
           autofocusInd={0}
         />
         <TouchableOpacity onPress={handleResend} disabled={!(resendTimer == 0)}>
-          <Text
-            style={{
+          <Timer
+            time={resendTimer}
+            styles={{
               fontSize: 12,
-
               color: resendTimer == 0 ? "#336AB4" : "#ABB0BC",
               ...scalePadding(6),
+              textAlign: "",
             }}
-          >
-            {!(resendTimer == 0)
-              ? `${timeFormatter(parseInt(resendTimer / 60))}:${timeFormatter(
-                  parseInt(resendTimer % 60)
-                )} mins`
-              : "Resend code"}
-          </Text>
+            content={resendTimer == 0 && "Resend code"}
+          />
         </TouchableOpacity>
       </View>
 

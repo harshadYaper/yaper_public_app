@@ -124,30 +124,34 @@ export default function Supports({ data, openFilters }) {
 
 export function SupportsHeader({ supportTimings }) {
   return (
-    <View
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F6E3C0",
-        width: "100%",
-        ...scalePadding(12),
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: "#FDB022",
-      }}
-    >
-      <Image
-        source={require("../../assets/icons/Info.svg")}
+    supportTimings && (
+      <View
         style={{
-          height: scaleHeight(28),
-          width: scaleWidth(28),
-          tintColor: "#FDB022",
-          marginRight: scaleWidth(8),
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#F6E3C0",
+          width: "100%",
+          ...scalePadding(12),
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: "#FDB022",
         }}
-      />
-      <Text style={{ fontSize: 12, fontWeight: "700" }}>{supportTimings}</Text>
-    </View>
+      >
+        <Image
+          source={require("../../assets/icons/Info.svg")}
+          style={{
+            height: scaleHeight(28),
+            width: scaleWidth(28),
+            tintColor: "#FDB022",
+            marginRight: scaleWidth(8),
+          }}
+        />
+        <Text style={{ fontSize: 12, fontWeight: "700" }}>
+          {supportTimings}
+        </Text>
+      </View>
+    )
   );
 }
