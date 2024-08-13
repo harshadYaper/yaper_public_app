@@ -13,14 +13,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "co.yaper.app"
+      "bundleIdentifier": "com.yaper.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/yaper-logo.png",
         "backgroundColor": "#025ACE"
       },
-      "package": "co.yaper.app"
+      "package": "com.yaper.app"
     },
     "web": {
       "bundler": "metro",
