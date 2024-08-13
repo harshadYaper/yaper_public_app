@@ -21,6 +21,12 @@ export default function App({
     </View>
   ) : (
     <SafeAreaView style={{ ...customeStyles.Component }}>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          ...options,
+        }}
+      />
       {nestMode == "safearea" ? (
         Component
       ) : (

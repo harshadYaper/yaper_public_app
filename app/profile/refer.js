@@ -1,12 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import App from "../app";
 import { useState } from "react";
 import { Image } from "expo-image";
 import { scalePadding } from "../utils/getScaledDimensions";
 import { FullButton } from "../common/button";
+import { router } from "expo-router";
+import { useSelector } from "react-redux";
+import { REFERRAL_AMOUNT } from "../constants";
 
 export default function Refer() {
   const [loading, setLoading] = useState(false);
+
+  const {
+    referral: { link, referral_count, referral_earning },
+  } = useSelector((state) => state.user) || {};
 
   return (
     <App
@@ -57,11 +64,10 @@ export default function Refer() {
                   ...scalePadding(4),
                   color: "#000000",
                   fontSize: 12,
-
                   fontWeight: "700",
                 }}
               >
-                2
+                {referral_count}
               </Text>
             </View>
 
@@ -86,42 +92,41 @@ export default function Refer() {
                   ...scalePadding(4),
                   color: "#000000",
                   fontSize: 12,
-
                   fontWeight: "700",
                 }}
               >
-                $200
+                {"\u20B9"}
+                {referral_earning}
               </Text>
             </View>
           </View>
           <Text
             style={{
               fontSize: 16,
-
               fontWeight: "500",
               color: "#101828",
               textAlign: "center",
             }}
           >
-            Refer your friends & get $100 for each successful referral
+            Refer your friends & get {"\u20B9"}
+            {REFERRAL_AMOUNT} for each successful referral
           </Text>
 
           <Text
             style={{
               fontSize: 12,
-
               color: "#667085",
               textAlign: "center",
             }}
           >
             If your friends signup and help a shopper by placing an order,
-            they'll get awesome cash rewards and you'll get $100 for each
-            successful referral
+            they'll get awesome cash rewards and you'll get {"\u20B9"}
+            {REFERRAL_AMOUNT} for each successful referral
           </Text>
           <FullButton
             title="Refer Now"
-            onPress={() => {
-              console.log("link copied");
+            onPress={async () => {
+              await Share.share({ message: link });
             }}
           />
         </View>
@@ -142,7 +147,7 @@ export default function Refer() {
         headerLeft: () => (
           <TouchableOpacity
             onPress={() => {
-              Component == MyCards ? router.back() : setComponent([MyCards]);
+              router.back();
             }}
           >
             <Image

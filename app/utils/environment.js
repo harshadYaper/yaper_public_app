@@ -1,5 +1,5 @@
 import { APP_VARIABLES } from "../env";
-import { getData, putData } from "../storage";
+import { clearData, getData, putData } from "../storage";
 import { reloadAsync } from "expo-updates";
 
 // const DEFAULT_ENVIRONMENT = "production";
@@ -17,6 +17,7 @@ export const getEnvironment = async () => {
 
 export const setEnvironment = async (environment) => {
   await putData("ENVIRONMENT", environment);
+  await clearData({});
   await reloadAsync();
 };
 

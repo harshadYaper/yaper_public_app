@@ -1,37 +1,35 @@
-export const titleize = (string) => {
-  return !isEmpty(string)
+export const titleize = (string) =>
+  !isEmpty(string)
     ? string[0].toUpperCase() + string.substring(1).toLowerCase()
     : undefined;
-};
 
-export const snakeToTitleize = (string) => {
-  return !isEmpty(string)
+export const snakeToTitleize = (string) =>
+  !isEmpty(string)
     ? string
         .split("_")
         .map((r) => titleize(r))
         .join(" ")
     : undefined;
-};
 
-export const capitalize = (string) => {
-  return !isEmpty(string) ? string.toUpperCase() : undefined;
-};
+export const capitalize = (string) =>
+  !isEmpty(string) ? string.toUpperCase() : undefined;
 
-export const truncate = (string, length = 50, trunc_string = "...") => {
-  return !isEmpty(string)
+export const truncate = (string, length = 50, trunc_string = "...") =>
+  !isEmpty(string)
     ? string.length >= length
       ? string.substring(0, length) + trunc_string
       : string
     : undefined;
-};
 
-export const isEmpty = (val) => {
-  return val == undefined || val == null || val == "";
-};
+export const isEmpty = (val) =>
+  val == undefined ||
+  val == null ||
+  val == "" ||
+  val.length == 0 ||
+  Object.keys(val).length == 0;
 
-export const sleep = async (val) => {
-  await new Promise((resolve) => setTimeout(resolve, val));
-};
+export const sleep = async (val) =>
+  new Promise((resolve) => setTimeout(resolve, val));
 
 export const range = (val) => [...Array(val).keys()];
 

@@ -1,9 +1,8 @@
 import { router } from "expo-router";
-import BasicInfo from "./basicInfo";
 
-export default function DataRoute({ user, setComponent }) {
+export default function DataRoute({ user, setComponent, Component }) {
   if (!user.first_name) {
-    setComponent([BasicInfo, {}]);
+    setComponent([Component, {}]);
   } else {
     router.replace({
       pathname: "/",

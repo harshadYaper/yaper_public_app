@@ -4,10 +4,19 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import App from "../app";
 import PAN from "./pan";
 import { Image } from "expo-image";
+import { router } from "expo-router";
+import { useSelector } from "react-redux";
+import BankDetails from "./bank_details";
 
 export default function KYC() {
+  const { pan_verified } = useSelector((state) => state.user);
+
   const [loading, setLoading] = useState(true);
-  const [component, setComponent] = useState([PAN, "Verify PAN", {}]);
+  const [component, setComponent] = useState([
+    pan_verified ? BankDetails : PAN,
+    "Verify PAN",
+    {},
+  ]);
 
   const [Component, title, params] = component;
 

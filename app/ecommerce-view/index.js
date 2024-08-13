@@ -6,6 +6,7 @@ import {
   Text,
   Pressable,
   FlatList,
+  Alert,
 } from "react-native";
 import { getData } from "../storage";
 import { createOrder } from "../api";
@@ -83,7 +84,7 @@ export default function EcommerceView() {
       >
         <Text
           style={{
-            fontSize: 10,
+            fontSize: 8,
             color: "#FFFFFF",
           }}
         >
@@ -99,7 +100,7 @@ export default function EcommerceView() {
         >
           <Text
             style={{
-              fontSize: 12,
+              fontSize: 10,
               flexShrink: 1,
               color: "#FFFFFF",
             }}
@@ -123,8 +124,11 @@ export default function EcommerceView() {
   }, []);
 
   useEffect(() => {
-    // address && Alert.alert("Warning", address?.user_message);
-  }, [address]);
+    if (order && order.errors) {
+      Alert.alert("Error", order.errors.message);
+      router.navigate({ pathname: "/" });
+    }
+  }, [order]);
 
   useEffect(() => {
     (async () => {

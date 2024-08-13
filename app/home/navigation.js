@@ -6,20 +6,25 @@ import {
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { WHITE } from "../constants/colors";
-import { FULL_WIDTH } from "../constants";
 
-export default function Navigation({ navMenu, setNav, nav, setData }) {
+export default function Navigation({
+  navMenu,
+  setNav,
+  nav,
+  setData,
+  setFilters,
+  setPageNumber,
+}) {
   return (
     <View
       style={{
-        height: scaleHeight(108),
-        width: FULL_WIDTH,
         backgroundColor: WHITE,
         position: "absolute",
         bottom: 0,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         ...scalePadding(12),
+        paddingBottom: scaleHeight(20),
       }}
     >
       <FlatList
@@ -36,25 +41,41 @@ export default function Navigation({ navMenu, setNav, nav, setData }) {
           <TouchableOpacity
             onPress={() => {
               setData({ data: [], filter: [] });
+              setFilters({});
+              setPageNumber(1);
               setNav(navigation);
             }}
           >
-            <Image
-              contentFit={"contain"}
-              source={icon}
-              height={scaleHeight(64)}
-              width={scaleWidth(64)}
-              style={{ tintColor: nav == navigation ? "#025ACE" : "#667085" }}
-            />
-            <Text
+            <View
               style={{
-                textAlign: "center",
-                textAlignVertical: "center",
-                color: nav == navigation ? "#025ACE" : "#667085",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              {label}
-            </Text>
+              <Image
+                contentFit={"contain"}
+                source={icon}
+                height={scaleHeight(28)}
+                width={scaleWidth(28)}
+                style={{ tintColor: nav == navigation ? "#025ACE" : "#667085" }}
+              />
+            </View>
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  textAlignVertical: "center",
+                  color: nav == navigation ? "#025ACE" : "#667085",
+                }}
+              >
+                {label}
+              </Text>
+            </View>
           </TouchableOpacity>
         )}
       />

@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { FULL_WIDTH } from "../constants";
 import { WHITE } from "../constants/colors";
 import {
@@ -13,10 +13,17 @@ import { SmallButton } from "../common/button";
 
 export default function Filters({
   filters = [],
-  setOpenFilters,
   openFilterOption,
   setOpenFilterOption,
+  setFilters,
+  fetchData,
+  selectedFilters,
 }) {
+  const handleClose = (fetch) => {
+    setFilters((p) => ({ ...p, filter: false }));
+    fetch && fetchData({ resetData: true });
+  };
+
   return (
     <View
       style={{
@@ -52,17 +59,12 @@ export default function Filters({
         <Text
           style={{
             fontSize: 16,
-
             color: "#101828",
           }}
         >
           Sort & Filter
         </Text>
-        <TouchableOpacity
-          onPress={() => {
-            setOpenFilters(false);
-          }}
-        >
+        <TouchableOpacity onPress={() => handleClose(false)}>
           <Image
             source={require("../../assets/icons/X.svg")}
             style={{
@@ -142,9 +144,17 @@ export default function Filters({
               ss: openFilterOption.options.map(({ name, id, selected }) => (
                 <PrimaryRadio
                   key={name + id}
-                  onPress={() => {}}
+                  onPress={() => {
+                    setOpenFilterOption((p) => ({
+                      ...p,
+                      options: p.options.map((o) => ({
+                        ...o,
+                        selected: o.id == id,
+                      })),
+                    }));
+                  }}
                   label={name}
-                  selected={selected}
+                  selected={selectedFilters[openFilterOption.id] == id}
                 />
               )),
             }[openFilterOption?.type]
@@ -165,22 +175,19 @@ export default function Filters({
           alignItems: "center",
         }}
       >
-        <Text
-          style={{
-            fontSize: 16,
+        <Pressable onPress={() => setFilters({})}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "500",
+              color: "#025ACE",
+            }}
+          >
+            Clear All
+          </Text>
+        </Pressable>
 
-            fontWeight: "500",
-            color: "#025ACE",
-          }}
-        >
-          Clear All
-        </Text>
-
-        <SmallButton
-          onPress={() => {
-            setOpenFilters(false);
-          }}
-        />
+        <SmallButton onPress={() => handleClose(true)} />
       </View>
     </View>
   );

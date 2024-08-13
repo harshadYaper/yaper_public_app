@@ -15,7 +15,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
         width: "100%",
         opacity: openFilters ? 0.1 : 1,
         marginTop: scaleHeight(10),
-        marginBottom: scaleHeight(100),
+        marginBottom: scaleHeight(90),
         ...scalePadding(12),
       }}
       data={data || []}

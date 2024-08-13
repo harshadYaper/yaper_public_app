@@ -10,6 +10,7 @@ import DataRoute from "./data_route";
 import saveData from "./save_data";
 import { useDispatch } from "react-redux";
 import Timer from "../common/timer";
+import BasicInfo from "./basicInfo";
 
 export default function OTP({ mobile_number, setComponent }) {
   const OTP_LENGTH = 4;
@@ -49,10 +50,10 @@ export default function OTP({ mobile_number, setComponent }) {
     });
     setLoading(false);
     if (response.response_message !== "success") {
-      Alert.alert(response.response_message);
+      Alert.alert("error", response.response_message);
     } else {
       await saveData({ dispatch, user: response.user });
-      DataRoute({ user: response.user, checkCard: true, setComponent });
+      DataRoute({ user: response.user, setComponent, Component: BasicInfo });
     }
   };
 
@@ -61,7 +62,7 @@ export default function OTP({ mobile_number, setComponent }) {
     let response = await login({ mobile_number, resent: true });
     setLoading(false);
     if (response.response_message !== "success") {
-      Alert.alert(response.response_message);
+      Alert.alert("error", response.response_message);
     } else {
       setResendTimer(120);
     }
@@ -88,10 +89,9 @@ export default function OTP({ mobile_number, setComponent }) {
         <Text
           style={{
             fontSize: 20,
-
             fontWeight: "500",
             marginBottom: "10%",
-            marginTop: "20%",
+            marginTop: "10%",
             ...scalePadding(6),
           }}
         >

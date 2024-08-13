@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Share, StyleSheet, TouchableOpacity } from "react-native";
 import App from "../app";
 import Deal from "./deal";
 import { Image } from "expo-image";
@@ -11,7 +11,7 @@ export default function Details() {
   const [loading, setLoading] = useState(true);
   const [component, setComponent] = useState([Deal, {}]);
   const [Component, params] = component;
-  const { key } = useLocalSearchParams();
+  const { key, id, deal_id } = useLocalSearchParams();
 
   useEffect(() => {
     setLoading(false);
@@ -43,10 +43,19 @@ export default function Details() {
           </TouchableOpacity>
         ),
         headerRight: () => (
-          <Image
-            source={require("../../assets/icons/Share.svg")}
-            style={{ height: 24, width: 24, tintColor: "#101828" }}
-          />
+          <TouchableOpacity
+            onPress={
+              async () =>
+                await Share.share({
+                  message: `https://yaper.co/deal/${deal_id || id}`,
+                }) // change this
+            }
+          >
+            <Image
+              source={require("../../assets/icons/Share.svg")}
+              style={{ height: 24, width: 24, tintColor: "#101828" }}
+            />
+          </TouchableOpacity>
         ),
       }}
     />

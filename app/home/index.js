@@ -18,13 +18,15 @@ export default function Home() {
       Splash={<></>}
       styles={customeStyles}
       loading={loading}
-      // options={{
-      //   title: "",
-      //   headerShown: true,
-      //   headerLeft: LeftComp,
-      //   headerRight: RightComp,
-      //   backgroundColor: "#CEE3FF",
-      // }}
+      ///////// giving error Warning: React has detected a change in the order of Hooks called by HeaderConfig
+      options={{
+        title: "",
+        headerShown: true,
+        headerLeft: LeftComp,
+        headerRight: RightComp,
+        headerStyle: { backgroundColor: "#CEE3FF" },
+      }}
+      /////////
     />
   );
 }

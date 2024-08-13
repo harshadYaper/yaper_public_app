@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import Input from "../common/input";
 import { useEffect, useState } from "react";
 import { scaleHeight, scalePadding } from "../utils/getScaledDimensions";
@@ -51,6 +51,7 @@ export default function PAN({ setComponent }) {
       <View>
         {PAN_DETAILS.map(({ label, placeholder, key }) => (
           <Input
+            key={label}
             inputArray={[data[key]]}
             onChange={(val) => setData((p) => ({ ...p, [key]: val }))}
             label={label}
@@ -79,6 +80,17 @@ export default function PAN({ setComponent }) {
               "Add Bank Account Details",
               { account_holder_name: data.account_holder_name },
             ]);
+          } else {
+            Alert.alert(
+              "error",
+              Object.keys(response.errors)
+                .map((key) =>
+                  [snakeToTitleize(key) + " "]
+                    .concat(response.errors[key])
+                    .join(" ")
+                )
+                .join("\n")
+            );
           }
         }}
       />

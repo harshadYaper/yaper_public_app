@@ -64,10 +64,11 @@ export async function getUser({}) {
   });
 }
 
-export async function getDeals({}) {
+export async function getDeals({ filters }) {
   return await makeRequest({
     method: "POST",
     url: "/v3/deals",
+    payload: { filters },
   });
 }
 
@@ -78,10 +79,11 @@ export async function getDeal({ id }) {
   });
 }
 
-export async function getOrders({ page_number }) {
+export async function getOrders({ page_number, filters }) {
   return await makeRequest({
     method: "POST",
     url: `/v3/orders/filter?page_number=${page_number}`,
+    payload: { filters },
   });
 }
 
@@ -137,10 +139,11 @@ export async function customRequest({ payload, method, url }) {
   });
 }
 
-export async function getWallet({ page_number }) {
+export async function getWallet({ page_number, filters }) {
   return await makeRequest({
     method: "GET",
     url: `/v1/wallets?page_number=${page_number}`,
+    payload: { filters },
   });
 }
 

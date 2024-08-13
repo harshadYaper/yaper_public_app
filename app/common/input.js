@@ -22,9 +22,10 @@ export default function Input({
   editable,
   leftComponent,
   rightComponent,
+  secureFields,
 }) {
   return (
-    <View>
+    <View key={label}>
       {label && (
         <Text
           style={{
@@ -51,6 +52,7 @@ export default function Input({
           inputArray.map((input, ind) => {
             return (
               <TextInput
+                secureTextEntry={secureFields}
                 key={usageType + " " + ind}
                 ref={(r) => reference && (reference.current[ind] = r)}
                 maxLength={maxLength}

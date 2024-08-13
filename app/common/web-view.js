@@ -14,6 +14,7 @@ export default function WebView({ uri, html, styles }) {
       originWhitelist={["*"]}
       javaScriptEnabled
       startInLoadingState
+      nestedScrollEnabled
       source={{ uri, html }}
     />
   );

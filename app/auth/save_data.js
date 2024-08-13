@@ -1,6 +1,6 @@
 import { getData, putData } from "../storage";
 
-export default async function saveData({ dispatch, user }) {
+export default async function saveData({ dispatch, user, dispatchToken }) {
   let expire_at = Date.now() + 1000 * 60 * 60 * 24;
 
   let token_payload = !user.token
@@ -14,8 +14,9 @@ export default async function saveData({ dispatch, user }) {
   await putData("TOKEN", token_payload);
 
   dispatch({ type: "USER", payload: user });
-  dispatch({
-    type: "TOKEN",
-    payload: token_payload,
-  });
+  dispatchToken &&
+    dispatch({
+      type: "TOKEN",
+      payload: token_payload,
+    });
 }

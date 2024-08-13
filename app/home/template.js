@@ -11,6 +11,7 @@ import Orders from "./orders";
 import Transactions, { TransactionsHeader } from "./transactions";
 import Supports, { SupportsHeader } from "./supports";
 import { scaleHeight } from "../utils/getScaledDimensions";
+import { isEmpty } from "../utils/helper";
 
 const navMenu = [
   {
@@ -20,6 +21,10 @@ const navMenu = [
     api: getDeals,
     Component: Deals,
     HeaderComponent: DealsHeader,
+    HeaderComponentStyles: {
+      display: "flex",
+      width: "100%",
+    },
   },
   {
     label: "Orders",
@@ -49,24 +54,29 @@ const navMenu = [
 
 export default function Template({}) {
   const [nav, setNav] = useState(navMenu[0].navigation);
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState({});
   const [fetching, setFetching] = useState(false);
   const [data, setData] = useState({ data: [], filter: [] });
-  const [openFilters, setOpenFilters] = useState(false);
   const [openFilterOption, setOpenFilterOption] = useState();
   const [pageNumber, setPageNumber] = useState(1);
   const { Component } = navMenu.find((n) => n.navigation == nav);
 
-  const fetchData = async () => {
+  const fetchData = async ({ resetData = false }) => {
     setFetching(true);
 
     let apiData = await navMenu
       .find(({ navigation }) => navigation == nav)
-      .api({ page_number: pageNumber });
+      .api({
+        page_number: pageNumber,
+        filters: Object.entries(filters)
+          .filter(([k, v]) => !["filter", "gst_deals", "emi_deals"].includes(k))
+          .map(([k, v]) => ({ [k]: v }))
+          .reduce((a, b) => ({ ...a, ...b }), undefined),
+      });
 
     setData((p) => ({
       data: [
-        ...p.data,
+        ...(resetData ? [] : p.data),
         ...(nav == "transactions"
           ? apiData?.data.wallet?.transactions
           : apiData?.data),
@@ -79,8 +89,24 @@ export default function Template({}) {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData({});
   }, [nav, pageNumber]);
+
+  useEffect(() => {
+    if (openFilterOption) {
+      let selectedoption = openFilterOption.options
+        .filter((o) => o.selected)
+        .map((o) => o.id);
+      !isEmpty(selectedoption) &&
+        setFilters((p) => ({
+          ...p,
+          [openFilterOption.id]:
+            openFilterOption.type == "ms"
+              ? selectedoption.join(",")
+              : selectedoption[0],
+        }));
+    }
+  }, [openFilterOption]);
 
   useEffect(() => {
     data && setOpenFilterOption(data?.filter?.[0]);
@@ -96,43 +122,49 @@ export default function Template({}) {
         height: "100%",
       }}
     >
-      <Header
-        HeaderComponent={
-          navMenu.find(({ navigation }) => navigation == nav).HeaderComponent
-        }
-        HeaderComponentStyles={
-          navMenu.find(({ navigation }) => navigation == nav)
-            .HeaderComponentStyles
-        }
-        HeaderComponentData={data.otherData}
-      />
+      {navMenu.find(({ navigation }) => navigation == nav).HeaderComponent && (
+        <Header
+          HeaderComponent={
+            navMenu.find(({ navigation }) => navigation == nav).HeaderComponent
+          }
+          HeaderComponentStyles={
+            navMenu.find(({ navigation }) => navigation == nav)
+              .HeaderComponentStyles
+          }
+          HeaderComponentData={data.otherData}
+        />
+      )}
 
       {openFilterOption && (
         <AdditionalFilters
-          setOpenFilters={setOpenFilters}
           setFilters={setFilters}
           filters={filters}
-        />
-      )}
-      {Component && (
-        <Component
-          data={data?.data || []}
-          openFilters={openFilters}
-          setPageNumber={setPageNumber}
+          fetchData={fetchData}
+          navigation={nav}
         />
       )}
 
+      {Component && (
+        <Component
+          data={data?.data || []}
+          openFilters={filters.filter}
+          setPageNumber={setPageNumber}
+        />
+      )}
       <Navigation
         navMenu={navMenu}
         setNav={setNav}
         nav={nav}
         setData={setData}
+        setFilters={setFilters}
+        setPageNumber={setPageNumber}
       />
-
-      {openFilters && (
+      {filters.filter && (
         <Filters
           filters={data?.filter}
-          setOpenFilters={setOpenFilters}
+          selectedFilters={filters}
+          setFilters={setFilters}
+          fetchData={fetchData}
           openFilterOption={openFilterOption}
           setOpenFilterOption={setOpenFilterOption}
         />

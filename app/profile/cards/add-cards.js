@@ -23,9 +23,13 @@ import { getUser, saveCards } from "../../api";
 import saveData from "../../auth/save_data";
 import { useDispatch } from "react-redux";
 import { sleep } from "../../utils/helper";
-import { router } from "expo-router";
 
-export default function AddCards({ selectedCards, cards, setSelectedCards }) {
+export default function AddCards({
+  selectedCards,
+  cards,
+  setSelectedCards,
+  setMyCards,
+}) {
   const [searchCardString, setSearchCardString] = useState("");
   const [filterBanks, setFilterBanks] = useState([]);
 
@@ -50,7 +54,7 @@ export default function AddCards({ selectedCards, cards, setSelectedCards }) {
         user: (await getUser({}))?.user,
       });
       sleep(2000);
-      router.back();
+      setMyCards();
     }
   };
 
@@ -85,11 +89,10 @@ export default function AddCards({ selectedCards, cards, setSelectedCards }) {
           errorMessage=""
           style={{}}
         />
-        <TouchableOpacity onPress={() => console.log("pressed")}>
+        <TouchableOpacity onPress={() => setMyCards()}>
           <Text
             style={{
               fontSize: 20,
-
               fontWeight: "500",
               marginTop: scaleHeight(20),
               marginBottom: scaleHeight(20),

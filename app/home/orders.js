@@ -31,14 +31,12 @@ export default function Orders({ data, openFilters, setPageNumber }) {
               id,
               order_number,
               logo,
-              pricings,
               description,
-              card_description,
               order_state_info,
               state,
-              params,
               payload: { variant_id },
               timer,
+              meta: { deal_id },
             },
           }) => (
             <TouchableOpacity
@@ -58,7 +56,13 @@ export default function Orders({ data, openFilters, setPageNumber }) {
               onPress={() =>
                 router.push({
                   pathname: "/details",
-                  params: { id, key: "order", order_number, variant_id },
+                  params: {
+                    id,
+                    key: "order",
+                    order_number,
+                    variant_id,
+                    deal_id,
+                  },
                 })
               }
             >

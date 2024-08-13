@@ -10,22 +10,40 @@ import {
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import WebToken from "./webToken";
-import { getUser, getWebToken, updateUserStatus } from "../api";
+import { getStaticMeta, getUser, getWebToken, updateUserStatus } from "../api";
 import { clearData } from "../storage";
 import StaticPage from "./static-page";
 import saveData from "../auth/save_data";
+import Toggle from "../common/toggle";
+import { getAppVariables } from "../utils/environment";
 
 export default function Template() {
   const { email, first_name, last_name, phone, whatsapp_consent } =
     useSelector((state) => state.user) || {};
 
-  const [val, setVal] = useState({
-    on: { label: "on" },
-    off: { label: "off" },
-  });
+  const [val, setVal] = useState({});
   const [whatsappConsent, setWhatsappConsent] = useState(whatsapp_consent);
   const [showWebToken, setShowWebToken] = useState();
   const [showStaticPage, setShowStaticPage] = useState();
+  const [staticMeta, setStaticMeta] = useState();
+
+  useEffect(() => {
+    (async () => {
+      setStaticMeta(await getStaticMeta({}));
+      let { env, log } = await getAppVariables();
+      setVal({ env, log: log ? "log_on" : "log_off" });
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      // if (val && val.env) {
+      //   let { env, log } = await getAppVariables();
+      //   env !== val.env && setEnvironment(val.env);
+      // }
+    })();
+  }, [val]);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -88,8 +106,10 @@ export default function Template() {
         // },
         {
           label: "Manage KYC & Bank Account",
-          onPress: () => {
-            console.log("clicked");
+          onPress: async () => {
+            router.navigate({
+              pathname: "/kyc",
+            });
           },
         },
         {
@@ -118,18 +138,18 @@ export default function Template() {
     support: {
       category: "SUPPORT",
       options: [
-        {
-          label: "Contact Support",
-          onPress: () => {
-            console.log("clicked");
-          },
-        },
-        {
-          label: "Support Tickets",
-          onPress: () => {
-            console.log("clicked");
-          },
-        },
+        // {
+        //   label: "Contact Support",
+        //   onPress: () => {
+        //     console.log("clicked");
+        //   },
+        // },
+        // {
+        //   label: "Support Tickets",
+        //   onPress: () => {
+        //     console.log("clicked");
+        //   },
+        // },
         {
           label: "FAQs",
           onPress: () => {
@@ -213,6 +233,29 @@ export default function Template() {
         <CategoryView {...PROFILE_OPTIONS.account} />
         <CategoryView {...PROFILE_OPTIONS.support} />
         <CategoryView {...PROFILE_OPTIONS.legal} />
+        {staticMeta?.data?.allow_staging_whitelist.includes(email) && (
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              ...scalePadding(16),
+            }}
+          >
+            {[
+              { label: "env", options: ["production", "staging"] },
+              { label: "log", options: ["log_on", "log_off"] },
+            ].map(({ label, options }) => (
+              <Toggle
+                options={options}
+                val={val}
+                setVal={setVal}
+                parameter={label}
+                onChange={(val) => setVal((p) => ({ ...p, [label]: val }))}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
       {showWebToken && (
         <WebToken

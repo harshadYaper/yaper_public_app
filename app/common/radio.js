@@ -19,7 +19,7 @@ function Radio({
   label,
   selected,
 }) {
-  const [checked, setChecked] = useState(selected || false);
+  const [checked, setChecked] = useState(selected);
 
   return (
     <View style={{ display: "flex", flexDirection: "row", ...scalePadding(6) }}>
@@ -66,7 +66,7 @@ export const PrimaryRadio = ({
   disabled = false,
   borderColor = "#D0D5DD",
   label = "",
-  selected,
+  selected = false,
 }) =>
   Radio({
     size,

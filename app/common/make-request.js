@@ -32,25 +32,17 @@ export async function makeRequest({ baseURL, url, payload, method }) {
       !TOKEN_EXEMPT_URLS.includes(url) &&
         (headers["session-id"] = (await getData("TOKEN"))?.token);
 
-      const request = axios.create({
+      return await axios({
         baseURL: baseURL || `${(await getAppVariables()).baseUrl}/api`,
         timeout: 20000,
         headers,
         cancelToken: axios.CancelToken.source().token,
-      });
-
-      switch (method) {
-        case "POST":
-          return await request.post(url, payload).then((r) => r.data);
-        case "PUT":
-          return await request.put(url, payload).then((r) => r.data);
-        case "PATCH":
-          return await request.patch(url, payload).then((r) => r.data);
-        case "DELETE":
-          return await request.delete(url, payload).then((r) => r.data);
-        case "GET":
-          return await request.get(url, payload).then((r) => r.data);
-      }
+        method,
+        url,
+        params: payload,
+      })
+        .then((r) => r.data)
+        .catch((r) => r.response.data);
     } else {
       throw new Error("No internet connection");
     }

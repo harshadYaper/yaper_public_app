@@ -18,6 +18,7 @@ export default function Supports({ data, openFilters }) {
         width: "100%",
         opacity: openFilters ? 0.1 : 1,
         marginTop: scaleHeight(20),
+        ...scalePadding(12),
         marginBottom: scaleHeight(100),
       }}
       data={data || []}

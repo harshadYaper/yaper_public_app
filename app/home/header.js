@@ -1,25 +1,24 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import { FULL_WIDTH, REFERRAL_AMOUNT } from "../constants";
+import { REFERRAL_AMOUNT } from "../constants";
 import { WHITE } from "../constants/colors";
 import {
   scaleHeight,
-  scaleMargin,
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { Image } from "expo-image";
 import { useSelector } from "react-redux";
 import { router } from "expo-router";
+import { truncate } from "../utils/helper";
 
 export const LeftComp = () => {
-  const { first_name, last_name } = useSelector((state) => state.user) || {};
+  const { first_name } = useSelector((state) => state.user) || {};
   return (
     <TouchableOpacity
       style={{
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        ...scalePadding(16),
       }}
       onPress={() => router.push({ pathname: "/profile" })}
     >
@@ -32,12 +31,12 @@ export const LeftComp = () => {
       <Text
         style={{
           fontSize: 16,
-
           fontWeight: "500",
-          ...scalePadding(8),
+          textAlign: "center",
+          textAlignVertical: "center",
         }}
       >
-        {first_name + " " + last_name}
+        {truncate(first_name, 10, "")}
       </Text>
     </TouchableOpacity>
   );
@@ -50,8 +49,7 @@ export const RightComp = () => (
       flexDirection: "row",
       alignItems: "center",
       ...scalePadding(8),
-      ...scaleMargin(12),
-      height: scaleHeight(32),
+      height: scaleHeight(40),
       backgroundColor: WHITE,
       color: "black",
       borderRadius: 16,
@@ -73,11 +71,13 @@ export const RightComp = () => (
       style={{
         color: "black",
         fontSize: 10,
-
         fontWeight: "500",
+        textAlign: "center",
+        textAlignVertical: "center",
       }}
     >
-      Earn upto Rs.{REFERRAL_AMOUNT}
+      Earn upto {"\u20B9"}
+      {REFERRAL_AMOUNT}
     </Text>
   </TouchableOpacity>
 );
@@ -88,39 +88,17 @@ export default function Header({
   HeaderComponentData,
 }) {
   return (
-    <>
-      <View
-        style={{
-          height: scaleHeight(100),
-          width: FULL_WIDTH,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottomLeftRadius: scaleWidth(24),
-          borderBottomRightRadius: scaleWidth(24),
-          flexDirection: "row",
-          backgroundColor: "#CEE3FF",
-          paddingTop: scaleHeight(32),
-        }}
-      >
-        <LeftComp />
-        <RightComp />
-      </View>
-
-      {HeaderComponent && (
-        <View
-          style={{
-            display: "flex",
-            height: 150,
-            width: "100%",
-            borderRadius: 8,
-            ...HeaderComponentStyles,
-            ...scalePadding(12),
-          }}
-        >
-          <HeaderComponent {...HeaderComponentData} />
-        </View>
-      )}
-    </>
+    <View
+      style={{
+        display: "flex",
+        maxHeight: scaleHeight(150),
+        width: "100%",
+        borderRadius: 8,
+        ...HeaderComponentStyles,
+        ...scalePadding(12),
+      }}
+    >
+      <HeaderComponent {...HeaderComponentData} />
+    </View>
   );
 }

@@ -36,7 +36,7 @@ export default function Login({ setComponent, mobile }) {
     setLoading(false);
     console.log(response);
     if (response.response_message !== "success") {
-      Alert.alert(response.response_message);
+      Alert.alert("error", response.response_message);
     } else {
       setComponent([OTP, { mobile_number: `${countryCode}${mobileNumber}` }]);
     }
@@ -57,10 +57,9 @@ export default function Login({ setComponent, mobile }) {
         <Text
           style={{
             fontSize: 20,
-
             fontWeight: "500",
             marginBottom: "10%",
-            marginTop: "20%",
+            marginTop: "10%",
             ...scalePadding(6),
           }}
         >

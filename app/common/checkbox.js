@@ -17,8 +17,9 @@ function CheckBox({
   disabled,
   borderColor,
   label,
+  selected,
 }) {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(selected);
 
   return (
     <View style={{ display: "flex", flexDirection: "row", ...scalePadding(6) }}>
@@ -62,6 +63,7 @@ export const PrimaryCheckBox = ({
   disabled = false,
   borderColor = "#D0D5DD",
   label = "",
+  selected = false,
 }) =>
   CheckBox({
     size,
@@ -72,4 +74,5 @@ export const PrimaryCheckBox = ({
     disabled,
     borderColor,
     label,
+    selected,
   });

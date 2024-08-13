@@ -18,6 +18,8 @@ export default function Cards() {
 
   const [Component] = component;
 
+  const setMyCards = () => setComponent([MyCards]);
+
   useEffect(() => {
     let userCards = user.cards.map((c) => c.card_id);
     cards &&
@@ -46,6 +48,7 @@ export default function Cards() {
           selectedCards={selectedCards}
           setComponent={setComponent}
           setSelectedCards={setSelectedCards}
+          setMyCards={setMyCards}
         />
       }
       Splash={<></>}
@@ -64,7 +67,7 @@ export default function Cards() {
         headerLeft: () => (
           <TouchableOpacity
             onPress={() => {
-              Component == MyCards ? router.back() : setComponent([MyCards]);
+              Component == MyCards ? router.back() : setMyCards();
             }}
           >
             <Image
