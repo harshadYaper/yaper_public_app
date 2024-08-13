@@ -96,15 +96,9 @@ export default function Deal() {
             title="Accept Deal"
             onPress={async () => {
               await putData("PARAMS", { deal_id: id, deal_name: name });
-              if (pan_verified) {
-                router.navigate({
-                  pathname: "/ecommerce-view",
-                });
-              } else {
-                router.navigate({
-                  pathname: "/kyc",
-                });
-              }
+              router.navigate({
+                pathname: pan_verified ? "/ecommerce-view" : "/kyc",
+              });
             }}
           />
         </View>

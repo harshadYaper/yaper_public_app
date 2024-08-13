@@ -1,5 +1,6 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import {
+  scaleFont,
   scaleHeight,
   scaleMargin,
   scalePadding,
@@ -10,8 +11,19 @@ import { Image } from "expo-image";
 import { capitalize, snakeToTitleize, truncate } from "../utils/helper";
 import { router } from "expo-router";
 import Timer from "../common/timer";
+import { FullButton } from "../common/button";
+import { useSelector } from "react-redux";
+import { putData } from "../storage";
+import { customRequest } from "../api";
 
-export default function Orders({ data, openFilters, setPageNumber }) {
+export default function Orders({
+  data,
+  openFilters,
+  setPageNumber,
+  fetchData,
+}) {
+  const { pan_verified } = useSelector((state) => state.user) || {};
+
   return (
     <FlatList
       contentContainerStyle={{ height: "100%" }}
@@ -36,13 +48,18 @@ export default function Orders({ data, openFilters, setPageNumber }) {
               state,
               payload: { variant_id },
               timer,
-              meta: { deal_id },
+              meta: { deal_id }, //check web_view:true also
+              secondary_button,
+              third_button,
+              show_help, //check
+              user_notes,
+              ...p
             },
           }) => (
             <TouchableOpacity
               style={{
                 width: "100%",
-                height: scaleHeight(timer?.remaining_time ? 160 : 120),
+                height: scaleHeight(180),
                 display: "flex",
                 alignItems: "center",
                 backgroundColor: "#FFFFFF",
@@ -78,7 +95,7 @@ export default function Orders({ data, openFilters, setPageNumber }) {
                   source={{ uri: logo }}
                   style={{
                     width: scaleWidth(120),
-                    height: scaleHeight(120),
+                    height: scaleHeight(140),
                   }}
                   alt="Some image here"
                 />
@@ -170,6 +187,68 @@ export default function Orders({ data, openFilters, setPageNumber }) {
                     {order_state_info}
                   </Text>
                 </View>
+
+                {user_notes && (
+                  <View style={{ ...scaleMargin(4) }}>
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        color: "#667085",
+                      }}
+                    >
+                      {truncate(user_notes, 100)}
+                    </Text>
+                  </View>
+                )}
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  {secondary_button && (
+                    <FullButton
+                      width={scaleWidth(60)}
+                      height={scaleHeight(30)}
+                      title={secondary_button.button_text}
+                      fontSize={scaleFont(10)}
+                      onPress={async () => {
+                        await putData("PARAMS", {
+                          deal_id,
+                          deal_name: description,
+                        });
+                        router.navigate({
+                          pathname: pan_verified ? "/ecommerce-view" : "/kyc",
+                        });
+                      }}
+                    />
+                  )}
+
+                  {third_button && (
+                    <>
+                      {console.log(third_button.request)}
+                      <FullButton
+                        width={scaleWidth(80)}
+                        height={scaleHeight(30)}
+                        title={third_button.button_text}
+                        fontSize={scaleFont(10)}
+                        backgroundColor={"#F04438"}
+                        onPress={async () => {
+                          await customRequest({
+                            url: third_button.request.href,
+                            method: third_button.request.type,
+                            payload: { variant_id },
+                          });
+                          fetchData({ resetData: true });
+                        }}
+                      />
+                    </>
+                  )}
+                </View>
+
                 {timer && (
                   <Text
                     style={{
@@ -177,6 +256,7 @@ export default function Orders({ data, openFilters, setPageNumber }) {
 
                       fontWeight: "500",
                       color: "#F04438",
+                      ...scaleMargin(4),
                     }}
                   >
                     Complete this deal before it gets expired

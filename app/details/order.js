@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Pressable,
@@ -127,6 +127,7 @@ export default function Order() {
                           "Other",
                         ].map((reason) => (
                           <View
+                            key={reason}
                             style={{
                               width: "80%",
                               flexDirection: "row",
@@ -143,7 +144,16 @@ export default function Order() {
                             >
                               {reason}
                             </Text>
-                            <PrimaryCheckBox onPress={() => {}} />
+                            <PrimaryCheckBox
+                              onPress={async () => {
+                                await customRequest({
+                                  url: third_button.request.href,
+                                  method: third_button.request.type,
+                                  payload: { variant_id },
+                                });
+                                router.back();
+                              }}
+                            />
                           </View>
                         ))}
                         <Pressable onPress={() => setModal([])}>

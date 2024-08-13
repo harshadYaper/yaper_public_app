@@ -149,6 +149,7 @@ export default function Template({}) {
           data={data?.data || []}
           openFilters={filters.filter}
           setPageNumber={setPageNumber}
+          fetchData={fetchData}
         />
       )}
       <Navigation

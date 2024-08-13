@@ -68,6 +68,7 @@ export const FullButton = ({
   onPress,
   title = "Next",
   disabled = false,
+  fontSize,
 }) =>
   Button({
     height,
@@ -79,6 +80,7 @@ export const FullButton = ({
     onPress,
     title,
     disabled,
+    fontSize,
   });
 
 export const SmallButton = ({
@@ -91,6 +93,7 @@ export const SmallButton = ({
   onPress,
   title = "Next",
   disabled = false,
+  fontSize,
 }) =>
   Button({
     height,
@@ -102,6 +105,7 @@ export const SmallButton = ({
     onPress,
     title,
     disabled,
+    fontSize,
   });
 
 export const MiniButton = ({
