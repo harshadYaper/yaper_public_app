@@ -1,13 +1,21 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { Image } from "expo-image";
 import { useState } from "react";
+import { openZendeskSupport } from "../utils/analytics";
+import { useSelector } from "react-redux";
 
 export default function Supports({ data, openFilters }) {
+  const { email, first_name, last_name, phone } = useSelector(
+    (state) => state.user
+  );
+
   const [activeOption, setActiveOption] = useState();
 
   return (
@@ -29,9 +37,9 @@ export default function Supports({ data, openFilters }) {
             backgroundColor: "#FFFFFF",
             ...scalePadding(12),
             marginTop: scaleHeight(24),
-            borderRadius: 8,
+            borderRadius: scaleBorder(8),
             borderColor: "#D0D5DD",
-            borderWidth: 1,
+            borderWidth: scaleWidth(2),
           }}
         >
           <TouchableOpacity
@@ -47,6 +55,7 @@ export default function Supports({ data, openFilters }) {
           >
             <Text
               style={{
+                ...scaleFont(14),
                 fontWeight: "500",
                 color: "#667085",
               }}
@@ -69,7 +78,13 @@ export default function Supports({ data, openFilters }) {
           {activeOption == title && (
             <FlatList
               data={options}
-              renderItem={({ item: { action, title }, index }) => (
+              renderItem={({
+                item: {
+                  action: { type, next, resolution },
+                  title,
+                },
+                index,
+              }) => (
                 <View
                   style={{
                     marginTop: scaleHeight(12),
@@ -84,7 +99,7 @@ export default function Supports({ data, openFilters }) {
                       }}
                     ></View>
                   )}
-                  <View
+                  <TouchableOpacity
                     style={{
                       display: "flex",
                       flexDirection: "row",
@@ -93,11 +108,32 @@ export default function Supports({ data, openFilters }) {
                       marginTop: scaleHeight(12),
                       marginBottom: scaleHeight(12),
                     }}
+                    onPress={() => {
+                      if (type == "chat")
+                        openZendeskSupport({
+                          resolution,
+                          isChat: true,
+                          title,
+                          email,
+                          first_name,
+                          last_name,
+                          phone,
+                        });
+                      else if (type == "ticket")
+                        openZendeskSupport({
+                          resolution,
+                          isChat: true,
+                          title,
+                          email,
+                          first_name,
+                          last_name,
+                          phone,
+                        });
+                    }}
                   >
                     <Text
                       style={{
-                        fontSize: 12,
-
+                        ...scaleFont(12),
                         color: "#667085",
                       }}
                     >
@@ -111,7 +147,7 @@ export default function Supports({ data, openFilters }) {
                         tintColor: "#667085",
                       }}
                     />
-                  </View>
+                  </TouchableOpacity>
                 </View>
               )}
             />
@@ -135,8 +171,8 @@ export function SupportsHeader({ supportTimings }) {
           backgroundColor: "#F6E3C0",
           width: "100%",
           ...scalePadding(12),
-          borderRadius: 8,
-          borderWidth: 1,
+          borderRadius: scaleBorder(8),
+          borderWidth: scaleWidth(2),
           borderColor: "#FDB022",
         }}
       >
@@ -149,7 +185,7 @@ export function SupportsHeader({ supportTimings }) {
             marginRight: scaleWidth(8),
           }}
         />
-        <Text style={{ fontSize: 12, fontWeight: "700" }}>
+        <Text style={{ ...scaleFont(12), fontWeight: "700" }}>
           {supportTimings}
         </Text>
       </View>

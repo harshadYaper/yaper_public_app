@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text } from "react-native";
+import { scaleFont } from "../utils/getScaledDimensions";
 
 export default function Timer({ time, styles, content, showMins = true }) {
   const [timer, setTimer] = useState(time);
@@ -13,7 +14,7 @@ export default function Timer({ time, styles, content, showMins = true }) {
   return (
     <Text
       style={{
-        fontSize: 10,
+        ...scaleFont(10),
         fontWeight: "700",
         textAlign: "center",
         textAlignVertical: "center",

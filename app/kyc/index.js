@@ -7,6 +7,11 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import BankDetails from "./bank_details";
+import {
+  scaleFont,
+  scaleHeight,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 
 export default function KYC() {
   const { pan_verified } = useSelector((state) => state.user);
@@ -34,8 +39,7 @@ export default function KYC() {
         headerTitleAlign: "center",
         headerTitleStyle: {
           color: "#101828",
-          fontSize: 16,
-
+          ...scaleFont(16),
           fontWeight: "500",
         },
         headerShown: true,
@@ -44,7 +48,11 @@ export default function KYC() {
           <TouchableOpacity onPress={() => router.back()}>
             <Image
               source={require("../../assets/icons/CaretLeft.svg")}
-              style={{ height: 24, width: 24, tintColor: "#101828" }}
+              style={{
+                height: scaleHeight(24),
+                width: scaleWidth(24),
+                tintColor: "#101828",
+              }}
             />
           </TouchableOpacity>
         ),

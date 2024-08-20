@@ -1,4 +1,5 @@
-import { NativeModules } from "react-native";
+import { Linking, NativeModules } from "react-native";
+import { OneSignal } from "react-native-onesignal";
 
 const { ZendeskModule } = NativeModules;
 
@@ -7,7 +8,7 @@ export function sendReport(error) {
   // crashlytics().log(error);
 }
 
-export function mapUserInSegment({ id, email, first_name, last_name }) {
+export async function mapUserInSegment({ id, email, first_name, last_name }) {
   // const { identify } = useAnalytics();
   // id &&
   //   identify(id.toString(), {
@@ -15,7 +16,10 @@ export function mapUserInSegment({ id, email, first_name, last_name }) {
   //     firstName: first_name,
   //     last_name: last_name,
   //   });
-  // ZendeskModule.initSdk(`${first_name} ${last_name}`, email);
+  id && OneSignal.login(id.toString());
+  email && OneSignal.User.addEmail(email);
+
+  ZendeskModule && ZendeskModule.initSdk(`${first_name} ${last_name}`, email);
 }
 
 export function trackEvent({ event, properties }) {
@@ -31,4 +35,36 @@ export function trackScreen({ screenName, properties }) {
 export function logoutAnalytics() {
   // const { flush } = useAnalytics();
   // flush();
+}
+
+export function openSupportChat(number) {
+  Linking.openURL("whatsapp://send?text=&phone=" + number);
+}
+
+export const openZendeskTickets = () =>
+  ZendeskModule && ZendeskModule.openConversation();
+
+// export const chatURL =
+//   "https://static.zdassets.com/web_widget/latest/liveChat.html?v=10#key=yaper.zendesk.com";
+
+// export const callSupport = () => Linking.openURL("tel:+919130103785");
+
+export async function openZendeskSupport({
+  resolution,
+  isChat,
+  title,
+  email,
+  first_name,
+  last_name,
+  phone,
+}) {
+  ZendeskModule &&
+    ZendeskModule.startChat(
+      email,
+      first_name + " " + last_name,
+      phone,
+      isChat,
+      resolution,
+      title
+    );
 }

@@ -1,20 +1,28 @@
 import { Text, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
-  scaleMargin,
   scalePadding,
+  scaleWidth,
 } from "../utils/getScaledDimensions";
 
 export default function Instructions({ instruction }) {
   return (
-    <View style={{ display: "flex" }}>
+    <View
+      style={{
+        display: "flex",
+        paddingBottom: scaleHeight(12),
+        paddingTop: scaleHeight(12),
+      }}
+    >
       <Text
         style={{
+          ...scaleFont(14),
           fontWeight: "500",
           color: "#667085",
-          ...scaleMargin(6),
-          marginBottom: scaleHeight(12),
-          marginTop: scaleHeight(12),
+          ...scalePadding(6),
+          paddingBottom: scaleHeight(12),
         }}
       >
         Instructions
@@ -22,14 +30,13 @@ export default function Instructions({ instruction }) {
       <Text
         style={{
           ...scalePadding(12),
-          fontSize: 12,
-
+          ...scaleFont(12),
           fontWeight: "700",
           color: "#101828",
           backgroundColor: "#F6E3C0",
           borderColor: "#FDB022",
-          borderRadius: 8,
-          borderWidth: 1,
+          borderRadius: scaleBorder(8),
+          borderWidth: scaleWidth(2),
         }}
       >
         {instruction}

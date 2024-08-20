@@ -14,6 +14,8 @@ import Offers from "./offers";
 import Earnings from "./earnings";
 import { Image, ImageBackground } from "expo-image";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scaleMargin,
   scalePadding,
@@ -113,7 +115,7 @@ export default function Order() {
                         <Text
                           style={{
                             color: "#000000",
-                            fontSize: 14,
+                            ...scaleFont(14),
                             fontWeight: "500",
                           }}
                         >
@@ -137,7 +139,7 @@ export default function Order() {
                           >
                             <Text
                               style={{
-                                fontSize: 12,
+                                ...scaleFont(12),
                                 fontWeight: "400",
                                 color: "#101828",
                               }}
@@ -159,7 +161,7 @@ export default function Order() {
                         <Pressable onPress={() => setModal([])}>
                           <Text
                             style={{
-                              fontSize: 14,
+                              ...scaleFont(14),
                               fontWeight: "500",
                               color: "#025ACE",
                             }}
@@ -224,6 +226,7 @@ const DealStatus = ({
     <View>
       <Text
         style={{
+          ...scaleFont(14),
           color: "#667085",
           ...scalePadding(8),
           fontWeight: "500",
@@ -271,7 +274,9 @@ const DealStatus = ({
                 />
               </ImageBackground>
             )}
-            <Text style={{ fontWeight: "500", color: "#101828" }}>
+            <Text
+              style={{ fontWeight: "500", color: "#101828", ...scaleFont(14) }}
+            >
               {capitalize(snakeToTitleize(label))}
             </Text>
           </View>
@@ -294,7 +299,7 @@ const DealStatus = ({
               <View>
                 <Text
                   style={{
-                    fontSize: 10,
+                    ...scaleFont(10),
                     fontStyle: "normal",
                     fontWeight: "400",
                     color: "#667085",
@@ -363,8 +368,8 @@ const OrderComponent = ({
         backgroundColor: "#FFFFFF",
         ...scalePadding(16),
         borderColor: "#D0D5DD",
-        borderRadius: 8,
-        borderWidth: 1,
+        borderRadius: scaleBorder(8),
+        borderWidth: scaleWidth(2),
         justifyContent: "center",
       }}
     >
@@ -390,7 +395,7 @@ const OrderComponent = ({
       >
         <Text
           style={{
-            fontSize: 10,
+            ...scaleFont(10),
             color: "#667085",
             ...scalePadding(4),
           }}
@@ -434,7 +439,7 @@ const OrderComponent = ({
               >
                 <Text
                   style={{
-                    fontSize: 12,
+                    ...scaleFont(12),
                     fontWeight: "500",
                     color: "#101828",
                     paddingRight: scaleHeight(8),
@@ -461,6 +466,7 @@ const OrderComponent = ({
                 >
                   <Text
                     style={{
+                      ...scaleFont(14),
                       fontWeight: "500",
                       color: "#101828",
                       paddingRight: scaleWidth(8),
@@ -553,7 +559,12 @@ const OrderComponent = ({
                               ...scalePadding(8),
                             }}
                           >
-                            <Text style={{ fontSize: 16, fontWeight: "400" }}>
+                            <Text
+                              style={{
+                                ...scaleFont(16),
+                                fontWeight: "400",
+                              }}
+                            >
                               Select Courier Service
                             </Text>
                             {drop_down_data.map(({ label, regex, value }) => (
@@ -569,7 +580,10 @@ const OrderComponent = ({
                                 }}
                               >
                                 <Text
-                                  style={{ fontSize: 16, fontWeight: "500" }}
+                                  style={{
+                                    ...scaleFont(16),
+                                    fontWeight: "500",
+                                  }}
                                 >
                                   {label}
                                 </Text>
@@ -585,7 +599,7 @@ const OrderComponent = ({
                     <Text
                       style={{
                         ...{
-                          fontSize: 12,
+                          ...scaleFont(12),
                           fontWeight: "500",
                           color: "#101828",
                           paddingRight: scaleHeight(8),
@@ -619,7 +633,7 @@ const OrderComponent = ({
                   >
                     <Text
                       style={{
-                        fontSize: 12,
+                        ...scaleFont(12),
                         fontWeight: "500",
                         color: "#101828",
                         paddingRight: scaleHeight(8),
@@ -714,7 +728,7 @@ const OrderComponent = ({
                       >
                         <Text
                           style={{
-                            fontSize: 12,
+                            ...scaleFont(12),
                             fontWeight: "500",
                             color: "#101828",
                             paddingRight: scaleHeight(8),
@@ -742,6 +756,7 @@ const OrderComponent = ({
                         >
                           <Text
                             style={{
+                              ...scaleFont(14),
                               fontWeight: "500",
                               color: "#101828",
                               paddingRight: scaleWidth(8),
@@ -820,7 +835,7 @@ const OrderComponent = ({
                       >
                         <Text
                           style={{
-                            fontSize: 12,
+                            ...scaleFont(12),
                             fontWeight: "500",
                             color: "#101828",
                             paddingRight: scaleHeight(8),
@@ -848,6 +863,7 @@ const OrderComponent = ({
                         >
                           <Text
                             style={{
+                              ...scaleFont(14),
                               fontWeight: "500",
                               color: "#101828",
                               paddingRight: scaleWidth(8),
@@ -940,7 +956,7 @@ const OrderComponent = ({
                   <View>
                     <Text
                       style={{
-                        fontSize: 12,
+                        ...scaleFont(12),
                         color: "#101828",
                         fontWeight: "500",
                         paddingTop: scaleHeight(4),
@@ -954,9 +970,9 @@ const OrderComponent = ({
                         height: scaleHeight(100),
                         width: scaleWidth(280),
                         borderColor: "#667085",
-                        borderWidth: 1,
+                        borderWidth: scaleWidth(2),
                         borderStyle: "dashed",
-                        borderRadius: 4,
+                        borderRadius: scaleBorder(4),
                         ...scalePadding(20),
                         marginBottom: scaleHeight(16),
                         display: "flex",
@@ -1003,8 +1019,8 @@ const OrderComponent = ({
                             height: scaleHeight(32),
                             width: scaleWidth(32),
                             borderColor: "#667085",
-                            borderWidth: 2,
-                            borderRadius: 100,
+                            borderWidth: scaleWidth(2),
+                            borderRadius: scaleBorder(100),
                             justifyContent: "center",
                             alignItems: "center",
                           }}
@@ -1048,7 +1064,7 @@ const OrderComponent = ({
                   <View style={{ ...scalePadding(4) }}>
                     <Text
                       style={{
-                        fontSize: 12,
+                        ...scaleFont(12),
                         color: "#101828",
                         fontWeight: "500",
                         paddingTop: scaleHeight(4),
@@ -1098,7 +1114,7 @@ const OrderComponent = ({
                     >
                       <Text
                         style={{
-                          fontSize: 14,
+                          ...scaleFont(14),
                           color: "#025ACE",
                           fontWeight: "500",
                           paddingTop: scaleHeight(4),
@@ -1124,7 +1140,7 @@ function InvoiceInfo({ val, styles }) {
         {val.type && (
           <Text
             style={{
-              fontSize: 12,
+              ...scaleFont(12),
               color: "#F04438",
               fontWeight: "500",
               paddingTop: scaleHeight(4),
@@ -1138,7 +1154,7 @@ function InvoiceInfo({ val, styles }) {
         {val.size && (
           <Text
             style={{
-              fontSize: 12,
+              ...scaleFont(12),
               color: "#F04438",
               fontWeight: "500",
               paddingTop: scaleHeight(4),

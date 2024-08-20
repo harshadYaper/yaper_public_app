@@ -1,5 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scaleMargin,
   scalePadding,
@@ -13,78 +15,99 @@ export default function Offers({ offer, bank, expanded = true, onExpand }) {
     <View
       style={{
         display: "flex",
-        backgroundColor: WHITE,
-        borderColor: "#D0D5DD",
-        borderWidth: 1,
-        borderRadius: 8,
-        marginTop: scaleHeight(12),
-        marginBottom: scaleHeight(12),
+        paddingTop: scaleHeight(12),
       }}
     >
-      <Pressable
-        onPress={() => onExpand && onExpand()}
+      <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingLeft: scaleWidth(8),
-          paddingRight: scaleWidth(8),
+          ...{
+            display: "flex",
+            paddingBottom: scaleHeight(12),
+          },
+          ...(onExpand
+            ? {
+                backgroundColor: WHITE,
+                borderColor: "#D0D5DD",
+                borderWidth: scaleWidth(2),
+                borderRadius: scaleBorder(8),
+              }
+            : {}),
         }}
       >
-        <Text
+        <Pressable
+          onPress={() => onExpand && onExpand()}
           style={{
-            fontWeight: "500",
-            color: "#667085",
-            ...scaleMargin(6),
-            marginBottom: scaleHeight(12),
-            marginTop: scaleHeight(12),
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingLeft: scaleWidth(6),
+            paddingRight: scaleWidth(6),
+            paddingBottom: scaleHeight(12),
+            paddingTop: scaleHeight(12),
           }}
         >
-          Offer Details
-        </Text>
-        <Image
-          source={
-            expanded
-              ? require("../../assets/icons/CaretCircleUp.svg")
-              : require("../../assets/icons/CaretCircleDown.svg")
-          }
-          style={{
-            height: scaleHeight(20),
-            width: scaleWidth(20),
-          }}
-        />
-      </Pressable>
-      {expanded && (
-        <View
-          style={{
-            justifyContent: "center",
-            ...scalePadding(12),
-          }}
-        >
-          <Image
-            source={bank?.logo}
-            style={{ height: scaleHeight(16), width: scaleWidth(80) }}
-          />
-          <View
-            style={{
-              backgroundColor: "#D0D5DD",
-              height: scaleHeight(2),
-              width: "100%",
-              marginTop: scaleHeight(12),
-              marginBottom: scaleHeight(12),
-            }}
-          ></View>
           <Text
             style={{
-              fontSize: 12,
-
-              color: "#101828",
+              ...scaleFont(14),
+              fontWeight: "500",
+              color: "#667085",
             }}
           >
-            {offer?.description}
+            Offer Details
           </Text>
-        </View>
-      )}
+          {onExpand && (
+            <Image
+              source={
+                expanded
+                  ? require("../../assets/icons/CaretCircleUp.svg")
+                  : require("../../assets/icons/CaretCircleDown.svg")
+              }
+              style={{
+                height: scaleHeight(20),
+                width: scaleWidth(20),
+              }}
+            />
+          )}
+        </Pressable>
+        {expanded && (
+          <View
+            style={{
+              justifyContent: "center",
+              ...scalePadding(12),
+              backgroundColor: WHITE,
+              borderColor: "#D0D5DD",
+              borderWidth: scaleWidth(2),
+              borderRadius: scaleBorder(8),
+            }}
+          >
+            <Image
+              contentFit={"contain"}
+              source={{ uri: bank?.logo }}
+              style={{
+                height: scaleHeight(16),
+                width: scaleWidth(80),
+              }}
+            />
+            <View
+              style={{
+                backgroundColor: "#D0D5DD",
+                height: scaleHeight(2),
+                width: "100%",
+                marginTop: scaleHeight(12),
+                marginBottom: scaleHeight(12),
+              }}
+            ></View>
+            <Text
+              style={{
+                ...scaleFont(12),
+                color: "#101828",
+              }}
+            >
+              {offer?.description}
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 }

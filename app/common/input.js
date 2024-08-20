@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import {
+  scaleBorder,
   scaleFont,
   scaleHeight,
   scalePadding,
@@ -81,7 +82,7 @@ export default function Input({
 
 const customStyles = StyleSheet.create({
   Label: {
-    fontSize: scaleFont(20),
+    ...scaleFont(20),
     fontWeight: "500",
     color: "#344054",
     ...scalePadding(6),
@@ -91,14 +92,14 @@ const customStyles = StyleSheet.create({
     backgroundColor: "white",
     height: scaleHeight(44),
     textAlignVertical: "center",
-    borderRadius: 8,
+    borderRadius: scaleBorder(8),
     borderColor: "#D0D5DD",
-    borderWidth: 1,
-    fontSize: scaleFont(16),
-    ...scalePadding(10),
+    borderWidth: scaleWidth(2),
+    ...scaleFont(16),
+    ...scalePadding(6),
   }),
   Hint: {
-    fontSize: scaleFont(12),
+    ...scaleFont(12),
     color: "#ABB0BC",
     ...scalePadding(6),
   },

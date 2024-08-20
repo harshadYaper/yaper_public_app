@@ -1,5 +1,10 @@
 import { Text, TouchableOpacity } from "react-native";
-import { scaleHeight, scaleWidth } from "../utils/getScaledDimensions";
+import {
+  scaleBorder,
+  scaleFont,
+  scaleHeight,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 import { Image } from "expo-image";
 import { isEmpty } from "../utils/helper";
 import { WHITE } from "../constants/colors";
@@ -14,7 +19,7 @@ function Button({
   ClickedbackgroundColor,
   title,
   disabled,
-  fontSize,
+  fontStyles,
   imageSource,
 }) {
   return (
@@ -36,10 +41,11 @@ function Button({
       {isEmpty(imageSource) ? (
         <Text
           style={{
+            ...scaleFont(14),
             textAlign: "center",
             textAlignVertical: "center",
             color: textColor,
-            fontSize,
+            ...fontStyles,
           }}
         >
           {title}
@@ -62,13 +68,13 @@ export const FullButton = ({
   height = scaleHeight(48),
   width = scaleWidth(325),
   backgroundColor = "#025ACE",
-  borderRadius = 8,
+  borderRadius = scaleBorder(8),
   textColor = WHITE,
   ClickedbackgroundColor = "#D0D5DD",
   onPress,
   title = "Next",
   disabled = false,
-  fontSize,
+  fontStyles,
 }) =>
   Button({
     height,
@@ -80,20 +86,20 @@ export const FullButton = ({
     onPress,
     title,
     disabled,
-    fontSize,
+    fontStyles,
   });
 
 export const SmallButton = ({
   height = scaleHeight(40),
   width = scaleWidth(160),
   backgroundColor = "#025ACE",
-  borderRadius = 8,
+  borderRadius = scaleBorder(8),
   textColor = WHITE,
   ClickedbackgroundColor = "#D0D5DD",
   onPress,
   title = "Next",
   disabled = false,
-  fontSize,
+  fontStyles,
 }) =>
   Button({
     height,
@@ -105,20 +111,20 @@ export const SmallButton = ({
     onPress,
     title,
     disabled,
-    fontSize,
+    fontStyles,
   });
 
 export const MiniButton = ({
   height = scaleHeight(40),
   width = scaleWidth(40),
   backgroundColor = "#025ACE",
-  borderRadius = 8,
+  borderRadius = scaleBorder(8),
   textColor = WHITE,
   ClickedbackgroundColor = "#D0D5DD",
   onPress,
   title = ">",
   disabled = false,
-  fontSize = 24,
+  fontStyles = scaleFont(24),
   imageSource = require("../../assets/right-arrow.svg"),
 }) =>
   Button({
@@ -131,6 +137,6 @@ export const MiniButton = ({
     onPress,
     title,
     disabled,
-    fontSize,
+    fontStyles,
     imageSource,
   });

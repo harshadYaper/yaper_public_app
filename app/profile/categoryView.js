@@ -1,20 +1,33 @@
 import { Image, ImageBackground } from "expo-image";
 import { Text, TouchableOpacity, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
 
-export default function CategoryView({ category, options, backgroundImage }) {
+export default function CategoryView({
+  category,
+  options,
+  backgroundImage,
+  optionPadding,
+}) {
   return (
-    <View style={{ width: "100%" }}>
+    <View
+      style={{
+        width: "100%",
+        paddingTop: scaleHeight(12),
+        paddingBottom: scaleHeight(12),
+      }}
+    >
       <Text
         style={{
+          ...scaleFont(14),
           fontWeight: "700",
           color: "#667085",
-          marginBottom: scaleHeight(24),
-          marginTop: scaleHeight(24),
+          paddingBottom: scaleHeight(20),
         }}
       >
         {category}
@@ -23,7 +36,7 @@ export default function CategoryView({ category, options, backgroundImage }) {
         style={{
           ...scalePadding(20),
           backgroundColor: "#FFFFFF",
-          borderRadius: 8,
+          borderRadius: scaleBorder(8),
         }}
         {...backgroundImage}
       >
@@ -32,7 +45,7 @@ export default function CategoryView({ category, options, backgroundImage }) {
             style={{
               display: "flex",
               flexDirection: "row",
-              marginTop: ind == 0 ? scaleHeight(0) : scaleHeight(20),
+              paddingTop: scaleHeight(ind == 0 ? 0 : optionPadding || 20),
             }}
             onPress={onPress}
             disabled={!onPress}
@@ -43,6 +56,7 @@ export default function CategoryView({ category, options, backgroundImage }) {
                 fontWeight: "500",
                 color: "#667085",
                 flex: 1,
+                ...scaleFont(14),
               }}
             >
               {label}

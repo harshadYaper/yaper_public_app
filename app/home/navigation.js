@@ -1,6 +1,8 @@
 import { Image } from "expo-image";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
@@ -21,9 +23,9 @@ export default function Navigation({
         backgroundColor: WHITE,
         position: "absolute",
         bottom: 0,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        ...scalePadding(12),
+        borderTopLeftRadius: scaleBorder(20),
+        borderTopRightRadius: scaleBorder(20),
+        ...scalePadding(20),
         paddingBottom: scaleHeight(20),
       }}
     >
@@ -71,6 +73,7 @@ export default function Navigation({
                   textAlign: "center",
                   textAlignVertical: "center",
                   color: nav == navigation ? "#025ACE" : "#667085",
+                  ...scaleFont(14),
                 }}
               >
                 {label}

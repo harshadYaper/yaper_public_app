@@ -1,6 +1,8 @@
 import { Image } from "expo-image";
 import { useState } from "react";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
@@ -18,11 +20,19 @@ function CheckBox({
   borderColor,
   label,
   selected,
+  styles,
 }) {
   const [checked, setChecked] = useState(selected);
 
   return (
-    <View style={{ display: "flex", flexDirection: "row", ...scalePadding(6) }}>
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        ...scalePadding(6),
+        ...styles,
+      }}
+    >
       <TouchableOpacity
         onPress={() => {
           setChecked(!checked);
@@ -35,11 +45,10 @@ function CheckBox({
           backgroundColor: checked ? ClickedbackgroundColor : backgroundColor,
           borderRadius,
           borderColor: checked ? backgroundColor : borderColor,
-          borderWidth: 1,
+          borderWidth: scaleWidth(2),
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginRight: scaleWidth(8),
         }}
       >
         <Image
@@ -49,7 +58,9 @@ function CheckBox({
           width={scaleWidth(14)}
         />
       </TouchableOpacity>
-      <Text style={{}}>{label}</Text>
+      <Text style={{ paddingLeft: scaleWidth(12), ...scaleFont(14) }}>
+        {label}
+      </Text>
     </View>
   );
 }
@@ -57,13 +68,14 @@ function CheckBox({
 export const PrimaryCheckBox = ({
   size = 20,
   backgroundColor = WHITE,
-  borderRadius = 6,
+  borderRadius = scaleBorder(4),
   onPress,
   ClickedbackgroundColor = "#025ACE",
   disabled = false,
   borderColor = "#D0D5DD",
   label = "",
   selected = false,
+  styles,
 }) =>
   CheckBox({
     size,
@@ -75,4 +87,5 @@ export const PrimaryCheckBox = ({
     borderColor,
     label,
     selected,
+    styles,
   });

@@ -13,7 +13,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yaper.app"
+      "bundleIdentifier": "com.yaper.app",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +29,21 @@
       "favicon": "./assets/yaper-logo.png"
     },
     "plugins": [
-      "expo-router"
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ],
+      "expo-router",
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "yaper-labs",
+          "project": "app",
+          "url": "https://bugs.yaper.co/"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,6 +1,11 @@
-export const titleize = (string) =>
+export const titleize = (string, allElem = false) =>
   !isEmpty(string)
-    ? string[0].toUpperCase() + string.substring(1).toLowerCase()
+    ? allElem
+      ? string
+          .split(" ")
+          .map((s) => s[0].toUpperCase() + s.substring(1).toLowerCase())
+          .join(" ")
+      : string[0].toUpperCase() + string.substring(1).toLowerCase()
     : undefined;
 
 export const snakeToTitleize = (string) =>

@@ -1,7 +1,12 @@
 import { Pressable, Text, View } from "react-native";
 import { STONE, WHITE } from "../constants/colors";
 import { snakeToTitleize } from "../utils/helper";
-import { scalePadding, scaleWidth } from "../utils/getScaledDimensions";
+import {
+  scaleBorder,
+  scaleFont,
+  scalePadding,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 
 export default function Toggle({ options, setVal, val, parameter, onChange }) {
   return (
@@ -16,7 +21,7 @@ export default function Toggle({ options, setVal, val, parameter, onChange }) {
           alignItems: "center",
           borderColor: STONE,
           backgroundColor: STONE,
-          borderRadius: 20,
+          borderRadius: scaleBorder(20),
           maxWidth: scaleWidth(160),
         }}
       >
@@ -40,13 +45,14 @@ export default function Toggle({ options, setVal, val, parameter, onChange }) {
             >
               <Text
                 style={{
+                  ...scaleFont(14),
                   textAlign: "center",
                   color: option == val[parameter] ? WHITE : "#848482",
                   backgroundColor: option == val[parameter] ? "#F67280" : STONE,
-                  borderRadius: 10,
+                  borderRadius: scaleBorder(10),
                   borderColor: option == val[parameter] ? "#F67280" : STONE,
                   ...scalePadding(5),
-                  borderWidth: 2,
+                  borderWidth: scaleWidth(2),
                 }}
               >
                 {snakeToTitleize(option)}

@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import CategoryView from "./categoryView";
 import { useEffect, useState } from "react";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
@@ -16,6 +18,7 @@ import StaticPage from "./static-page";
 import saveData from "../auth/save_data";
 import Toggle from "../common/toggle";
 import { getAppVariables } from "../utils/environment";
+import { openZendeskTickets } from "../utils/analytics";
 
 export default function Template() {
   const { email, first_name, last_name, phone, whatsapp_consent } =
@@ -90,6 +93,7 @@ export default function Template() {
           label: email,
         },
       ],
+      optionPadding: 16,
     },
     account: {
       category: "ACCOUNT MANAGEMENT",
@@ -138,18 +142,16 @@ export default function Template() {
     support: {
       category: "SUPPORT",
       options: [
-        // {
-        //   label: "Contact Support",
-        //   onPress: () => {
-        //     console.log("clicked");
-        //   },
-        // },
-        // {
-        //   label: "Support Tickets",
-        //   onPress: () => {
-        //     console.log("clicked");
-        //   },
-        // },
+        {
+          label: "Contact Support",
+          onPress: () => {
+            console.log("clicked");
+          },
+        },
+        {
+          label: "Support Tickets",
+          onPress: openZendeskTickets,
+        },
         {
           label: "FAQs",
           onPress: () => {
@@ -191,11 +193,15 @@ export default function Template() {
         scrollEnabled={!(showWebToken || showStaticPage)}
       >
         <CategoryView {...PROFILE_OPTIONS.personal} />
-        <View>
+        <View
+          style={{
+            paddingTop: scaleHeight(12),
+            paddingBottom: scaleHeight(12),
+          }}
+        >
           <View
             style={{
-              marginTop: scaleHeight(24),
-              marginBottom: scaleHeight(24),
+              paddingBottom: scaleHeight(24),
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
@@ -205,6 +211,7 @@ export default function Template() {
               style={{
                 fontWeight: "500",
                 color: "#667085",
+                ...scaleFont(14),
               }}
             >
               Updates over whatsapp
@@ -213,7 +220,7 @@ export default function Template() {
               style={{
                 width: scaleWidth(40),
                 height: scaleHeight(22),
-                borderRadius: 12,
+                borderRadius: scaleBorder(12),
                 justifyContent: "center",
                 alignItems: whatsappConsent ? "flex-end" : "flex-start",
                 backgroundColor: whatsappConsent ? "#025ACE" : "#D0D5DD",
@@ -247,6 +254,7 @@ export default function Template() {
               { label: "log", options: ["log_on", "log_off"] },
             ].map(({ label, options }) => (
               <Toggle
+                key={label}
                 options={options}
                 val={val}
                 setVal={setVal}

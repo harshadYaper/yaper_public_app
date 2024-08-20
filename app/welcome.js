@@ -2,6 +2,8 @@ import { Image } from "expo-image";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scaleMargin,
   scalePadding,
@@ -74,6 +76,7 @@ export default function Welcome() {
       <TouchableOpacity onPress={handleDone} style={{ width: "100%" }}>
         <Text
           style={{
+            ...scaleFont(14),
             fontWeight: "500",
             color: "#025ACE",
             textAlign: "right",
@@ -86,8 +89,7 @@ export default function Welcome() {
       </TouchableOpacity>
       <Text
         style={{
-          fontSize: 20,
-
+          ...scaleFont(20),
           fontWeight: "500",
           color: "#101828",
         }}
@@ -104,6 +106,7 @@ export default function Welcome() {
       <Text
         style={{
           color: "#667085",
+          ...scaleFont(14),
         }}
       >
         {WELCOME_DATA[screen].description}
@@ -120,7 +123,7 @@ export default function Welcome() {
             style={{
               width: scaleWidth(ind == screen ? 32 : 4),
               height: scaleHeight(4),
-              borderRadius: 2,
+              borderRadius: scaleBorder(2),
               backgroundColor: "#667085",
               ...scaleMargin(8),
             }}

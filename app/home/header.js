@@ -2,6 +2,8 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { REFERRAL_AMOUNT } from "../constants";
 import { WHITE } from "../constants/colors";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
@@ -30,10 +32,11 @@ export const LeftComp = () => {
       />
       <Text
         style={{
-          fontSize: 16,
+          ...scaleFont(16),
           fontWeight: "500",
           textAlign: "center",
           textAlignVertical: "center",
+          paddingLeft: scaleWidth(8),
         }}
       >
         {truncate(first_name, 10, "")}
@@ -48,13 +51,14 @@ export const RightComp = () => (
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
-      ...scalePadding(8),
       height: scaleHeight(40),
       backgroundColor: WHITE,
       color: "black",
-      borderRadius: 16,
+      borderRadius: scaleBorder(16),
       borderColor: "#D0D5DD",
-      borderWidth: 1,
+      borderWidth: scaleWidth(2),
+      paddingLeft: scaleWidth(8),
+      paddingRight: scaleWidth(8),
     }}
     onPress={() => {
       router.navigate({ pathname: "/profile/refer" });
@@ -63,17 +67,18 @@ export const RightComp = () => (
     <Image
       contentFit={"contain"}
       source={require("../../assets/icons/Gift.svg")}
-      height={scaleHeight(32)}
-      width={scaleWidth(32)}
+      height={scaleHeight(20)}
+      width={scaleWidth(20)}
       style={{ tintColor: "#025ACE" }}
     />
     <Text
       style={{
         color: "black",
-        fontSize: 10,
+        ...scaleFont(10),
         fontWeight: "500",
         textAlign: "center",
         textAlignVertical: "center",
+        ...scalePadding(8),
       }}
     >
       Earn upto {"\u20B9"}
@@ -93,7 +98,7 @@ export default function Header({
         display: "flex",
         maxHeight: scaleHeight(150),
         width: "100%",
-        borderRadius: 8,
+        borderRadius: scaleBorder(8),
         ...HeaderComponentStyles,
         ...scalePadding(12),
       }}

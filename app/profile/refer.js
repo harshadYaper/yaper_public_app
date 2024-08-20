@@ -2,11 +2,16 @@ import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import App from "../app";
 import { useState } from "react";
 import { Image } from "expo-image";
-import { scalePadding } from "../utils/getScaledDimensions";
+import {
+  scaleFont,
+  scaleHeight,
+  scalePadding,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 import { FullButton } from "../common/button";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
-import { REFERRAL_AMOUNT } from "../constants";
+import { REFERRAL_AMOUNT, RUPEE } from "../constants";
 
 export default function Refer() {
   const [loading, setLoading] = useState(false);
@@ -30,11 +35,11 @@ export default function Refer() {
         >
           <Image
             source={require("../../assets/refer.svg")}
-            style={{ height: 240, width: 240 }}
+            style={{ height: scaleHeight(240), width: scaleWidth(240) }}
           />
           <View
             style={{
-              height: 80,
+              height: scaleHeight(80),
               width: "80%",
               display: "flex",
               flexDirection: "row",
@@ -54,7 +59,7 @@ export default function Refer() {
                 style={{
                   ...scalePadding(4),
                   color: "#667085",
-                  fontSize: 12,
+                  ...scaleFont(12),
                 }}
               >
                 No of Referrals
@@ -63,7 +68,7 @@ export default function Refer() {
                 style={{
                   ...scalePadding(4),
                   color: "#000000",
-                  fontSize: 12,
+                  ...scaleFont(12),
                   fontWeight: "700",
                 }}
               >
@@ -82,7 +87,7 @@ export default function Refer() {
                 style={{
                   ...scalePadding(4),
                   color: "#667085",
-                  fontSize: 12,
+                  ...scaleFont(12),
                 }}
               >
                 Total Earnings
@@ -91,36 +96,36 @@ export default function Refer() {
                 style={{
                   ...scalePadding(4),
                   color: "#000000",
-                  fontSize: 12,
+                  ...scaleFont(12),
                   fontWeight: "700",
                 }}
               >
-                {"\u20B9"}
+                {RUPEE}
                 {referral_earning}
               </Text>
             </View>
           </View>
           <Text
             style={{
-              fontSize: 16,
+              ...scaleFont(16),
               fontWeight: "500",
               color: "#101828",
               textAlign: "center",
             }}
           >
-            Refer your friends & get {"\u20B9"}
+            Refer your friends & get {RUPEE}
             {REFERRAL_AMOUNT} for each successful referral
           </Text>
 
           <Text
             style={{
-              fontSize: 12,
+              ...scaleFont(12),
               color: "#667085",
               textAlign: "center",
             }}
           >
             If your friends signup and help a shopper by placing an order,
-            they'll get awesome cash rewards and you'll get {"\u20B9"}
+            they'll get awesome cash rewards and you'll get {RUPEE}
             {REFERRAL_AMOUNT} for each successful referral
           </Text>
           <FullButton
@@ -138,8 +143,7 @@ export default function Refer() {
         headerTitleAlign: "center",
         headerTitleStyle: {
           color: "#101828",
-          fontSize: 16,
-
+          ...scaleFont(16),
           fontWeight: "500",
         },
         headerShown: true,
@@ -152,7 +156,11 @@ export default function Refer() {
           >
             <Image
               source={require("../../assets/icons/CaretLeft.svg")}
-              style={{ height: 24, width: 24, tintColor: "#101828" }}
+              style={{
+                height: scaleHeight(24),
+                width: scaleWidth(24),
+                tintColor: "#101828",
+              }}
             />
           </TouchableOpacity>
         ),

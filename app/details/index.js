@@ -6,6 +6,11 @@ import Deal from "./deal";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import Order from "./order";
+import {
+  scaleFont,
+  scaleHeight,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 
 export default function Details() {
   const [loading, setLoading] = useState(true);
@@ -28,7 +33,7 @@ export default function Details() {
         headerTitleAlign: "center",
         headerTitleStyle: {
           color: "#101828",
-          fontSize: 16,
+          ...scaleFont(16),
 
           fontWeight: "500",
         },
@@ -38,7 +43,11 @@ export default function Details() {
           <TouchableOpacity onPress={() => router.back()}>
             <Image
               source={require("../../assets/icons/CaretLeft.svg")}
-              style={{ height: 24, width: 24, tintColor: "#101828" }}
+              style={{
+                height: scaleHeight(24),
+                width: scaleWidth(24),
+                tintColor: "#101828",
+              }}
             />
           </TouchableOpacity>
         ),
@@ -53,7 +62,11 @@ export default function Details() {
           >
             <Image
               source={require("../../assets/icons/Share.svg")}
-              style={{ height: 24, width: 24, tintColor: "#101828" }}
+              style={{
+                height: scaleHeight(24),
+                width: scaleWidth(24),
+                tintColor: "#101828",
+              }}
             />
           </TouchableOpacity>
         ),

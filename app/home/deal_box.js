@@ -6,6 +6,7 @@ import {
   View,
 } from "react-native";
 import {
+  scaleBorder,
   scaleFont,
   scaleHeight,
   scalePadding,
@@ -30,6 +31,7 @@ export default function DealBox({
   price,
   quantity,
   showCancel,
+  additionalStyles = {},
 }) {
   return (
     <TouchableOpacity
@@ -39,17 +41,18 @@ export default function DealBox({
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderColor: "#E4E4E4",
-        borderWidth: 1,
-        borderRadius: 10,
+        borderWidth: scaleWidth(2),
+        borderRadius: scaleBorder(10),
         marginBottom: scaleHeight(12),
         ...styles.FLEX,
+        ...scalePadding(8),
       }}
       onPress={() => router.push({ pathname: "/details", params: { id } })}
     >
       {image && (
         <View
           style={{
-            ...scalePadding(8),
+            ...scalePadding(4),
           }}
         >
           <Image
@@ -66,17 +69,16 @@ export default function DealBox({
       <View
         style={{
           width: "100%",
-          justifyContent: "space-around",
           flexShrink: 1,
         }}
       >
         {content && (
           <Text
             style={{
-              fontSize: scaleFont(12),
+              ...scaleFont(12),
               fontWeight: "700",
               color: "#101828",
-              ...scalePadding(8),
+              ...scalePadding(4),
             }}
           >
             Earn {content}
@@ -85,7 +87,7 @@ export default function DealBox({
         {card_meta && (
           <Text
             style={{
-              ...scalePadding(8),
+              ...scalePadding(4),
               ...styles.LABEL,
             }}
           >
@@ -95,10 +97,11 @@ export default function DealBox({
         {title && (
           <Text
             style={{
-              fontSize: 10,
-              ...scalePadding(8),
+              ...scaleFont(10),
+              ...scalePadding(4),
               color: "#101828",
               flexShrink: 1,
+              ...additionalStyles.title,
             }}
           >
             {truncate(title)}
@@ -109,7 +112,7 @@ export default function DealBox({
           <View style={styles.FLEX}>
             <Text
               style={{
-                ...scalePadding(8),
+                ...scalePadding(4),
                 ...styles.LABEL,
               }}
             >
@@ -117,40 +120,49 @@ export default function DealBox({
             </Text>
             {bank && (
               <Image
-                source={bank?.logo}
+                contentFit={"contain"}
+                source={{ uri: bank?.logo }}
                 style={{ width: scaleWidth(64), height: scaleWidth(12) }}
               />
             )}
           </View>
         )}
-        <View style={{ ...styles.FLEX, ...scalePadding(8) }}>
+        <View style={{ ...styles.FLEX, ...scalePadding(4) }}>
           {color_code?.includes("#") && (
             <View
               style={{
                 backgroundColor: color_code,
                 height: scaleHeight(12),
                 width: scaleWidth(12),
-                borderWidth: 1,
-                borderRadius: 20,
+                borderWidth: scaleWidth(2),
+                borderRadius: scaleBorder(20),
                 borderColor: GRAY,
-                paddingRight: scaleWidth(8),
               }}
             ></View>
           )}
           {color && (
-            <Text style={styles.LABEL}>order {color.toLowerCase()}</Text>
+            <Text
+              style={{
+                ...styles.LABEL,
+                ...(color_code?.includes("#")
+                  ? { paddingLeft: scaleWidth(8) }
+                  : {}),
+              }}
+            >
+              order {color.toLowerCase()}
+            </Text>
           )}
         </View>
 
         {price && (
-          <View style={{ ...styles.FLEX, ...scalePadding(8) }}>
+          <View style={{ ...styles.FLEX, ...scalePadding(4) }}>
             <Text style={styles.LABEL}>Price: </Text>
             <Text style={{ ...styles.LABEL, color: "#101828" }}>{price}</Text>
           </View>
         )}
 
         {quantity && (
-          <View style={{ ...styles.FLEX, ...scalePadding(8) }}>
+          <View style={{ ...styles.FLEX, ...scalePadding(4) }}>
             <Text style={styles.LABEL}>Quantity: </Text>
             <Text style={{ ...styles.LABEL, color: "#101828" }}>
               {quantity}
@@ -159,20 +171,23 @@ export default function DealBox({
         )}
 
         {url && (
-          <View style={{ ...scalePadding(8), ...styles.FLEX }}>
+          <View style={{ ...scalePadding(4), ...styles.FLEX }}>
             <Text style={styles.LABEL}>Order on</Text>
-
             <Image
               contentFit={"contain"}
               source={{ uri: url }}
-              style={{ height: scaleHeight(16), width: scaleWidth(64) }}
+              style={{
+                height: scaleHeight(16),
+                width: scaleWidth(32),
+                paddingLeft: scalePadding(8),
+              }}
               alt="Store Image"
             />
           </View>
         )}
         {showCancel && (
           <Pressable
-            style={{ ...styles.FLEX, ...scalePadding(8) }}
+            style={{ ...styles.FLEX, ...scalePadding(4) }}
             onPress={() => showCancel.onCancel()}
           >
             <Text
@@ -194,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   LABEL: {
-    fontSize: 10,
+    ...scaleFont(10),
     color: "#667085",
   },
 });

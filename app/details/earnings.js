@@ -1,28 +1,49 @@
 import { Pressable, Text, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
-  scaleMargin,
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { WHITE } from "../constants/colors";
 import { Image } from "expo-image";
+import { titleize } from "../utils/helper";
 
 export default function Earnings({ items, expanded = true, onExpand }) {
   const data = items
-    .map(({ type, content }) => ({ [type]: content }))
-    .reduce((a, b) => ({ ...a, ...b }));
+    .map((i) =>
+      i.prices.map((p) =>
+        p.prefix_operator
+          ? { ...p, value: `${p.prefix_operator} ${p.value}` }
+          : p
+      )
+    )
+    .reduce((a, b) => [...a, ...b])
+    .concat({
+      label: "earnings",
+      value: items.find((i) => i.type == "earnings").content,
+    });
+  const uniqueData = [
+    ...new Map(data.map((item) => [item.label, item])).values(),
+  ];
 
   return (
     <View
       style={{
-        display: "flex",
-        backgroundColor: WHITE,
-        borderColor: "#E4E4E4",
-        borderRadius: 8,
-        borderWidth: 1,
-        marginTop: scaleHeight(12),
-        marginBottom: scaleHeight(12),
+        ...{
+          display: "flex",
+          paddingBottom: scaleHeight(12),
+          paddingTop: scaleHeight(12),
+        },
+        ...(onExpand
+          ? {
+              backgroundColor: WHITE,
+              borderColor: "#E4E4E4",
+              borderRadius: scaleBorder(8),
+              borderWidth: scaleWidth(2),
+            }
+          : {}),
       }}
     >
       <Pressable
@@ -31,36 +52,45 @@ export default function Earnings({ items, expanded = true, onExpand }) {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          paddingLeft: scaleWidth(8),
-          paddingRight: scaleWidth(8),
+          paddingLeft: scaleWidth(6),
+          paddingRight: scaleWidth(6),
+          paddingBottom: scaleHeight(12),
+          paddingTop: scaleHeight(12),
         }}
       >
         <Text
           style={{
+            ...scaleFont(14),
             fontWeight: "500",
             color: "#667085",
-            ...scaleMargin(6),
-            marginBottom: scaleHeight(12),
-            marginTop: scaleHeight(12),
           }}
         >
           Earning Details
         </Text>
-        <Image
-          source={
-            expanded
-              ? require("../../assets/icons/CaretCircleUp.svg")
-              : require("../../assets/icons/CaretCircleDown.svg")
-          }
-          style={{
-            height: scaleHeight(20),
-            width: scaleWidth(20),
-          }}
-        />
+        {onExpand && (
+          <Image
+            source={
+              expanded
+                ? require("../../assets/icons/CaretCircleUp.svg")
+                : require("../../assets/icons/CaretCircleDown.svg")
+            }
+            style={{
+              height: scaleHeight(20),
+              width: scaleWidth(20),
+            }}
+          />
+        )}
       </Pressable>
 
       {expanded && (
-        <>
+        <View
+          style={{
+            backgroundColor: WHITE,
+            borderColor: "#E4E4E4",
+            borderRadius: scaleBorder(8),
+            borderWidth: scaleWidth(2),
+          }}
+        >
           <View
             style={{
               justifyContent: "center",
@@ -69,8 +99,7 @@ export default function Earnings({ items, expanded = true, onExpand }) {
           >
             <Text
               style={{
-                fontSize: 12,
-
+                ...scaleFont(12),
                 color: "#101828",
                 marginBottom: scaleHeight(12),
               }}
@@ -79,13 +108,12 @@ export default function Earnings({ items, expanded = true, onExpand }) {
             </Text>
             <Text
               style={{
-                fontSize: 12,
-
+                ...scaleFont(12),
                 fontWeight: "700",
                 color: "#101828",
               }}
             >
-              {data.spend}
+              {data.find((d) => d.label == "spend").value}
             </Text>
             <View
               style={{
@@ -99,8 +127,7 @@ export default function Earnings({ items, expanded = true, onExpand }) {
 
             <Text
               style={{
-                fontSize: 12,
-
+                ...scaleFont(12),
                 fontWeight: "700",
                 color: "#101828",
                 marginBottom: scaleHeight(12),
@@ -108,34 +135,39 @@ export default function Earnings({ items, expanded = true, onExpand }) {
             >
               You'll recieve
             </Text>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
+            {uniqueData
+              .filter((d) => !d.label.includes(["earnings"]))
+              .map(({ label, value }) => (
+                <View
+                  key={label}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingTop: scaleHeight(6),
+                    paddingBottom: scaleHeight(6),
+                  }}
+                >
+                  <Text
+                    style={{
+                      ...scaleFont(12),
+                      color: "#667085",
+                    }}
+                  >
+                    {titleize(label, true)}
+                  </Text>
 
-                  color: "#667085",
-                }}
-              >
-                Grand Total
-              </Text>
-
-              <Text
-                style={{
-                  fontSize: 12,
-
-                  fontWeight: "700",
-                  color: "#667085",
-                }}
-              >
-                {data.receive}
-              </Text>
-            </View>
+                  <Text
+                    style={{
+                      ...scaleFont(12),
+                      fontWeight: "700",
+                      color: "#667085",
+                    }}
+                  >
+                    {value}
+                  </Text>
+                </View>
+              ))}
           </View>
           <View
             style={{
@@ -148,8 +180,7 @@ export default function Earnings({ items, expanded = true, onExpand }) {
           >
             <Text
               style={{
-                fontSize: 12,
-
+                ...scaleFont(12),
                 fontWeight: "700",
                 color: "#101828",
               }}
@@ -159,16 +190,16 @@ export default function Earnings({ items, expanded = true, onExpand }) {
 
             <Text
               style={{
-                fontSize: 12,
+                ...scaleFont(12),
 
                 fontWeight: "700",
                 color: "#101828",
               }}
             >
-              {data.earnings}
+              {data.find((d) => d.label == "earnings").value}
             </Text>
           </View>
-        </>
+        </View>
       )}
     </View>
   );

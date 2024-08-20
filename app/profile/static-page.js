@@ -4,6 +4,8 @@ import { Modal, Pressable, Text, View } from "react-native";
 import WebView from "../common/web-view";
 import { getStaticPages } from "../api";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
@@ -37,8 +39,8 @@ export default function StaticPage({ showStaticPage, setShowStaticPage }) {
           style={{
             width: "100%",
             height: "80%",
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
+            borderTopLeftRadius: scaleBorder(20),
+            borderTopRightRadius: scaleBorder(20),
             backgroundColor: WHITE,
             position: "absolute",
             bottom: 0,
@@ -68,7 +70,7 @@ export default function StaticPage({ showStaticPage, setShowStaticPage }) {
           >
             <Text
               style={{
-                fontSize: 20,
+                ...scaleFont(20),
                 fontWeight: "600",
                 color: "#0D1F3C",
                 ...scalePadding(12),

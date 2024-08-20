@@ -1,12 +1,27 @@
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import {
+  FlatList,
+  RefreshControl,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { Image, ImageBackground } from "expo-image";
+import { RUPEE } from "../constants";
 
-export default function Transactions({ data, openFilters, setPageNumber }) {
+export default function Transactions({
+  data,
+  openFilters,
+  setPageNumber,
+  fetching,
+  fetchData,
+}) {
   return (
     <FlatList
       contentContainerStyle={{}}
@@ -36,8 +51,8 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
               marginTop: scaleHeight(16),
               ...scalePadding(16),
               borderColor: "#E4E4E4",
-              borderRadius: 8,
-              borderWidth: 1,
+              borderRadius: scaleBorder(8),
+              borderWidth: scaleWidth(2),
             }}
           >
             {status == "payment received" && (
@@ -53,8 +68,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                   <Text
                     style={{
                       marginBottom: scaleHeight(4),
-                      fontSize: 12,
-
+                      ...scaleFont(12),
                       fontWeight: "500",
                       color: "#025ACE",
                     }}
@@ -65,8 +79,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                     <Text
                       style={{
                         marginBottom: scaleHeight(4),
-                        fontSize: 12,
-
+                        ...scaleFont(12),
                         fontWeight: "500",
                         color: "#039855",
                         marginRight: scaleWidth(8),
@@ -122,6 +135,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                           marginBottom: scaleHeight(4),
                           fontWeight: "500",
                           color: "#101828",
+                          ...scaleFont(14),
                         }}
                       >
                         Amount added in wallet
@@ -129,8 +143,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                       <Text
                         style={{
                           marginBottom: scaleHeight(4),
-                          fontSize: 10,
-
+                          ...scaleFont(10),
                           color: "#667085",
                         }}
                       >
@@ -180,6 +193,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                           marginBottom: scaleHeight(4),
                           fontWeight: "500",
                           color: "#667085",
+                          ...scaleFont(14),
                         }}
                       >
                         Amount transferred to bank
@@ -187,8 +201,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                       <Text
                         style={{
                           marginBottom: scaleHeight(4),
-                          fontSize: 10,
-
+                          ...scaleFont(10),
                           color: "#667085",
                         }}
                       >
@@ -214,6 +227,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                     style={{
                       color: "#101828",
                       fontWeight: "500",
+                      ...scaleFont(14),
                     }}
                   >
                     Order Cancelled
@@ -221,8 +235,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                   <Text
                     style={{
                       color: "#F04438",
-                      fontSize: 12,
-
+                      ...scaleFont(12),
                       fontWeight: "500",
                     }}
                   >
@@ -241,8 +254,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                   <Text
                     style={{
                       color: "#025ACE",
-                      fontSize: 12,
-
+                      ...scaleFont(12),
                       fontWeight: "500",
                     }}
                   >
@@ -251,7 +263,7 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                   <Text
                     style={{
                       color: "#667085",
-                      fontSize: 10,
+                      ...scaleFont(10),
                     }}
                   >
                     {time}
@@ -259,11 +271,6 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
                 </View>
               </>
             )}
-            {/* {status == "payment withdrawn" && (
-              <>
-                <View style={{ backgroundColor: "red", height: 100 }}></View>
-              </>
-            )} */}
           </View>
         );
       }}
@@ -272,11 +279,17 @@ export default function Transactions({ data, openFilters, setPageNumber }) {
       }
       onEndReached={() => setPageNumber((p) => p + 1)}
       onEndReachedThreshold={0.2}
+      refreshControl={
+        <RefreshControl
+          refreshing={fetching}
+          onRefresh={() => fetchData({ resetData: true })}
+        />
+      }
     />
   );
 }
 
-export function TransactionsHeader() {
+export function TransactionsHeader({ balance }) {
   return (
     <ImageBackground
       source={require("../../assets/wallet-bg.svg")}
@@ -285,13 +298,13 @@ export function TransactionsHeader() {
         width: "100%",
         marginRight: scaleWidth(8),
         ...scalePadding(16),
-        borderRadius: 8,
+        borderRadius: scaleBorder(8),
       }}
     >
       <Text
         style={{
           marginBottom: scaleHeight(12),
-          fontSize: 16,
+          ...scaleFont(16),
 
           fontWeight: "500",
           color: "#F9FAFB",
@@ -302,13 +315,12 @@ export function TransactionsHeader() {
       <Text
         style={{
           marginBottom: scaleHeight(4),
-          fontSize: 30,
-
+          ...scaleFont(30),
           fontWeight: "500",
           color: "#FFFFFF",
         }}
       >
-        $ XXXXXXXX
+        {RUPEE} {balance}
       </Text>
     </ImageBackground>
   );

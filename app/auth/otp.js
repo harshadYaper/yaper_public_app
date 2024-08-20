@@ -3,7 +3,11 @@ import { useEffect, useRef, useState } from "react";
 
 import Input from "../common/input";
 import { FullButton } from "../common/button";
-import { scalePadding, scaleWidth } from "../utils/getScaledDimensions";
+import {
+  scaleFont,
+  scalePadding,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 import { array_generator, isDigit } from "../utils/helper";
 import { login, otp_verify } from "../api";
 import DataRoute from "./data_route";
@@ -11,6 +15,7 @@ import saveData from "./save_data";
 import { useDispatch } from "react-redux";
 import Timer from "../common/timer";
 import BasicInfo from "./basicInfo";
+import { mapUserInSegment } from "../utils/analytics";
 
 export default function OTP({ mobile_number, setComponent }) {
   const OTP_LENGTH = 4;
@@ -53,6 +58,7 @@ export default function OTP({ mobile_number, setComponent }) {
       Alert.alert("error", response.response_message);
     } else {
       await saveData({ dispatch, user: response.user });
+      await mapUserInSegment(response.user);
       DataRoute({ user: response.user, setComponent, Component: BasicInfo });
     }
   };
@@ -88,7 +94,7 @@ export default function OTP({ mobile_number, setComponent }) {
       >
         <Text
           style={{
-            fontSize: 20,
+            ...scaleFont(20),
             fontWeight: "500",
             marginBottom: "10%",
             marginTop: "10%",
@@ -123,7 +129,7 @@ export default function OTP({ mobile_number, setComponent }) {
           <Timer
             time={resendTimer}
             styles={{
-              fontSize: 12,
+              ...scaleFont(12),
               color: resendTimer == 0 ? "#336AB4" : "#ABB0BC",
               ...scalePadding(6),
               textAlign: "",

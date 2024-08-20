@@ -82,7 +82,10 @@ export default function Template({}) {
           : apiData?.data),
       ],
       filter: [...(apiData?.filter || [])],
-      otherData: { supportTimings: apiData?.time },
+      otherData: {
+        supportTimings: apiData?.time,
+        balance: apiData?.data.wallet?.current_balance_ui,
+      },
     }));
 
     setFetching(false);
@@ -150,6 +153,7 @@ export default function Template({}) {
           openFilters={filters.filter}
           setPageNumber={setPageNumber}
           fetchData={fetchData}
+          fetching={fetching}
         />
       )}
       <Navigation

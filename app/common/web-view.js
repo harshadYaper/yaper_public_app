@@ -1,6 +1,6 @@
 import RNWebView from "react-native-webview";
 
-export default function WebView({ uri, html, styles }) {
+export default function WebView({ uri, html, styles, injectScript }) {
   return (
     <RNWebView
       style={{
@@ -15,6 +15,7 @@ export default function WebView({ uri, html, styles }) {
       javaScriptEnabled
       startInLoadingState
       nestedScrollEnabled
+      injectedJavaScriptObject={injectScript}
       source={{ uri, html }}
     />
   );

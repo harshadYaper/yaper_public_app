@@ -6,6 +6,11 @@ import { Image } from "expo-image";
 import { getCards } from "../../api";
 import { router } from "expo-router";
 import MyCards from "./my-cards";
+import {
+  scaleFont,
+  scaleHeight,
+  scaleWidth,
+} from "../../utils/getScaledDimensions";
 
 export default function Cards() {
   const user = useSelector((state) => state.user);
@@ -58,7 +63,7 @@ export default function Cards() {
         headerTitleAlign: "center",
         headerTitleStyle: {
           color: "#101828",
-          fontSize: 16,
+          ...scaleFont(16),
 
           fontWeight: "500",
         },
@@ -72,7 +77,11 @@ export default function Cards() {
           >
             <Image
               source={require("../../../assets/icons/CaretLeft.svg")}
-              style={{ height: 24, width: 24, tintColor: "#101828" }}
+              style={{
+                height: scaleHeight(24),
+                width: scaleWidth(24),
+                tintColor: "#101828",
+              }}
             />
           </TouchableOpacity>
         ),

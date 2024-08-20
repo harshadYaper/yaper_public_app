@@ -1,5 +1,6 @@
-import { FlatList, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, View } from "react-native";
 import {
+  scaleBorder,
   scaleHeight,
   scalePadding,
   scaleWidth,
@@ -10,7 +11,7 @@ import { useEffect, useState } from "react";
 import { getInfoCards } from "../api";
 import { Image } from "expo-image";
 
-export default function Deals({ data, openFilters }) {
+export default function Deals({ data, openFilters, fetching, fetchData }) {
   return (
     <FlatList
       contentContainerStyle={{}}
@@ -46,6 +47,12 @@ export default function Deals({ data, openFilters }) {
         />
       )}
       keyExtractor={({ id }) => `Deal ${id}`}
+      refreshControl={
+        <RefreshControl
+          refreshing={fetching}
+          onRefresh={() => fetchData({ resetData: true })}
+        />
+      }
     />
   );
 }
@@ -69,7 +76,11 @@ export function DealsHeader() {
       data={data?.slice(index, index + 1)}
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{}}
+      contentContainerStyle={{
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
       onMomentumScrollEnd={handlePress}
       renderItem={({ item: { id, type, info, actions } }) => (
         //information, banners, input -> type
@@ -86,11 +97,15 @@ export function DealsHeader() {
             contentFit="fill"
             source={{
               uri:
-                index % 2 == 0
+                index % 2 !== 0
                   ? "https://images.samsung.com/is/image/samsung/in-full-hd-tv-te50fa-ua43te50fakxxl-frontblack-231881877?$650_519_PNG$"
                   : "https://cdn.pixabay.com/photo/2024/01/21/20/09/ai-generated-8523907_640.png", // need to change
             }}
-            style={{ width: scaleWidth(350), height: scaleWidth(120) }}
+            style={{
+              width: scaleWidth(350),
+              height: scaleWidth(120),
+              borderRadius: scaleBorder(8),
+            }}
           />
         </TouchableOpacity>
       )}

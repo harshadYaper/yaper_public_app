@@ -1,5 +1,7 @@
 import { Linking, Pressable, Text, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scaleMargin,
   scalePadding,
@@ -10,14 +12,22 @@ import { Image } from "expo-image";
 
 export default function FAQs({ videos }) {
   return (
-    <View style={{ display: "flex", marginBottom: scaleHeight(90) }}>
+    <View
+      style={{
+        display: "flex",
+        marginBottom: scaleHeight(120),
+        paddingTop: scaleHeight(12),
+      }}
+    >
       <Text
         style={{
+          ...scaleFont(14),
           fontWeight: "500",
           color: "#667085",
-          ...scaleMargin(6),
-          marginBottom: scaleHeight(12),
-          marginTop: scaleHeight(12),
+          paddingLeft: scaleWidth(6),
+          paddingRight: scaleWidth(6),
+          paddingBottom: scaleHeight(12),
+          paddingTop: scaleHeight(12),
         }}
       >
         FAQs
@@ -26,8 +36,8 @@ export default function FAQs({ videos }) {
         style={{
           backgroundColor: WHITE,
           borderColor: "#E4E4E4",
-          borderRadius: 8,
-          borderWidth: 1,
+          borderRadius: scaleBorder(8),
+          borderWidth: scaleWidth(2),
           justifyContent: "center",
           ...scalePadding(12),
         }}
@@ -39,11 +49,10 @@ export default function FAQs({ videos }) {
             marginBottom: scaleHeight(12),
           }}
         >
-          <Text style={{ flex: 1 }}></Text>
+          <Text style={{ flex: 1, ...scaleFont(14) }}></Text>
           <Text
             style={{
-              fontSize: 10,
-
+              ...scaleFont(10),
               color: "#667085",
               width: scaleWidth(60),
               textAlign: "center",
@@ -54,8 +63,7 @@ export default function FAQs({ videos }) {
           </Text>
           <Text
             style={{
-              fontSize: 10,
-
+              ...scaleFont(10),
               color: "#667085",
               width: scaleWidth(60),
               textAlign: "center",
@@ -76,8 +84,7 @@ export default function FAQs({ videos }) {
           <Text
             style={{
               flex: 1,
-              fontSize: 12,
-
+              ...scaleFont(12),
               color: "#101828",
             }}
           >
@@ -128,8 +135,7 @@ export default function FAQs({ videos }) {
           <Text
             style={{
               flex: 1,
-              fontSize: 12,
-
+              ...scaleFont(12),
               color: "#101828",
             }}
           >

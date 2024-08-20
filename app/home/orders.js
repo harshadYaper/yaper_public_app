@@ -1,5 +1,12 @@
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import {
+  FlatList,
+  RefreshControl,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  scaleBorder,
   scaleFont,
   scaleHeight,
   scaleMargin,
@@ -21,12 +28,13 @@ export default function Orders({
   openFilters,
   setPageNumber,
   fetchData,
+  fetching,
 }) {
   const { pan_verified } = useSelector((state) => state.user) || {};
 
   return (
     <FlatList
-      contentContainerStyle={{ height: "100%" }}
+      contentContainerStyle={{}}
       showsVerticalScrollIndicator={false}
       style={{
         width: "100%",
@@ -64,8 +72,8 @@ export default function Orders({
                 alignItems: "center",
                 backgroundColor: "#FFFFFF",
                 borderColor: "#E4E4E4",
-                borderWidth: 1,
-                borderRadius: 10,
+                borderWidth: scaleWidth(2),
+                borderRadius: scaleBorder(10),
                 marginBottom: scaleHeight(12),
                 flexDirection: "row",
                 ...scalePadding(8),
@@ -102,17 +110,18 @@ export default function Orders({
                 {timer && (
                   <Text
                     style={{
+                      ...scaleFont(14),
                       backgroundColor: "#F044384D",
                       paddingLeft: scaleWidth(8),
                       paddingRight: scaleWidth(8),
                       paddingBottom: scaleHeight(4),
                       paddingTop: scaleHeight(4),
-                      borderRadius: 20,
+                      borderRadius: scaleBorder(20),
                     }}
                   >
                     <Text
                       style={{
-                        fontSize: 10,
+                        ...scaleFont(10),
                         color: "#F04438",
                       }}
                     >
@@ -148,13 +157,12 @@ export default function Orders({
                       expired: "#F04438",
                     }[state],
                     ...scalePadding(4),
-                    borderRadius: 4,
+                    borderRadius: scaleBorder(4),
                   }}
                 >
                   <Text
                     style={{
-                      fontSize: 10,
-
+                      ...scaleFont(10),
                       fontWeight: "500",
                       textAlign: "center",
                       textAlignVertical: "center",
@@ -167,8 +175,7 @@ export default function Orders({
                 <View style={{ ...scaleMargin(4) }}>
                   <Text
                     style={{
-                      fontSize: 10,
-
+                      ...scaleFont(10),
                       fontWeight: "500",
                       color: "#101828",
                     }}
@@ -179,8 +186,7 @@ export default function Orders({
                 <View style={{ ...scaleMargin(4) }}>
                   <Text
                     style={{
-                      fontSize: 10,
-
+                      ...scaleFont(10),
                       color: "#667085",
                     }}
                   >
@@ -192,7 +198,7 @@ export default function Orders({
                   <View style={{ ...scaleMargin(4) }}>
                     <Text
                       style={{
-                        fontSize: 10,
+                        ...scaleFont(10),
                         color: "#667085",
                       }}
                     >
@@ -214,7 +220,7 @@ export default function Orders({
                       width={scaleWidth(60)}
                       height={scaleHeight(30)}
                       title={secondary_button.button_text}
-                      fontSize={scaleFont(10)}
+                      fontStyles={scaleFont(10)}
                       onPress={async () => {
                         await putData("PARAMS", {
                           deal_id,
@@ -234,7 +240,7 @@ export default function Orders({
                         width={scaleWidth(80)}
                         height={scaleHeight(30)}
                         title={third_button.button_text}
-                        fontSize={scaleFont(10)}
+                        fontStyles={scaleFont(10)}
                         backgroundColor={"#F04438"}
                         onPress={async () => {
                           await customRequest({
@@ -252,8 +258,7 @@ export default function Orders({
                 {timer && (
                   <Text
                     style={{
-                      fontSize: 10,
-
+                      ...scaleFont(10),
                       fontWeight: "500",
                       color: "#F04438",
                       ...scaleMargin(4),
@@ -281,6 +286,12 @@ export default function Orders({
       )}
       onEndReachedThreshold={0.2}
       onEndReached={() => setPageNumber((p) => p + 1)}
+      refreshControl={
+        <RefreshControl
+          refreshing={fetching}
+          onRefresh={() => fetchData({ resetData: true })}
+        />
+      }
     />
   );
 }

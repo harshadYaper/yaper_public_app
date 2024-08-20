@@ -7,6 +7,8 @@ import {
   View,
 } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scaleMargin,
   scalePadding,
@@ -72,8 +74,7 @@ export default function AddCards({
       >
         <Text
           style={{
-            fontSize: 20,
-
+            ...scaleFont(20),
             fontWeight: "500",
             marginBottom: scaleHeight(20),
             ...scalePadding(6),
@@ -92,7 +93,7 @@ export default function AddCards({
         <TouchableOpacity onPress={() => setMyCards()}>
           <Text
             style={{
-              fontSize: 20,
+              ...scaleFont(20),
               fontWeight: "500",
               marginTop: scaleHeight(20),
               marginBottom: scaleHeight(20),
@@ -121,9 +122,9 @@ export default function AddCards({
                   minWidth: scaleWidth(94),
                   marginRight: scaleWidth(8),
                   marginBottom: scaleHeight(20),
-                  borderRadius: 8,
+                  borderRadius: scaleBorder(8),
                   borderColor: "#D0D5DD",
-                  borderWidth: 1,
+                  borderWidth: scaleWidth(2),
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
@@ -137,6 +138,7 @@ export default function AddCards({
                   style={{
                     fontWeight: "600",
                     color: filterBanks.includes(item) ? WHITE : "#344054",
+                    ...scaleFont(14),
                   }}
                 >
                   {item}
@@ -168,8 +170,7 @@ export default function AddCards({
                   <Text
                     style={{
                       marginBottom: scaleHeight(16),
-                      fontSize: 10,
-
+                      ...scaleFont(10),
                       fontWeight: "500",
                     }}
                   >
@@ -191,8 +192,7 @@ export default function AddCards({
                         <Text
                           style={{
                             marginBottom: scaleHeight(8),
-                            fontSize: 9,
-
+                            ...scaleFont(9),
                             fontWeight: "300",
                           }}
                         >
@@ -236,8 +236,8 @@ export default function AddCards({
             backgroundColor: WHITE,
             position: "absolute",
             bottom: 0,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
+            borderTopLeftRadius: scaleBorder(20),
+            borderTopRightRadius: scaleBorder(20),
             paddingLeft: scaleWidth(24),
             paddingRight: scaleWidth(24),
             paddingBottom: scaleHeight(12),
@@ -247,7 +247,7 @@ export default function AddCards({
             style={{
               ...scalePadding(12),
               color: "#667085",
-              fontSize: 10,
+              ...scaleFont(10),
             }}
           >
             your cards
@@ -315,8 +315,7 @@ export default function AddCards({
                   >
                     <Text
                       style={{
-                        fontSize: 20,
-
+                        ...scaleFont(20),
                         fontWeight: "500",
                         color: WHITE,
                       }}

@@ -56,7 +56,7 @@ export default function Login({ setComponent, mobile }) {
       <View>
         <Text
           style={{
-            fontSize: 20,
+            ...scaleFont(20),
             fontWeight: "500",
             marginBottom: "10%",
             marginTop: "10%",
@@ -99,7 +99,7 @@ function CountryInfo({ countryCode }) {
         position: "absolute",
         justifyContent: "center",
         alignContent: "center",
-        left: 10,
+        left: scaleWidth(10),
         zIndex: 10,
       }}
     >
@@ -117,7 +117,7 @@ function CountryInfo({ countryCode }) {
       </View>
       <Text
         style={{
-          fontSize: scaleFont(16),
+          ...scaleFont(16),
           textAlign: "center",
           textAlignVertical: "center",
         }}
@@ -135,7 +135,7 @@ function Cross({ setMobileNumber }) {
       onPress={() => setMobileNumber()}
       style={{
         position: "absolute",
-        right: 10,
+        right: scaleWidth(10),
         zIndex: 10,
       }}
     >

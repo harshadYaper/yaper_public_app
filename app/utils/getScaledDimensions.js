@@ -4,6 +4,7 @@ const {
   width: SCREEN_WIDTH,
   height: SCREEN_HEIGHT,
   fontScale,
+  scale,
 } = Dimensions.get("window");
 
 // iphone dimensions 375*812
@@ -17,7 +18,12 @@ const getScaledDimensions = (size, normalValue) => {
   );
 };
 
-export const scaleFont = (size) => size / fontScale;
+export const scaleFont = (size) => ({
+  fontSize: size / fontScale,
+  lineHeight: scaleHeight((2 * size) / fontScale),
+});
+
+export const scaleBorder = (size) => size;
 
 export const scaleWidth = (size) => getScaledDimensions(size, normalizedWidth);
 

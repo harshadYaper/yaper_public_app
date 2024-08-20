@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 
 import Input from "../common/input";
 import { FullButton } from "../common/button";
-import { scaleHeight, scalePadding } from "../utils/getScaledDimensions";
+import {
+  scaleFont,
+  scaleHeight,
+  scalePadding,
+} from "../utils/getScaledDimensions";
 import { isEmpty } from "../utils/helper";
 import { saveUserData } from "../api";
 import DataRoute from "./data_route";
@@ -65,8 +69,7 @@ export default function BasicInfo({ setComponent }) {
         <View>
           <Text
             style={{
-              fontSize: 20,
-
+              ...scaleFont(20),
               fontWeight: "500",
               marginBottom: "10%",
               marginTop: "20%",
@@ -104,8 +107,7 @@ export default function BasicInfo({ setComponent }) {
           <Text
             style={{
               textAlign: "center",
-              fontSize: 10,
-
+              ...scaleFont(10),
               fontWeight: "500",
             }}
           >
@@ -115,6 +117,7 @@ export default function BasicInfo({ setComponent }) {
               onPress={() => setShowStaticPage("Terms and Conditions")}
               style={{
                 textDecorationLine: "underline",
+                ...scaleFont(14),
               }}
             >
               terms of service{" "}
@@ -124,6 +127,7 @@ export default function BasicInfo({ setComponent }) {
               onPress={() => setShowStaticPage("Privacy Policy")}
               style={{
                 textDecorationLine: "underline",
+                ...scaleFont(14),
               }}
             >
               privacy policy.

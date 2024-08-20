@@ -14,7 +14,13 @@ import WebView from "../common/web-view";
 import { Image } from "expo-image";
 import App from "../app";
 import { router } from "expo-router";
-import { scaleHeight, scalePadding } from "../utils/getScaledDimensions";
+import {
+  scaleBorder,
+  scaleFont,
+  scaleHeight,
+  scalePadding,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 import { FullButton } from "../common/button";
 import { range, truncate } from "../utils/helper";
 import CopyToClipboard from "../common/copy-to-clipboard";
@@ -84,7 +90,7 @@ export default function EcommerceView() {
       >
         <Text
           style={{
-            fontSize: 8,
+            ...scaleFont(8),
             color: "#FFFFFF",
           }}
         >
@@ -100,7 +106,7 @@ export default function EcommerceView() {
         >
           <Text
             style={{
-              fontSize: 10,
+              ...scaleFont(10),
               flexShrink: 1,
               color: "#FFFFFF",
             }}
@@ -143,36 +149,56 @@ export default function EcommerceView() {
           <WebView
             uri={order?.url}
             styles={{ ...(proceed ? {} : { opacity: 0.1 }) }}
+            injectScript={order?.inject_script}
           />
           {!proceed ? (
-            <View
-              style={{
-                position: "absolute",
-                bottom: 0,
-                backgroundColor: "#FFFFFF",
-                ...scalePadding(20),
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              {address?.user_message && (
-                <>
-                  <Text
-                    style={{
-                      color: "#101828",
-                      fontWeight: "700",
-                      borderTopLeftRadius: 8,
-                      borderTopRightRadius: 8,
-                      textAlign: "center",
-                      paddingBottom: scaleHeight(20),
-                    }}
-                  >
-                    {address.user_message}
-                  </Text>
-                  <FullButton onPress={() => setProceed(true)} />
-                </>
-              )}
-            </View>
+            <>
+              <View
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "#101828",
+                  opacity: 0.8,
+                }}
+              ></View>
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  backgroundColor: "#FFFFFF",
+                  width: "100%",
+                  alignItems: "center",
+                  borderTopLeftRadius: scaleBorder(12),
+                  borderTopRightRadius: scaleBorder(12),
+                  paddingLeft: scaleWidth(24),
+                  paddingRight: scaleWidth(24),
+                  paddingTop: scaleHeight(8),
+                  paddingBottom: scaleHeight(40),
+                }}
+              >
+                {address?.user_message && (
+                  <>
+                    <Text
+                      style={{
+                        color: "#101828",
+                        fontWeight: "700",
+                        ...scaleFont(14),
+                        textAlign: "left",
+                        textAlignVertical: "center",
+                        paddingBottom: scaleHeight(32),
+                      }}
+                    >
+                      {address.user_message}
+                    </Text>
+                    <FullButton
+                      onPress={() => setProceed(true)}
+                      title="Proceed"
+                    />
+                  </>
+                )}
+              </View>
+            </>
           ) : (
             <View
               style={{
@@ -186,12 +212,12 @@ export default function EcommerceView() {
             >
               <Pressable
                 style={{
-                  height: 60,
-                  width: 60,
+                  height: scaleHeight(60),
+                  width: scaleWidth(60),
                   borderColor: "#101828",
                   backgroundColor: "#101828",
-                  borderWidth: 2,
-                  borderRadius: 50,
+                  borderWidth: scaleWidth(2),
+                  borderRadius: scaleBorder(50),
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -199,11 +225,11 @@ export default function EcommerceView() {
               >
                 <View
                   style={{
-                    width: 40,
-                    height: 40,
+                    width: scaleWidth(40),
+                    height: scaleHeight(40),
                     borderColor: "#FFFFFF",
-                    borderWidth: 4,
-                    borderRadius: 50,
+                    borderWidth: scaleWidth(4),
+                    borderRadius: scaleBorder(50),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -239,8 +265,7 @@ export default function EcommerceView() {
                   >
                     <Text
                       style={{
-                        fontSize: 12,
-
+                        ...scaleFont(12),
                         fontWeight: "700",
                         color: "#FFFFFF",
                         ...scalePadding(4),
@@ -284,12 +309,12 @@ export default function EcommerceView() {
                       <Pressable
                         key={"SCREENS" + i}
                         style={{
-                          height: 4,
-                          borderRadius: 2,
-                          width: screen == i ? 32 : 4,
+                          height: scaleHeight(4),
+                          borderRadius: scaleBorder(2),
+                          width: scaleWidth(screen == i ? 32 : 4),
                           backgroundColor: "#FFFFFF",
-                          marginLeft: 4,
-                          marginRight: 4,
+                          marginLeft: scaleWidth(4),
+                          marginRight: scaleWidth(4),
                         }}
                         onPress={() => setScreen((p) => 1 - p)}
                       />
@@ -308,8 +333,7 @@ export default function EcommerceView() {
         headerTitleAlign: "center",
         headerTitleStyle: {
           color: "#101828",
-          fontSize: 16,
-
+          ...scaleFont(16),
           fontWeight: "500",
         },
         headerShown: true,
@@ -318,7 +342,11 @@ export default function EcommerceView() {
           <TouchableOpacity onPress={() => router.back()}>
             <Image
               source={require("../../assets/icons/CaretLeft.svg")}
-              style={{ height: 24, width: 24, tintColor: "#101828" }}
+              style={{
+                height: scaleHeight(24),
+                width: scaleWidth(24),
+                tintColor: "#101828",
+              }}
             />
           </TouchableOpacity>
         ),

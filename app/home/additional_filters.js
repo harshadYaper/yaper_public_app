@@ -1,5 +1,7 @@
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
@@ -63,6 +65,8 @@ export default function AdditionalFilters({
     <View
       style={{
         ...scalePadding(4),
+        marginTop: scaleHeight(8),
+        marginBottom: scaleHeight(8),
         width: "100%",
         height: scaleHeight(50),
         display: "flex",
@@ -111,15 +115,15 @@ export default function AdditionalFilters({
                 style={{
                   backgroundColor: isSelected ? "#025ACE" : WHITE,
                   borderColor: "#D0D5DD",
-                  borderWidth: 1,
-                  borderRadius: 20,
+                  borderWidth: scaleWidth(2),
+                  borderRadius: scaleBorder(20),
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
-                  ...scalePadding(4),
-                  paddingRight: scaleWidth(8),
-                  paddingLeft: scaleWidth(8),
+                  ...scalePadding(8),
+                  paddingRight: scaleWidth(12),
+                  paddingLeft: scaleWidth(12),
                 }}
                 onPress={onPress}
               >
@@ -133,8 +137,10 @@ export default function AdditionalFilters({
                 )}
                 <Text
                   style={{
+                    ...scaleFont(14),
                     fontWeight: "500",
-                    ...scalePadding(8),
+                    paddingRight: scaleWidth(4),
+                    paddingLeft: scaleWidth(4),
                     color: isSelected ? WHITE : "#667085",
                   }}
                 >
@@ -199,8 +205,8 @@ export default function AdditionalFilters({
                   style={{
                     backgroundColor: isSelected ? "#025ACE" : WHITE,
                     borderColor: "#D0D5DD",
-                    borderWidth: 1,
-                    borderRadius: 8,
+                    borderWidth: scaleWidth(2),
+                    borderRadius: scaleBorder(8),
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "center",
@@ -208,7 +214,7 @@ export default function AdditionalFilters({
                     ...scalePadding(4),
                     paddingRight: scaleWidth(8),
                     paddingLeft: scaleWidth(8),
-                    marginRight: index == 0 ? scaleWidth(8) : 0,
+                    marginRight: scaleWidth(index == 0 ? 8 : 0),
                   }}
                   onPress={() =>
                     setFilters((p) => ({ ...p, payment_state: value }))
@@ -216,6 +222,7 @@ export default function AdditionalFilters({
                 >
                   <Text
                     style={{
+                      ...scaleFont(14),
                       fontWeight: "500",
                       ...scalePadding(8),
                       color: isSelected ? WHITE : "#667085",
@@ -237,8 +244,8 @@ export default function AdditionalFilters({
               backgroundColor: "#FFFFFF",
               ...scalePadding(12),
               borderColor: "#D0D5DD",
-              borderWidth: 1,
-              borderRadius: 8,
+              borderWidth: scaleWidth(2),
+              borderRadius: scaleBorder(8),
             }}
           >
             <Image
@@ -249,7 +256,7 @@ export default function AdditionalFilters({
                 marginRight: scaleWidth(8),
               }}
             />
-            <Text style={{ fontSize: 12, color: "#101828" }}>Export</Text>
+            <Text style={{ ...scaleFont(12), color: "#101828" }}>Export</Text>
           </View>
         </View>
       )}

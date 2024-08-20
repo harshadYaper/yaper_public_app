@@ -1,6 +1,7 @@
 import { Modal, Pressable, Text, TouchableOpacity } from "react-native";
 import Input from "../common/input";
 import {
+  scaleFont,
   scaleHeight,
   scalePadding,
   scaleWidth,
@@ -61,6 +62,7 @@ export default function WebToken({
               fontWeight: "500",
               color: "#000000",
               marginBottom: scaleHeight(24),
+              ...scaleFont(14),
             }}
           >
             Login to Yaper Web
@@ -68,7 +70,7 @@ export default function WebToken({
 
           <Text
             style={{
-              fontSize: 12,
+              ...scaleFont(12),
               color: "#667085",
               marginBottom: scaleHeight(24),
             }}
@@ -78,7 +80,7 @@ export default function WebToken({
 
           <Text
             style={{
-              fontSize: 12,
+              ...scaleFont(12),
 
               fontWeight: "500",
               color: "#101828",
@@ -99,7 +101,7 @@ export default function WebToken({
                 textAlignVertical: "center",
                 marginRight: scaleWidth(12),
                 marginBottom: scaleHeight(24),
-                fontSize: 18,
+                ...scaleFont(18),
                 fontWeight: "500",
                 color: "#202131",
               },
@@ -113,7 +115,7 @@ export default function WebToken({
             }}
           >
             {refresh !== 0 ? (
-              <Text>
+              <Text style={{ ...scaleFont(14) }}>
                 {Math.floor(refresh / 60) < 10 ? "0" : ""}
                 {Math.floor(refresh / 60)}:{refresh % 60 < 10 ? "0" : ""}
                 {Math.floor(refresh % 60)}
@@ -123,12 +125,14 @@ export default function WebToken({
                 style={{
                   fontWeight: "500",
                   color: "#667085",
+                  ...scaleFont(14),
                 }}
               >
                 Not able to login?{" "}
                 <Text
                   style={{
                     color: "#025ACE",
+                    ...scaleFont(14),
                   }}
                 >
                   {" "}

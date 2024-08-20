@@ -2,6 +2,8 @@ import { Image } from "expo-image";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { CARD_IMAGES } from "../../constants/images";
 import {
+  scaleBorder,
+  scaleFont,
   scaleHeight,
   scaleMargin,
   scalePadding,
@@ -41,8 +43,7 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
             >
               <Text
                 style={{
-                  fontSize: 10,
-
+                  ...scaleFont(10),
                   color: "#667085",
                   ...scaleMargin(8),
                 }}
@@ -54,10 +55,10 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
                   width: scaleWidth(160),
                   alignItems: "center",
                   borderStyle: "dotted",
-                  borderWidth: 2,
+                  borderWidth: scaleWidth(2),
                   borderColor: "#667085",
                   height: scaleHeight(100),
-                  borderRadius: 6,
+                  borderRadius: scaleBorder(6),
                 }}
               >
                 <Image
@@ -70,8 +71,7 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
                 />
                 <Text
                   style={{
-                    fontSize: 12,
-
+                    ...scaleFont(12),
                     color: "#667085",
                   }}
                 >
@@ -91,8 +91,7 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
             >
               <Text
                 style={{
-                  fontSize: 10,
-
+                  ...scaleFont(10),
                   color: "#667085",
                   ...scaleMargin(8),
                 }}

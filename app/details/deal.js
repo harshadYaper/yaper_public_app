@@ -4,7 +4,11 @@ import { Alert, ScrollView, View } from "react-native";
 import { getDeal } from "../api";
 import DealBox from "../home/deal_box";
 import GetDetails from "./get_details";
-import { scaleHeight, scalePadding } from "../utils/getScaledDimensions";
+import {
+  scaleFont,
+  scaleHeight,
+  scalePadding,
+} from "../utils/getScaledDimensions";
 import { WHITE } from "../constants/colors";
 import Offers from "./offers";
 import Earnings from "./earnings";
@@ -69,6 +73,7 @@ export default function Deal() {
             color_code={color_code}
             color={color}
             disabled={true}
+            additionalStyles={{ title: { ...scaleFont(12) } }}
           />
         )}
         {deal && (
