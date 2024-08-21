@@ -35,16 +35,8 @@
           "mode": "development"
         }
       ],
-      "expo-router",
-      [
-        "@sentry/react-native/expo",
-        {
-          "organization": "yaper-labs",
-          "project": "app",
-          "authToken": "6e5a91b52dc90051d6ad611f6d5929e7414c4d5a",
-          "url": "https://bugs.yaper.co/"
-        }
-      ]
+      "expo-router"
+      
     ],
     "experiments": {
       "typedRoutes": true

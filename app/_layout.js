@@ -11,10 +11,10 @@ function HomeLayout() {
   useEffect(() => {
     (async () => {
       let { sentryDSN, sentryDebug, oneSignalKey } = await getAppVariables();
-      init({
-        dsn: sentryDSN,
-        debug: sentryDebug,
-      });
+      // init({
+      //   dsn: sentryDSN,
+      //   debug: sentryDebug,
+      // });
       let { granted } = await requestPermissionsAsync();
       granted && OneSignal.initialize(oneSignalKey);
     })();
