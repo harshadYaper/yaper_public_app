@@ -1,4 +1,4 @@
-import { Modal, Pressable, Text, TouchableOpacity } from "react-native";
+import { Modal, Pressable, Text, TouchableOpacity, View } from "react-native";
 import Input from "../common/input";
 import {
   scaleFont,
@@ -17,7 +17,6 @@ export default function WebToken({
 
   useEffect(() => {
     refresh > 0 && timer();
-    console.log(refresh);
   }, [refresh]);
 
   const timer = () => {
@@ -49,8 +48,7 @@ export default function WebToken({
           onPress={() => handleModal(showWebToken)}
           style={{
             display: "flex",
-            width: "80%",
-            height: scaleHeight(300),
+            borderRadius: 8,
             ...scalePadding(24),
             backgroundColor: "#FFFFFF",
             justifyContent: "center",
@@ -61,7 +59,7 @@ export default function WebToken({
             style={{
               fontWeight: "500",
               color: "#000000",
-              marginBottom: scaleHeight(24),
+              paddingBottom: scaleHeight(24),
               ...scaleFont(14),
             }}
           >
@@ -72,7 +70,7 @@ export default function WebToken({
             style={{
               ...scaleFont(12),
               color: "#667085",
-              marginBottom: scaleHeight(24),
+              paddingBottom: scaleHeight(24),
             }}
           >
             Open website https://yaper.co and hit the Sign In
@@ -81,33 +79,37 @@ export default function WebToken({
           <Text
             style={{
               ...scaleFont(12),
-
               fontWeight: "500",
               color: "#101828",
-              marginBottom: scaleHeight(24),
+              paddingBottom: scaleHeight(24),
             }}
           >
             Enter the below code in your browser
           </Text>
-          <Input
-            inputArray={showWebToken.webToken.split("")}
-            maxLength={1}
-            usageType="LOGIN CODE"
-            errorMessage=""
-            width={44}
+          <View
             style={{
-              Input: {
-                textAlign: "center",
-                textAlignVertical: "center",
-                marginRight: scaleWidth(12),
-                marginBottom: scaleHeight(24),
-                ...scaleFont(18),
-                fontWeight: "500",
-                color: "#202131",
-              },
+              paddingBottom: scaleHeight(24),
             }}
-            editable={false}
-          />
+          >
+            <Input
+              inputArray={showWebToken.webToken.split("")}
+              maxLength={1}
+              usageType="LOGIN CODE"
+              errorMessage=""
+              width={44}
+              style={{
+                Input: {
+                  textAlign: "center",
+                  textAlignVertical: "center",
+                  marginRight: scaleWidth(12),
+                  ...scaleFont(22),
+                  fontWeight: "500",
+                  color: "#202131",
+                },
+              }}
+              editable={false}
+            />
+          </View>
           <TouchableOpacity
             onPress={() => {
               handleModal();

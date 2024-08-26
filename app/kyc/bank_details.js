@@ -1,7 +1,12 @@
 import { Alert, View } from "react-native";
 import Input from "../common/input";
 import { useEffect, useState } from "react";
-import { scaleHeight, scalePadding } from "../utils/getScaledDimensions";
+import {
+  scaleFont,
+  scaleHeight,
+  scalePadding,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 import { FullButton } from "../common/button";
 import { getBank, getUser, updateKYC } from "../api";
 import saveData from "../auth/save_data";
@@ -83,33 +88,34 @@ export default function BankDetails({ account_holder_name }) {
         width: "100%",
         height: "100%",
         justifyContent: "space-between",
-        ...scalePadding(20),
+        ...scalePadding(25),
+        paddingTop: scaleHeight(32),
       }}
     >
       <View>
         {PAN_DETAILS.map(
           ({ label, placeholder, key, editable, secureFields }) => (
-            <Input
-              key={label}
-              secureFields={secureFields}
-              editable={editable}
-              inputArray={[data[key]]}
-              onChange={(val) =>
-                setData((p) => ({
-                  ...p,
-                  [key]: val,
-                  bank_name: key == "ifsc_code" ? undefined : p.bank_name,
-                }))
-              }
-              label={label}
-              placeholder={placeholder}
-              style={{
-                InputGroup: {
-                  marginBottom: scaleHeight(20),
-                },
-              }}
-              usageType={"BANK DETAILS"}
-            />
+            <View style={{ paddingBottom: scaleHeight(24) }}>
+              <Input
+                key={label}
+                secureFields={secureFields}
+                editable={editable}
+                inputArray={[data[key]]}
+                onChange={(val) =>
+                  setData((p) => ({
+                    ...p,
+                    [key]: val,
+                    bank_name: key == "ifsc_code" ? undefined : p.bank_name,
+                  }))
+                }
+                style={{
+                  Label: { ...scaleFont(14), paddingLeft: scaleWidth(0) },
+                }}
+                label={label}
+                placeholder={placeholder}
+                usageType={"BANK DETAILS"}
+              />
+            </View>
           )
         )}
       </View>

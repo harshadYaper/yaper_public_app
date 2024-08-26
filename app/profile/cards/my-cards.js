@@ -1,15 +1,15 @@
-import { Image } from "expo-image";
+import { Image, ImageBackground } from "expo-image";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { CARD_IMAGES } from "../../constants/images";
 import {
   scaleBorder,
   scaleFont,
   scaleHeight,
-  scaleMargin,
   scalePadding,
   scaleWidth,
 } from "../../utils/getScaledDimensions";
 import AddCards from "./add-cards";
+import { truncate } from "../../utils/helper";
 
 export default function MyCards({ cards, selectedCards, setComponent }) {
   return (
@@ -17,8 +17,10 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
       numColumns={2}
       contentContainerStyle={{
         display: "flex",
-        ...scalePadding(16),
-
+        paddingBottom: scaleHeight(12),
+        paddingTop: scaleHeight(12),
+        paddingLeft: scaleWidth(10),
+        paddingRight: scaleWidth(10),
         width: "100%",
         height: "100%",
       }}
@@ -45,14 +47,15 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
                 style={{
                   ...scaleFont(10),
                   color: "#667085",
-                  ...scaleMargin(8),
+                  paddingBottom: scaleHeight(8),
+                  paddingLeft: scaleWidth(10),
                 }}
               ></Text>
               <View
                 style={{
                   display: "flex",
                   justifyContent: "center",
-                  width: scaleWidth(160),
+                  width: scaleWidth(140),
                   alignItems: "center",
                   borderStyle: "dotted",
                   borderWidth: scaleWidth(2),
@@ -82,23 +85,27 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
           ) : (
             <View
               style={{
-                width: "50%",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                ...scalePadding(8),
+                paddingBottom: scaleHeight(12),
+                paddingTop: scaleHeight(12),
+                paddingLeft: scaleWidth(10),
+                paddingRight: scaleWidth(10),
               }}
             >
               <Text
                 style={{
                   ...scaleFont(10),
                   color: "#667085",
-                  ...scaleMargin(8),
+                  width: "100%",
+                  paddingBottom: scaleHeight(8),
+                  paddingLeft: scaleWidth(10),
                 }}
               >
-                {display_name}
+                {truncate(display_name, 28)}
               </Text>
-              <Image
+              <ImageBackground
                 contentFit={"contain"}
                 source={
                   slug && CARD_IMAGES[slug]
@@ -109,7 +116,21 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
                   height: scaleHeight(100),
                   width: scaleWidth(160),
                 }}
-              />
+              >
+                <Image
+                  contentFit="contain"
+                  source={require("../../../assets/Trash.svg")}
+                  style={{
+                    height: scaleHeight(18),
+                    width: scaleWidth(18),
+                    position: "absolute",
+                    top: 5,
+                    right: 15,
+                    backgroundColor: "#F9FAFB",
+                    borderRadius: 10,
+                  }}
+                />
+              </ImageBackground>
             </View>
           )}
         </>

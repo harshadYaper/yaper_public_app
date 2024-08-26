@@ -8,6 +8,10 @@ export function sendReport(error) {
   // crashlytics().log(error);
 }
 
+export const initializeNotification = (oneSignalKey) => {
+  OneSignal && OneSignal.initialize(oneSignalKey);
+};
+
 export async function mapUserInSegment({ id, email, first_name, last_name }) {
   // const { identify } = useAnalytics();
   // id &&
@@ -16,8 +20,9 @@ export async function mapUserInSegment({ id, email, first_name, last_name }) {
   //     firstName: first_name,
   //     last_name: last_name,
   //   });
-  id && OneSignal.login(id.toString());
-  email && OneSignal.User.addEmail(email);
+
+  id && OneSignal && OneSignal.login(id.toString());
+  email && OneSignal && OneSignal.User.addEmail(email);
 
   ZendeskModule && ZendeskModule.initSdk(`${first_name} ${last_name}`, email);
 }

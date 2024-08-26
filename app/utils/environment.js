@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { APP_VARIABLES } from "../env";
 import { clearData, getData, putData } from "../storage";
 import { reloadAsync } from "expo-updates";
@@ -23,3 +24,6 @@ export const setEnvironment = async (environment) => {
 
 export const getAppVariables = async () =>
   APP_VARIABLES[await getEnvironment()];
+
+export const isIOS = Platform.OS == "ios";
+export const isAndroid = Platform.OS == "android";

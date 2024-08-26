@@ -25,133 +25,139 @@ export default function Supports({ data, openFilters }) {
       style={{
         width: "100%",
         opacity: openFilters ? 0.1 : 1,
-        marginTop: scaleHeight(20),
         ...scalePadding(12),
         marginBottom: scaleHeight(100),
       }}
       data={data || []}
-      renderItem={({ item: { title, options } }) => (
+      renderItem={({ item: { title, options }, index }) => (
         <View
-          style={{
-            display: "flex",
-            backgroundColor: "#FFFFFF",
-            ...scalePadding(12),
-            marginTop: scaleHeight(24),
-            borderRadius: scaleBorder(8),
-            borderColor: "#D0D5DD",
-            borderWidth: scaleWidth(2),
-          }}
+          style={{ ...(index == 0 ? {} : { paddingTop: scaleHeight(24) }) }}
         >
-          <TouchableOpacity
+          <View
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              ...{
+                display: "flex",
+                backgroundColor: "#FFFFFF",
+                ...scalePadding(12),
+                borderRadius: scaleBorder(8),
+                borderColor: "#D0D5DD",
+                borderWidth: scaleWidth(2),
+              },
+              ...(activeOption == title ? { paddingTop: scaleHeight(24) } : {}),
             }}
-            onPress={() =>
-              activeOption == title ? setActiveOption() : setActiveOption(title)
-            }
           >
-            <Text
+            <TouchableOpacity
               style={{
-                ...scaleFont(14),
-                fontWeight: "500",
-                color: "#667085",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
-            >
-              {title}
-            </Text>
-            <Image
-              source={
+              onPress={() =>
                 activeOption == title
-                  ? require("../../assets/icons/CaretCircleDown.svg")
-                  : require("../../assets/icons/CaretCircleRight.svg")
+                  ? setActiveOption()
+                  : setActiveOption(title)
               }
-              style={{
-                height: scaleHeight(20),
-                width: scaleWidth(20),
-                tintColor: "#667085",
-              }}
-            />
-          </TouchableOpacity>
-          {activeOption == title && (
-            <FlatList
-              data={options}
-              renderItem={({
-                item: {
-                  action: { type, next, resolution },
-                  title,
-                },
-                index,
-              }) => (
-                <View
-                  style={{
-                    marginTop: scaleHeight(12),
-                  }}
-                >
-                  {index !== 0 && (
-                    <View
+            >
+              <Text
+                style={{
+                  ...scaleFont(14),
+                  fontWeight: "500",
+                  color: "#667085",
+                }}
+              >
+                {title}
+              </Text>
+              <Image
+                source={
+                  activeOption == title
+                    ? require("../../assets/icons/CaretCircleDown.svg")
+                    : require("../../assets/icons/CaretCircleRight.svg")
+                }
+                style={{
+                  height: scaleHeight(20),
+                  width: scaleWidth(20),
+                  tintColor: "#667085",
+                }}
+              />
+            </TouchableOpacity>
+            {activeOption == title && (
+              <FlatList
+                data={options}
+                renderItem={({
+                  item: {
+                    action: { type, next, resolution },
+                    title,
+                  },
+                  index,
+                }) => (
+                  <View>
+                    {index !== 0 && (
+                      <View
+                        style={{
+                          display: "flex",
+                          height: scaleHeight(2),
+                          backgroundColor: "#D0D5DD",
+                        }}
+                      ></View>
+                    )}
+                    <TouchableOpacity
                       style={{
                         display: "flex",
-                        height: scaleHeight(2),
-                        backgroundColor: "#D0D5DD",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        paddingBottom: scaleHeight(20),
+                        paddingTop: scaleHeight(20),
                       }}
-                    ></View>
-                  )}
-                  <TouchableOpacity
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginTop: scaleHeight(12),
-                      marginBottom: scaleHeight(12),
-                    }}
-                    onPress={() => {
-                      if (type == "chat")
-                        openZendeskSupport({
-                          resolution,
-                          isChat: true,
-                          title,
-                          email,
-                          first_name,
-                          last_name,
-                          phone,
-                        });
-                      else if (type == "ticket")
-                        openZendeskSupport({
-                          resolution,
-                          isChat: true,
-                          title,
-                          email,
-                          first_name,
-                          last_name,
-                          phone,
-                        });
-                    }}
-                  >
-                    <Text
-                      style={{
-                        ...scaleFont(12),
-                        color: "#667085",
+                      onPress={() => {
+                        if (type == "chat")
+                          openZendeskSupport({
+                            resolution,
+                            isChat: true,
+                            title,
+                            email,
+                            first_name,
+                            last_name,
+                            phone,
+                          });
+                        else if (type == "ticket")
+                          openZendeskSupport({
+                            resolution,
+                            isChat: true,
+                            title,
+                            email,
+                            first_name,
+                            last_name,
+                            phone,
+                          });
                       }}
                     >
-                      {title}
-                    </Text>
-                    <Image
-                      source={require("../../assets/icons/CaretRight.svg")}
-                      style={{
-                        height: scaleHeight(20),
-                        width: scaleWidth(20),
-                        tintColor: "#667085",
-                      }}
-                    />
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
-          )}
+                      <Text
+                        style={{
+                          ...scaleFont(12),
+                          fontWeight: "400",
+                          color: "#667085",
+                          flex: 1,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {title}
+                      </Text>
+                      <Image
+                        source={require("../../assets/icons/CaretRight.svg")}
+                        style={{
+                          height: scaleHeight(20),
+                          width: scaleWidth(20),
+                          tintColor: "#667085",
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            )}
+          </View>
         </View>
       )}
       keyExtractor={({ title }) => `Support ${title}`}
@@ -161,34 +167,49 @@ export default function Supports({ data, openFilters }) {
 
 export function SupportsHeader({ supportTimings }) {
   return (
-    supportTimings && (
-      <View
+    <>
+      <Text
         style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#F6E3C0",
+          ...scaleFont(20),
+          fontWeight: "500",
+          ...scalePadding(4),
+          paddingBottom: scaleHeight(16),
           width: "100%",
-          ...scalePadding(12),
-          borderRadius: scaleBorder(8),
-          borderWidth: scaleWidth(2),
-          borderColor: "#FDB022",
         }}
       >
-        <Image
-          source={require("../../assets/icons/Info.svg")}
+        Support
+      </Text>
+      {supportTimings && (
+        <View
           style={{
-            height: scaleHeight(28),
-            width: scaleWidth(28),
-            tintColor: "#FDB022",
-            marginRight: scaleWidth(8),
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#F6E3C0",
+            width: "100%",
+            ...scalePadding(12),
+            borderRadius: scaleBorder(8),
+            borderWidth: scaleWidth(2),
+            borderColor: "#FDB022",
           }}
-        />
-        <Text style={{ ...scaleFont(12), fontWeight: "700" }}>
-          {supportTimings}
-        </Text>
-      </View>
-    )
+        >
+          <Image
+            source={require("../../assets/Info.svg")}
+            style={{
+              height: scaleHeight(28),
+              width: scaleWidth(28),
+              tintColor: "#FDB022",
+              marginRight: scaleWidth(12),
+            }}
+          />
+          <Text
+            style={{ ...scaleFont(12), fontWeight: "700", color: "#101828" }}
+          >
+            {supportTimings}
+          </Text>
+        </View>
+      )}
+    </>
   );
 }

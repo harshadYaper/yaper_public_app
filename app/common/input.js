@@ -6,6 +6,7 @@ import {
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
+import { isIOS } from "../utils/environment";
 
 export default function Input({
   label,
@@ -68,6 +69,7 @@ export default function Input({
                   ...style.Input,
                 }}
                 placeholder={placeholder}
+                placeholderTextColor="#667085"
               />
             );
           })}
@@ -88,15 +90,18 @@ const customStyles = StyleSheet.create({
     ...scalePadding(6),
   },
   Input: (width) => ({
-    width: scaleWidth(width),
-    backgroundColor: "white",
-    height: scaleHeight(44),
-    textAlignVertical: "center",
-    borderRadius: scaleBorder(8),
-    borderColor: "#D0D5DD",
-    borderWidth: scaleWidth(2),
-    ...scaleFont(16),
-    ...scalePadding(6),
+    ...{
+      width: scaleWidth(width),
+      backgroundColor: "white",
+      height: scaleHeight(44),
+      textAlignVertical: "center",
+      borderRadius: scaleBorder(8),
+      borderColor: "#D0D5DD",
+      borderWidth: scaleWidth(2),
+      ...scaleFont(16),
+      ...scalePadding(6),
+    },
+    ...(isIOS && { paddingTop: scaleHeight(0) }),
   }),
   Hint: {
     ...scaleFont(12),

@@ -16,13 +16,13 @@ export default function Offers({ offer, bank, expanded = true, onExpand }) {
       style={{
         display: "flex",
         paddingTop: scaleHeight(12),
+        paddingBottom: scaleHeight(24),
       }}
     >
       <View
         style={{
           ...{
             display: "flex",
-            paddingBottom: scaleHeight(12),
           },
           ...(onExpand
             ? {
@@ -31,19 +31,25 @@ export default function Offers({ offer, bank, expanded = true, onExpand }) {
                 borderWidth: scaleWidth(2),
                 borderRadius: scaleBorder(8),
               }
-            : {}),
+            : { paddingBottom: scaleHeight(12) }),
         }}
       >
         <Pressable
           onPress={() => onExpand && onExpand()}
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingLeft: scaleWidth(6),
-            paddingRight: scaleWidth(6),
-            paddingBottom: scaleHeight(12),
-            paddingTop: scaleHeight(12),
+            ...{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            },
+            ...(onExpand
+              ? { ...scalePadding(12) }
+              : {
+                  paddingLeft: scaleWidth(6),
+                  paddingRight: scaleWidth(6),
+                  paddingBottom: scaleHeight(12),
+                  paddingTop: scaleHeight(12),
+                }),
           }}
         >
           <Text
@@ -72,12 +78,15 @@ export default function Offers({ offer, bank, expanded = true, onExpand }) {
         {expanded && (
           <View
             style={{
-              justifyContent: "center",
-              ...scalePadding(12),
-              backgroundColor: WHITE,
-              borderColor: "#D0D5DD",
-              borderWidth: scaleWidth(2),
-              borderRadius: scaleBorder(8),
+              ...{ justifyContent: "center", ...scalePadding(12) },
+              ...(onExpand
+                ? {}
+                : {
+                    backgroundColor: WHITE,
+                    borderColor: "#D0D5DD",
+                    borderWidth: scaleWidth(2),
+                    borderRadius: scaleBorder(8),
+                  }),
             }}
           >
             <Image

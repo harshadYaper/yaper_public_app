@@ -21,12 +21,14 @@ import {
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
-import { capitalize, snakeToTitleize } from "../utils/helper";
+import { snakeToTitleize, titleize } from "../utils/helper";
 import Input from "../common/input";
 import { FullButton } from "../common/button";
 import { WHITE } from "../constants/colors";
 import { getDocumentAsync } from "expo-document-picker";
 import { PrimaryCheckBox } from "../common/checkbox";
+import { PrimaryRadio } from "../common/radio";
+import Timer from "../common/timer";
 
 export default function Order() {
   const { id, order_number, variant_id } = useLocalSearchParams();
@@ -37,17 +39,14 @@ export default function Order() {
 
   const {
     store,
-    title,
     bank,
     offer,
     items,
     logo,
     name,
     properties,
-    address,
     color_code,
     color,
-    type,
     order_states,
     order_meta,
     fields,
@@ -71,7 +70,7 @@ export default function Order() {
           width: "100%",
           height: "100%",
           opacity: Modal ? 0.1 : 1,
-          ...scalePadding(8),
+          ...scalePadding(12),
         }}
       >
         {name && (
@@ -102,6 +101,15 @@ export default function Order() {
                       }}
                       onPress={() => setModal([])}
                     >
+                      <View
+                        style={{
+                          position: "absolute",
+                          width: "100%",
+                          height: "100%",
+                          opacity: 0.7,
+                          backgroundColor: "#101828",
+                        }}
+                      />
                       <Pressable
                         style={{
                           display: "flex",
@@ -109,7 +117,8 @@ export default function Order() {
                           justifyContent: "center",
                           alignItems: "center",
                           width: "80%",
-                          ...scalePadding(8),
+                          ...scalePadding(24),
+                          borderRadius: 8,
                         }}
                       >
                         <Text
@@ -117,53 +126,67 @@ export default function Order() {
                             color: "#000000",
                             ...scaleFont(14),
                             fontWeight: "500",
+                            paddingBottom: scaleHeight(20),
                           }}
                         >
                           Reason for Cancellation
                         </Text>
-                        {[
-                          "Cashback too less",
-                          "Price Mismatch",
-                          "Pin code Not Serviceable",
-                          "Out of Stock",
-                          "Other",
-                        ].map((reason) => (
-                          <View
-                            key={reason}
-                            style={{
-                              width: "80%",
-                              flexDirection: "row",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Text
+                        <View
+                          style={{
+                            paddingBottom: scaleHeight(16),
+                            paddingTop: scaleHeight(16),
+                          }}
+                        >
+                          {[
+                            "Cashback too less",
+                            "Price Mismatch",
+                            "Pin code Not Serviceable",
+                            "Out of Stock",
+                            "Other",
+                          ].map((reason, ind) => (
+                            <View
+                              key={reason}
                               style={{
-                                ...scaleFont(12),
-                                fontWeight: "400",
-                                color: "#101828",
+                                ...{
+                                  width: "80%",
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                },
+                                ...(ind !== 0 && {
+                                  paddingTop: scaleHeight(24),
+                                }),
                               }}
                             >
-                              {reason}
-                            </Text>
-                            <PrimaryCheckBox
-                              onPress={async () => {
-                                await customRequest({
-                                  url: third_button.request.href,
-                                  method: third_button.request.type,
-                                  payload: { variant_id },
-                                });
-                                router.back();
-                              }}
-                            />
-                          </View>
-                        ))}
+                              <Text
+                                style={{
+                                  ...scaleFont(12),
+                                  fontWeight: "400",
+                                  color: "#101828",
+                                }}
+                              >
+                                {reason}
+                              </Text>
+                              <PrimaryCheckBox
+                                onPress={async () => {
+                                  await customRequest({
+                                    url: third_button.request.href,
+                                    method: third_button.request.type,
+                                    payload: { variant_id },
+                                  });
+                                  router.back();
+                                }}
+                              />
+                            </View>
+                          ))}
+                        </View>
                         <Pressable onPress={() => setModal([])}>
                           <Text
                             style={{
                               ...scaleFont(14),
                               fontWeight: "500",
                               color: "#025ACE",
+                              paddingTop: scaleHeight(24),
                             }}
                           >
                             Submit
@@ -185,6 +208,9 @@ export default function Order() {
           order_meta={order_meta}
           setModal={setModal}
           button={button}
+          secondary_button={secondary_button}
+          remaining_time={order?.meta?.timer?.remaining_time}
+          current_state={order?.state}
         />
 
         {offer && bank && (
@@ -206,6 +232,7 @@ export default function Order() {
             }
           />
         )}
+        <View style={{ height: scaleHeight(50) }}></View>
       </ScrollView>
       {Modal && <Modal />}
     </>
@@ -221,26 +248,44 @@ const DealStatus = ({
   order_meta,
   setModal,
   button,
+  secondary_button,
+  remaining_time,
+  current_state,
 }) => {
+  const getData = (key) =>
+    fields?.find((f) => f.key == key) || order_meta?.find((o) => o.key == key);
+
+  const orderNumber = getData("order_number");
+  const userNote = getData("user_note_details");
+  const trackingNumber = getData("tracking_number");
+  const deliverySupport = getData("delivery_support");
+  const addDeliverySupport = getData("add_delivery_support");
+  const uploadInvoice = getData("invoice");
+  const warrenty = getData("warrenty");
+
   return (
-    <View>
+    <View
+      style={{ paddingTop: scaleHeight(24), paddingBottom: scaleHeight(32) }}
+    >
       <Text
         style={{
           ...scaleFont(14),
           color: "#667085",
           ...scalePadding(8),
+          paddingBottom: scaleHeight(16),
           fontWeight: "500",
         }}
       >
         Deal Status
       </Text>
       {order_states.map(({ green, label, state_at }, ind) => (
-        <View key={label}>
+        <View key={label} style={{ paddingTop: ind !== 0 ? 16 : 0 }}>
           <View
             style={{
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
+              paddingBottom: scaleHeight(8),
             }}
           >
             {green ? (
@@ -264,20 +309,31 @@ const DealStatus = ({
                   alignItems: "center",
                 }}
               >
-                <Image
-                  source={require("../../assets/icons/LockSimple.svg")}
-                  style={{
-                    height: scaleHeight(14),
-                    width: scaleWidth(14),
-                    tintColor: "#D0D5DD",
-                  }}
-                />
+                {order_states.find((o) => !o.green).label !== label && (
+                  <Image
+                    source={require("../../assets/icons/LockSimple.svg")}
+                    style={{
+                      height: scaleHeight(14),
+                      width: scaleWidth(14),
+                      tintColor: "#D0D5DD",
+                    }}
+                  />
+                )}
               </ImageBackground>
             )}
             <Text
-              style={{ fontWeight: "500", color: "#101828", ...scaleFont(14) }}
+              style={{
+                fontWeight: "500",
+                color: green
+                  ? "#101828"
+                  : order_states.find((o) => !o.green).label !== label
+                  ? "#D0D5DD"
+                  : "#667085",
+                ...scaleFont(14),
+                paddingLeft: scaleWidth(8),
+              }}
             >
-              {capitalize(snakeToTitleize(label))}
+              {titleize(snakeToTitleize(label))}
             </Text>
           </View>
           {ind !== order_states.length - 1 && (
@@ -292,32 +348,52 @@ const DealStatus = ({
                 style={{
                   width: scaleWidth(2),
                   backgroundColor: "#D0D5DD",
-                  height: "80%",
+                  height: "100%",
                   ...scaleMargin(12),
+                  marginTop: scaleHeight(24),
                 }}
               />
-              <View>
-                <Text
-                  style={{
-                    ...scaleFont(10),
-                    fontStyle: "normal",
-                    fontWeight: "400",
-                    color: "#667085",
-                    paddingBottom: scaleHeight(8),
-                  }}
-                >
-                  {state_at}
-                </Text>
-                <OrderComponent
-                  state={label}
-                  yaper_id={yaper_id}
-                  variant_id={variant_id}
-                  setOrder={setOrder}
-                  fields={fields}
-                  order_meta={order_meta}
-                  setModal={setModal}
-                  button={button}
-                />
+              <View style={{ display: "flex" }}>
+                {state_at && (
+                  <Text
+                    style={{
+                      ...scaleFont(10),
+                      fontStyle: "normal",
+                      fontWeight: "400",
+                      color: "#667085",
+                      paddingBottom: scaleHeight(16),
+                      paddingLeft: scaleWidth(8),
+                    }}
+                  >
+                    {state_at}
+                  </Text>
+                )}
+                {{
+                  accepted: label == "accepted" && current_state == "accepted",
+                  ordered: orderNumber || userNote,
+                  shipped:
+                    trackingNumber || deliverySupport || addDeliverySupport,
+                  delivered: uploadInvoice || warrenty || fields.length == 0,
+                }[label] && (
+                  <OrderComponent
+                    state={label}
+                    yaper_id={yaper_id}
+                    variant_id={variant_id}
+                    setOrder={setOrder}
+                    order_meta={order_meta}
+                    setModal={setModal}
+                    button={button}
+                    secondary_button={secondary_button}
+                    orderNumber={orderNumber}
+                    userNote={userNote}
+                    trackingNumber={trackingNumber}
+                    deliverySupport={deliverySupport}
+                    addDeliverySupport={addDeliverySupport}
+                    uploadInvoice={uploadInvoice}
+                    warrenty={warrenty}
+                    remaining_time={remaining_time}
+                  />
+                )}
               </View>
             </View>
           )}
@@ -332,21 +408,19 @@ const OrderComponent = ({
   yaper_id,
   variant_id,
   setOrder,
-  fields,
-  order_meta,
   setModal,
   button,
+  secondary_button,
+  orderNumber,
+  userNote,
+  trackingNumber,
+  deliverySupport,
+  addDeliverySupport,
+  uploadInvoice,
+  warrenty,
+  remaining_time,
 }) => {
   const [val, setVal] = useState({});
-
-  const getData = (key) =>
-    fields.find((f) => f.key == key) || order_meta.find((o) => o.key == key);
-
-  const orderNumber = getData("order_number");
-  const trackingNumber = getData("tracking_number");
-  const deliverySupport = getData("delivery_support");
-  const addDeliverySupport = getData("add_delivery_support");
-  const uploadInvoice = getData("invoice");
 
   const [expand, setExpand] = useState(!orderNumber.value);
 
@@ -365,169 +439,123 @@ const OrderComponent = ({
   return (
     <View
       style={{
-        backgroundColor: "#FFFFFF",
-        ...scalePadding(16),
-        borderColor: "#D0D5DD",
-        borderRadius: scaleBorder(8),
-        borderWidth: scaleWidth(2),
-        justifyContent: "center",
+        paddingLeft: scaleWidth(8),
+        paddingBottom: scaleHeight(16),
+        paddingTop: scaleHeight(16),
       }}
     >
-      <TouchableOpacity
+      <View
         style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          minWidth: scaleWidth(280),
-        }}
-        onPress={() => {
-          setExpand((e) => !e);
-
-          uploadInvoice &&
-            setVal({
-              info: {
-                // type: `Only allowed ${uploadInvoice.file_type.join()}`,
-                size: uploadInvoice.info_text,
-              },
-            });
+          ...{
+            backgroundColor: "#FFFFFF",
+            borderColor: "#D0D5DD",
+            borderRadius: scaleBorder(8),
+            borderWidth: scaleWidth(2),
+            justifyContent: "center",
+          },
+          ...(state == "accepted"
+            ? { ...scalePadding(12), backgroundColor: "#F6E3C0" }
+            : {
+                paddingLeft: scaleWidth(expand ? 12 : 16),
+                paddingRight: scaleWidth(expand ? 12 : 16),
+                paddingTop: scaleHeight(expand ? 12 : 16),
+                paddingBottom: scaleHeight(expand ? 12 : 16),
+              }),
         }}
       >
-        <Text
+        <TouchableOpacity
           style={{
-            ...scaleFont(10),
-            color: "#667085",
-            ...scalePadding(4),
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            minWidth: scaleWidth(282),
+          }}
+          onPress={() => {
+            setExpand((e) => !e);
+
+            uploadInvoice &&
+              setVal({
+                info: {
+                  // type: `Only allowed ${uploadInvoice.file_type.join()}`,
+                  size: uploadInvoice.info_text,
+                },
+              });
           }}
         >
-          {
-            {
-              accepted: "Order Acceptance Information",
-              ordered: `Enter your ${label.replace(
-                "#",
-                "number"
-              )} from your order details`,
-              shipped: "Your Shipping Order details",
-              delivered: "Your Delivery Details",
-            }[state]
-          }
-        </Text>
-        <Image
-          source={
-            expand
-              ? require("../../assets/icons/CaretCircleUp.svg")
-              : require("../../assets/icons/CaretCircleDown.svg")
-          }
-          style={{
-            height: scaleHeight(20),
-            width: scaleWidth(20),
-          }}
-        />
-      </TouchableOpacity>
-      {expand &&
-        {
-          ordered: (
-            <>
-              <Pressable
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  ...scalePadding(4),
-                  paddingBottom: scaleHeight(8),
-                }}
-              >
-                <Text
-                  style={{
+          {state == "accepted" && (
+            <View
+              style={{
+                borderWidth: scaleBorder(4),
+                borderColor: "#667085",
+                borderRadius: 20,
+                height: scaleHeight(44),
+                width: scaleWidth(40),
+                justifyContent: "center",
+                alignItems: "center",
+                alignContent: "center",
+              }}
+            >
+              <Timer
+                time={remaining_time}
+                showMins={false}
+                styles={{ color: "#667085" }}
+              />
+            </View>
+          )}
+          <Text
+            style={{
+              ...{
+                ...scaleFont(expand ? 10 : 12),
+                color: expand ? "#667085" : "#101828",
+                flex: 1,
+                fontWeight: expand ? "400" : "500",
+              },
+              ...(state == "accepted"
+                ? {
+                    paddingLeft: scaleWidth(12),
                     ...scaleFont(12),
                     fontWeight: "500",
                     color: "#101828",
-                    paddingRight: scaleHeight(8),
-                  }}
-                >
-                  {label}
-                </Text>
-                <Image
-                  source={require("../../assets/icons/Info.svg")}
-                  style={{
-                    height: scaleHeight(20),
-                    width: scaleWidth(20),
-                  }}
-                />
-              </Pressable>
-              {value && val[key] === undefined ? (
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
+                  }
+                : {
                     ...scalePadding(4),
-                  }}
-                >
-                  <Text
-                    style={{
-                      ...scaleFont(14),
-                      fontWeight: "500",
-                      color: "#101828",
-                      paddingRight: scaleWidth(8),
-                    }}
-                  >
-                    {value}
-                  </Text>
-                  {editable && (
-                    <Pressable onPress={() => setVal({ [key]: value })}>
-                      <Image
-                        source={require("../../assets/PencilSimple.svg")}
-                        style={{
-                          height: scaleHeight(16),
-                          width: scaleWidth(16),
-                        }}
-                      />
-                    </Pressable>
-                  )}
-                </View>
-              ) : (
-                <>
-                  <Input
-                    inputArray={[val[key]]}
-                    width={280}
-                    onChange={(val) => {
-                      setVal({ [key]: val });
-                    }}
-                    placeholder={placeholder}
-                    style={{
-                      Input: {
-                        ...scalePadding(8),
-                        marginBottom: scaleHeight(16),
-                      },
-                    }}
-                  />
-                  {button && (
-                    <FullButton
-                      width={scaleWidth(280)}
-                      onPress={async () => {
-                        let response = await putOrder({
-                          yaper_id,
-                          [key]: val[key],
-                          variant_id,
-                          context: "order_details",
-                        });
-                        if (response?.order_number == val[key]) {
-                          setOrder((await getOrder({ yaper_id }))?.data);
-                          setVal({});
-                        }
-                      }}
-                      disabled={val[key] == undefined || !val[key].match(regex)}
-                      title={button.label}
-                    />
-                  )}
-                </>
-              )}
-            </>
-          ),
-          shipped: (
-            <>
-              {drop_down_data && (
+                    paddingRight: scaleWidth(8),
+                    paddingBottom: scaleHeight(8),
+                  }),
+            }}
+          >
+            {
+              {
+                accepted:
+                  "Complete this deal by ordering before it gets expired.",
+                ordered: `Enter your ${label.replace(
+                  "#",
+                  "number"
+                )} from your order details`,
+                shipped: "Your Shipping Order details",
+                delivered: "Your Delivery Details",
+              }[state]
+            }
+          </Text>
+          {state !== "accepted" && (
+            <Image
+              source={
+                expand
+                  ? require("../../assets/icons/CaretCircleUp.svg")
+                  : require("../../assets/icons/CaretCircleDown.svg")
+              }
+              style={{
+                height: scaleHeight(20),
+                width: scaleWidth(20),
+              }}
+            />
+          )}
+        </TouchableOpacity>
+        {expand &&
+          {
+            ordered: (
+              <>
                 <Pressable
                   style={{
                     display: "flex",
@@ -536,93 +564,26 @@ const OrderComponent = ({
                     ...scalePadding(4),
                     paddingBottom: scaleHeight(8),
                   }}
-                  onPress={() =>
-                    setModal([
-                      () => (
-                        <Pressable
-                          style={{
-                            display: "flex",
-                            width: "100%",
-                            position: "absolute",
-                            height: "100%",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                          onPress={() => setModal([])}
-                        >
-                          <View
-                            style={{
-                              display: "flex",
-                              backgroundColor: WHITE,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              ...scalePadding(8),
-                            }}
-                          >
-                            <Text
-                              style={{
-                                ...scaleFont(16),
-                                fontWeight: "400",
-                              }}
-                            >
-                              Select Courier Service
-                            </Text>
-                            {drop_down_data.map(({ label, regex, value }) => (
-                              <Pressable
-                                key={label + value}
-                                onPress={() => {
-                                  setTrackingPlatform({ regex, value });
-                                  setModal([]);
-                                }}
-                                style={{
-                                  paddingBottom: scaleHeight(4),
-                                  paddingTop: scaleHeight(4),
-                                }}
-                              >
-                                <Text
-                                  style={{
-                                    ...scaleFont(16),
-                                    fontWeight: "500",
-                                  }}
-                                >
-                                  {label}
-                                </Text>
-                              </Pressable>
-                            ))}
-                          </View>
-                        </Pressable>
-                      ),
-                    ])
-                  }
                 >
-                  <>
-                    <Text
-                      style={{
-                        ...{
-                          ...scaleFont(12),
-                          fontWeight: "500",
-                          color: "#101828",
-                          paddingRight: scaleHeight(8),
-                        },
-                        ...(trackingPlatform?.value
-                          ? { textDecorationLine: "underline" }
-                          : {}),
-                      }}
-                    >
-                      {trackingPlatform?.value || "Select Tracking  ID"}
-                    </Text>
-                    <Image
-                      source={require("../../assets/CaretDown.svg")}
-                      style={{
-                        height: scaleHeight(20),
-                        width: scaleWidth(20),
-                      }}
-                    />
-                  </>
+                  <Text
+                    style={{
+                      ...scaleFont(12),
+                      fontWeight: "500",
+                      color: "#101828",
+                      paddingRight: scaleHeight(8),
+                    }}
+                  >
+                    {label}
+                  </Text>
+                  <Image
+                    source={require("../../assets/Info.svg")}
+                    style={{
+                      height: scaleHeight(20),
+                      width: scaleWidth(20),
+                    }}
+                  />
                 </Pressable>
-              )}
-              {(trackingPlatform?.value || value) && (
-                <>
+                {value && val[key] === undefined ? (
                   <View
                     style={{
                       display: "flex",
@@ -633,68 +594,43 @@ const OrderComponent = ({
                   >
                     <Text
                       style={{
-                        ...scaleFont(12),
+                        ...scaleFont(14),
                         fontWeight: "500",
                         color: "#101828",
-                        paddingRight: scaleHeight(8),
+                        paddingRight: scaleWidth(8),
                       }}
                     >
-                      {label}
+                      {value}
                     </Text>
-                    <Image
-                      source={require("../../assets/icons/Info.svg")}
+                    {editable && (
+                      <Pressable onPress={() => setVal({ [key]: value })}>
+                        <Image
+                          source={require("../../assets/PencilSimple.svg")}
+                          style={{
+                            height: scaleHeight(16),
+                            width: scaleWidth(16),
+                          }}
+                        />
+                      </Pressable>
+                    )}
+                  </View>
+                ) : (
+                  <>
+                    <Input
+                      inputArray={[val[key]]}
+                      width={280}
+                      onChange={(val) => {
+                        setVal({ [key]: val });
+                      }}
+                      placeholder={placeholder}
                       style={{
-                        height: scaleHeight(20),
-                        width: scaleWidth(20),
+                        Input: {
+                          ...scalePadding(8),
+                          marginBottom: scaleHeight(16),
+                        },
                       }}
                     />
-                  </View>
-                  {value && val[key] === undefined ? (
-                    <View
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        ...scalePadding(4),
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontWeight: "500",
-                          color: "#101828",
-                          paddingRight: scaleWidth(8),
-                        }}
-                      >
-                        {value}
-                      </Text>
-                      {editable && (
-                        <Pressable onPress={() => setVal({ [key]: value })}>
-                          <Image
-                            source={require("../../assets/PencilSimple.svg")}
-                            style={{
-                              height: scaleHeight(16),
-                              width: scaleWidth(16),
-                            }}
-                          />
-                        </Pressable>
-                      )}
-                    </View>
-                  ) : (
-                    <>
-                      <Input
-                        inputArray={[val[key]]}
-                        width={280}
-                        onChange={(val) => {
-                          setVal({ [key]: val });
-                        }}
-                        placeholder={placeholder}
-                        style={{
-                          Input: {
-                            ...scalePadding(8),
-                            marginBottom: scaleHeight(16),
-                          },
-                        }}
-                      />
+                    {button && (
                       <FullButton
                         width={scaleWidth(280)}
                         onPress={async () => {
@@ -704,20 +640,77 @@ const OrderComponent = ({
                             variant_id,
                             context: "order_details",
                           });
-                          setOrder((await getOrder({ yaper_id }))?.data);
-                          setVal({});
+                          if (response?.order_number == val[key]) {
+                            setOrder((await getOrder({ yaper_id }))?.data);
+                            setVal({});
+                          }
                         }}
                         disabled={
-                          val[key] == undefined ||
-                          !val[key].match(trackingPlatform?.regex)
+                          val[key] == undefined || !val[key].match(regex)
                         }
                         title={button.label}
                       />
-                    </>
-                  )}
-
-                  {deliverySupport && (
-                    <>
+                    )}
+                    {secondary_button && (
+                      <Pressable
+                        onPress={async () => {
+                          // To do
+                          // await putData("PARAMS", {
+                          //   deal_id,
+                          //   deal_name: description,
+                          // });
+                          // router.navigate({
+                          //   pathname: pan_verified ? "/ecommerce-view" : "/kyc",
+                          // });
+                        }}
+                      >
+                        <Text
+                          style={{
+                            ...scaleFont(14),
+                            fontWeight: "500",
+                            color: "#025ACE",
+                            width: "100%",
+                            textAlign: "center",
+                            textAlignVertical: "center",
+                            paddingTop: scaleHeight(16),
+                          }}
+                        >
+                          Not yet ordered, Order Now
+                        </Text>
+                      </Pressable>
+                    )}
+                  </>
+                )}
+                {userNote && (
+                  <>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        ...scalePadding(4),
+                        paddingTop: scaleHeight(16),
+                      }}
+                    >
+                      <Text
+                        style={{
+                          ...scaleFont(12),
+                          fontWeight: "500",
+                          color: "#101828",
+                          paddingRight: scaleHeight(8),
+                        }}
+                      >
+                        {userNote?.label}
+                      </Text>
+                      <Image
+                        source={require("../../assets/icons/Info.svg")}
+                        style={{
+                          height: scaleHeight(20),
+                          width: scaleWidth(20),
+                        }}
+                      />
+                    </View>
+                    {userNote.value && val[userNote.key] === undefined ? (
                       <View
                         style={{
                           display: "flex",
@@ -728,103 +721,243 @@ const OrderComponent = ({
                       >
                         <Text
                           style={{
-                            ...scaleFont(12),
+                            ...scaleFont(14),
                             fontWeight: "500",
                             color: "#101828",
-                            paddingRight: scaleHeight(8),
+                            paddingRight: scaleWidth(8),
                           }}
                         >
-                          {deliverySupport?.label}
+                          {userNote.value}
                         </Text>
-                        <Image
-                          source={require("../../assets/icons/Info.svg")}
-                          style={{
-                            height: scaleHeight(20),
-                            width: scaleWidth(20),
-                          }}
-                        />
-                      </View>
-                      {deliverySupport.value &&
-                      val[deliverySupport.key] === undefined ? (
-                        <View
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            ...scalePadding(4),
-                          }}
-                        >
-                          <Text
-                            style={{
-                              ...scaleFont(14),
-                              fontWeight: "500",
-                              color: "#101828",
-                              paddingRight: scaleWidth(8),
-                            }}
-                          >
-                            {deliverySupport.value}
-                          </Text>
-                          {deliverySupport.editable && (
-                            <Pressable
-                              onPress={() =>
-                                setVal({
-                                  [deliverySupport.key]: deliverySupport.value,
-                                })
-                              }
-                            >
-                              <Image
-                                source={require("../../assets/PencilSimple.svg")}
-                                style={{
-                                  height: scaleHeight(16),
-                                  width: scaleWidth(16),
-                                }}
-                              />
-                            </Pressable>
-                          )}
-                        </View>
-                      ) : (
-                        <>
-                          <Input
-                            inputArray={[val[deliverySupport.key]]}
-                            width={280}
-                            onChange={(val) => {
-                              setVal({ [deliverySupport.key]: val });
-                            }}
-                            placeholder={deliverySupport?.placeholder}
-                            style={{
-                              Input: {
-                                ...scalePadding(8),
-                                marginBottom: scaleHeight(16),
-                              },
-                            }}
-                          />
-                          <FullButton
-                            width={scaleWidth(280)}
-                            onPress={async () => {
-                              let response = await putOrder({
-                                yaper_id,
-                                [deliverySupport.key]: val[deliverySupport.key],
-                                variant_id,
-                                context: "order_details",
-                              });
-                              setOrder((await getOrder({ yaper_id }))?.data);
-                              setVal({});
-                            }}
-                            disabled={
-                              val[deliverySupport.key] == undefined ||
-                              !val[deliverySupport.key].match(
-                                deliverySupport.regex
-                              )
+                        {userNote.editable && (
+                          <Pressable
+                            onPress={() =>
+                              setVal({
+                                [userNote.key]: userNote.value,
+                              })
                             }
-                            title={button.label}
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
+                          >
+                            <Image
+                              source={require("../../assets/PencilSimple.svg")}
+                              style={{
+                                height: scaleHeight(16),
+                                width: scaleWidth(16),
+                              }}
+                            />
+                          </Pressable>
+                        )}
+                      </View>
+                    ) : (
+                      <>
+                        <Input
+                          inputArray={[val[userNote.key]]}
+                          width={280}
+                          onChange={(val) => {
+                            setVal({ [userNote.key]: val });
+                          }}
+                          placeholder={userNote?.placeholder}
+                          style={{
+                            Input: {
+                              ...scalePadding(8),
+                              marginBottom: scaleHeight(16),
+                            },
+                          }}
+                        />
+                        <FullButton
+                          width={scaleWidth(280)}
+                          onPress={async () => {
+                            await putOrder({
+                              yaper_id,
+                              [userNote.key]: val[userNote.key],
+                              variant_id,
+                              context: "order_details",
+                            });
 
-                  {addDeliverySupport && (
+                            setOrder((await getOrder({ yaper_id }))?.data);
+                            setVal({});
+                          }}
+                          disabled={
+                            val[userNote.key] == undefined ||
+                            !val[userNote.key].match(userNote.regex)
+                          }
+                          title={button.label}
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+              </>
+            ),
+            shipped: (
+              <>
+                {drop_down_data && (
+                  <Pressable
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      ...scalePadding(4),
+                      paddingBottom: scaleHeight(16),
+                    }}
+                    onPress={() =>
+                      setModal([
+                        () => (
+                          <Pressable
+                            style={{
+                              display: "flex",
+                              width: "100%",
+                              position: "absolute",
+                              height: "100%",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            onPress={() => setModal([])}
+                          >
+                            <View
+                              style={{
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "#101828",
+                                opacity: 0.6,
+                              }}
+                            />
+                            <View
+                              style={{
+                                display: "flex",
+                                backgroundColor: WHITE,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                ...scalePadding(24),
+                                borderRadius: 20,
+                                width: "80%",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  ...scaleFont(14),
+                                  fontWeight: "500",
+                                  color: "#000000",
+                                  paddingBottom: scaleHeight(36),
+                                }}
+                              >
+                                Select Courier Service
+                              </Text>
+                              {drop_down_data.map(
+                                ({ label, regex, value }, ind) => (
+                                  <Pressable
+                                    key={label + value}
+                                    style={{
+                                      ...{
+                                        // backgroundColor: "red",
+                                        width: "100%",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                      },
+                                      ...(ind == 0
+                                        ? {}
+                                        : {
+                                            paddingTop: scaleHeight(24),
+                                          }),
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        ...scaleFont(12),
+                                        fontWeight: "400",
+                                      }}
+                                    >
+                                      {label}
+                                    </Text>
+                                    <PrimaryRadio
+                                      onPress={() =>
+                                        setTrackingPlatform({ regex, value })
+                                      }
+                                      selected={
+                                        trackingPlatform &&
+                                        trackingPlatform.value == value
+                                      }
+                                    />
+                                  </Pressable>
+                                )
+                              )}
+                              <Pressable onPress={() => setModal([])}>
+                                <Text
+                                  style={{
+                                    color: "#025ACE",
+                                    ...scaleFont(14),
+                                    fontWeight: "500",
+                                    paddingTop: scaleHeight(24),
+                                  }}
+                                >
+                                  Submit
+                                </Text>
+                              </Pressable>
+                            </View>
+                          </Pressable>
+                        ),
+                      ])
+                    }
+                  >
                     <>
+                      <Text
+                        style={{
+                          ...{
+                            ...scaleFont(12),
+                            fontWeight: "500",
+                            color: "#101828",
+                            paddingRight: scaleHeight(8),
+                          },
+                          ...(trackingPlatform?.value
+                            ? { textDecorationLine: "underline" }
+                            : {}),
+                        }}
+                      >
+                        {trackingPlatform?.value || "Select Tracking  ID"}
+                      </Text>
+                      <Image
+                        source={require("../../assets/CaretDown.svg")}
+                        style={{
+                          height: scaleHeight(20),
+                          width: scaleWidth(20),
+                        }}
+                      />
+                    </>
+                  </Pressable>
+                )}
+                {(trackingPlatform?.value || value) && (
+                  <>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        ...scalePadding(4),
+                        paddingBottom: scaleHeight(
+                          value && val[key] === undefined ? 4 : 12
+                        ),
+                      }}
+                    >
+                      <Text
+                        style={{
+                          ...scaleFont(12),
+                          fontWeight: "500",
+                          color: "#101828",
+                          paddingRight: scaleHeight(8),
+                        }}
+                      >
+                        {label}
+                      </Text>
+                      <Image
+                        source={require("../../assets/Info.svg")}
+                        style={{
+                          height: scaleHeight(20),
+                          width: scaleWidth(20),
+                        }}
+                      />
+                    </View>
+                    {value && val[key] === undefined ? (
                       <View
                         style={{
                           display: "flex",
@@ -835,24 +968,179 @@ const OrderComponent = ({
                       >
                         <Text
                           style={{
-                            ...scaleFont(12),
                             fontWeight: "500",
                             color: "#101828",
-                            paddingRight: scaleHeight(8),
+                            paddingRight: scaleWidth(8),
                           }}
                         >
-                          {addDeliverySupport?.label}
+                          {value}
                         </Text>
-                        <Image
-                          source={require("../../assets/icons/Info.svg")}
+                        {editable && (
+                          <Pressable onPress={() => setVal({ [key]: value })}>
+                            <Image
+                              source={require("../../assets/PencilSimple.svg")}
+                              style={{
+                                height: scaleHeight(16),
+                                width: scaleWidth(16),
+                              }}
+                            />
+                          </Pressable>
+                        )}
+                      </View>
+                    ) : (
+                      <>
+                        <Input
+                          inputArray={[val[key]]}
+                          width={280}
+                          onChange={(val) => {
+                            setVal({ [key]: val });
+                          }}
+                          placeholder={placeholder}
                           style={{
-                            height: scaleHeight(20),
-                            width: scaleWidth(20),
+                            Input: {
+                              ...scalePadding(8),
+                              marginBottom: scaleHeight(16),
+                            },
                           }}
                         />
-                      </View>
-                      {addDeliverySupport.value &&
-                      val[addDeliverySupport.key] === undefined ? (
+                        <FullButton
+                          width={scaleWidth(280)}
+                          onPress={async () => {
+                            let response = await putOrder({
+                              yaper_id,
+                              [key]: val[key],
+                              variant_id,
+                              context: "order_details",
+                            });
+                            setOrder((await getOrder({ yaper_id }))?.data);
+                            setVal({});
+                          }}
+                          disabled={
+                            val[key] == undefined ||
+                            !val[key].match(trackingPlatform?.regex)
+                          }
+                          title={button.label}
+                        />
+                      </>
+                    )}
+
+                    {deliverySupport && (
+                      <>
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            ...scalePadding(4),
+                            paddingTop: scaleHeight(20),
+                          }}
+                        >
+                          <Text
+                            style={{
+                              ...scaleFont(12),
+                              fontWeight: "500",
+                              color: "#101828",
+                              paddingRight: scaleHeight(8),
+                              paddingBottom: scaleHeight(
+                                deliverySupport.value &&
+                                  val[deliverySupport.key] === undefined
+                                  ? 4
+                                  : 12
+                              ),
+                            }}
+                          >
+                            {deliverySupport.label}
+                          </Text>
+                          <Image
+                            source={require("../../assets/Info.svg")}
+                            style={{
+                              height: scaleHeight(20),
+                              width: scaleWidth(20),
+                            }}
+                          />
+                        </View>
+                        {deliverySupport.value &&
+                        val[deliverySupport.key] === undefined ? (
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              ...scalePadding(4),
+                            }}
+                          >
+                            <Text
+                              style={{
+                                ...scaleFont(14),
+                                fontWeight: "500",
+                                color: "#101828",
+                                paddingRight: scaleWidth(8),
+                              }}
+                            >
+                              {deliverySupport.value}
+                            </Text>
+                            {deliverySupport.editable && (
+                              <Pressable
+                                onPress={() =>
+                                  setVal({
+                                    [deliverySupport.key]:
+                                      deliverySupport.value,
+                                  })
+                                }
+                              >
+                                <Image
+                                  source={require("../../assets/PencilSimple.svg")}
+                                  style={{
+                                    height: scaleHeight(16),
+                                    width: scaleWidth(16),
+                                  }}
+                                />
+                              </Pressable>
+                            )}
+                          </View>
+                        ) : (
+                          <>
+                            <Input
+                              inputArray={[val[deliverySupport.key]]}
+                              width={280}
+                              onChange={(val) => {
+                                setVal({ [deliverySupport.key]: val });
+                              }}
+                              placeholder={deliverySupport.placeholder}
+                              style={{
+                                Input: {
+                                  ...scalePadding(8),
+                                  marginBottom: scaleHeight(16),
+                                },
+                              }}
+                            />
+                            <FullButton
+                              width={scaleWidth(280)}
+                              onPress={async () => {
+                                let response = await putOrder({
+                                  yaper_id,
+                                  [deliverySupport.key]:
+                                    val[deliverySupport.key],
+                                  variant_id,
+                                  context: "order_details",
+                                });
+                                setOrder((await getOrder({ yaper_id }))?.data);
+                                setVal({});
+                              }}
+                              disabled={
+                                val[deliverySupport.key] == undefined ||
+                                !val[deliverySupport.key].match(
+                                  deliverySupport.regex
+                                )
+                              }
+                              title={button.label}
+                            />
+                          </>
+                        )}
+                      </>
+                    )}
+
+                    {addDeliverySupport && (
+                      <>
                         <View
                           style={{
                             display: "flex",
@@ -863,104 +1151,136 @@ const OrderComponent = ({
                         >
                           <Text
                             style={{
-                              ...scaleFont(14),
+                              ...scaleFont(12),
                               fontWeight: "500",
                               color: "#101828",
-                              paddingRight: scaleWidth(8),
+                              paddingRight: scaleHeight(8),
                             }}
                           >
-                            {addDeliverySupport.value}
+                            {addDeliverySupport?.label}
                           </Text>
-                          {addDeliverySupport.editable && (
-                            <Pressable
-                              onPress={() =>
-                                setVal({
-                                  [addDeliverySupport.key]:
-                                    addDeliverySupport.value,
-                                })
-                              }
-                            >
-                              <Image
-                                source={require("../../assets/PencilSimple.svg")}
-                                style={{
-                                  height: scaleHeight(16),
-                                  width: scaleWidth(16),
-                                }}
-                              />
-                            </Pressable>
-                          )}
-                        </View>
-                      ) : (
-                        <>
-                          <Input
-                            inputArray={[val[addDeliverySupport.key]]}
-                            width={280}
-                            onChange={(val) => {
-                              if (val.match(addDeliverySupport.regex)) {
-                                setVal({ [addDeliverySupport.key]: val });
-                              }
-                            }}
-                            placeholder={addDeliverySupport?.placeholder}
+                          <Image
+                            source={require("../../assets/icons/Info.svg")}
                             style={{
-                              Input: {
-                                ...scalePadding(8),
-                                marginBottom: scaleHeight(16),
-                              },
+                              height: scaleHeight(20),
+                              width: scaleWidth(20),
                             }}
                           />
-                          <FullButton
-                            width={scaleWidth(280)}
-                            onPress={async () => {
-                              let response = await putOrder({
-                                yaper_id,
-                                [addDeliverySupport.key]:
-                                  val[addDeliverySupport.key],
-                                variant_id,
-                                context: "order_details",
-                              });
-                              setOrder((await getOrder({ yaper_id }))?.data);
-                              setVal({});
+                        </View>
+                        {addDeliverySupport.value &&
+                        val[addDeliverySupport.key] === undefined ? (
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              ...scalePadding(4),
                             }}
-                            title={button.label}
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          ),
-          delivered: (
-            <>
-              {button && button.button_type == "order_delivered" && (
-                <FullButton
-                  width={scaleWidth(280)}
-                  onPress={async () => {
-                    let response = await customRequest({
-                      payload: {
-                        variant_id,
-                        context: "order_details",
-                      },
-                      url: button.request.href,
-                      method: button.request.type,
-                    });
-                    setOrder((await getOrder({ yaper_id }))?.data);
-                    setVal({});
-                  }}
-                  title={button.label}
-                />
-              )}
-              {uploadInvoice &&
-                (button && button.button_type == "save" ? (
-                  <View>
+                          >
+                            <Text
+                              style={{
+                                ...scaleFont(14),
+                                fontWeight: "500",
+                                color: "#101828",
+                                paddingRight: scaleWidth(8),
+                              }}
+                            >
+                              {addDeliverySupport.value}
+                            </Text>
+                            {addDeliverySupport.editable && (
+                              <Pressable
+                                onPress={() =>
+                                  setVal({
+                                    [addDeliverySupport.key]:
+                                      addDeliverySupport.value,
+                                  })
+                                }
+                              >
+                                <Image
+                                  source={require("../../assets/PencilSimple.svg")}
+                                  style={{
+                                    height: scaleHeight(16),
+                                    width: scaleWidth(16),
+                                  }}
+                                />
+                              </Pressable>
+                            )}
+                          </View>
+                        ) : (
+                          <>
+                            <Input
+                              inputArray={[val[addDeliverySupport.key]]}
+                              width={280}
+                              onChange={(val) => {
+                                if (val.match(addDeliverySupport.regex)) {
+                                  setVal({ [addDeliverySupport.key]: val });
+                                }
+                              }}
+                              placeholder={addDeliverySupport?.placeholder}
+                              style={{
+                                Input: {
+                                  ...scalePadding(8),
+                                  marginBottom: scaleHeight(16),
+                                },
+                              }}
+                            />
+                            <FullButton
+                              width={scaleWidth(280)}
+                              onPress={async () => {
+                                let response = await putOrder({
+                                  yaper_id,
+                                  [addDeliverySupport.key]:
+                                    val[addDeliverySupport.key],
+                                  variant_id,
+                                  context: "order_details",
+                                });
+                                setOrder((await getOrder({ yaper_id }))?.data);
+                                setVal({});
+                              }}
+                              title={button.label}
+                            />
+                          </>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+              </>
+            ),
+            delivered: (
+              <>
+                {button && button.button_type == "order_delivered" && (
+                  <View style={{ paddingTop: scaleHeight(12) }}>
+                    <FullButton
+                      width={scaleWidth(280)}
+                      onPress={async () => {
+                        let response = await customRequest({
+                          payload: {
+                            variant_id,
+                            context: "order_details",
+                          },
+                          url: button.request.href,
+                          method: button.request.type,
+                        });
+                        setOrder((await getOrder({ yaper_id }))?.data);
+                        setVal({});
+                      }}
+                      title={button.label}
+                    />
+                  </View>
+                )}
+                {uploadInvoice &&
+                !uploadInvoice.complex_value &&
+                button &&
+                button.button_type == "save" ? (
+                  <View style={{ paddingLeft: scaleHeight(4) }}>
                     <Text
                       style={{
                         ...scaleFont(12),
-                        color: "#101828",
-                        fontWeight: "500",
+                        color: "#667085",
+                        fontWeight: "400",
                         paddingTop: scaleHeight(4),
-                        paddingBottom: scaleHeight(8),
+                        paddingBottom: scaleHeight(12),
                       }}
                     >
                       Upload Invoice to confirm delivery
@@ -968,7 +1288,6 @@ const OrderComponent = ({
                     <Pressable
                       style={{
                         height: scaleHeight(100),
-                        width: scaleWidth(280),
                         borderColor: "#667085",
                         borderWidth: scaleWidth(2),
                         borderStyle: "dashed",
@@ -979,6 +1298,7 @@ const OrderComponent = ({
                         flexDirection: "row",
                         justifyContent: "center",
                         alignItems: "center",
+                        backgroundColor: "#F9FAFB",
                       }}
                       onPress={async () => {
                         let { assets, canceled } = await getDocumentAsync({});
@@ -1006,13 +1326,28 @@ const OrderComponent = ({
                       }}
                     >
                       {val.invoice ? (
-                        <Image
-                          source={{ uri: val.invoice.uri }}
-                          style={{
-                            height: scaleHeight(80),
-                            width: scaleWidth(40),
-                          }}
-                        />
+                        <>
+                          <ImageBackground
+                            source={{ uri: val.invoice.uri }}
+                            style={{
+                              height: scaleHeight(60),
+                              width: scaleWidth(40),
+                              position: "relative",
+                            }}
+                          >
+                            <Image
+                              source={require("../../assets/icons/cross.svg")}
+                              style={{
+                                height: scaleHeight(20),
+                                width: scaleWidth(18),
+                                position: "absolute",
+                                backgroundColor: "#FFF",
+                                right: -10,
+                                top: -9,
+                              }}
+                            />
+                          </ImageBackground>
+                        </>
                       ) : (
                         <View
                           style={{
@@ -1067,8 +1402,7 @@ const OrderComponent = ({
                         ...scaleFont(12),
                         color: "#101828",
                         fontWeight: "500",
-                        paddingTop: scaleHeight(4),
-                        paddingBottom: scaleHeight(4),
+                        paddingTop: scaleHeight(8),
                       }}
                     >
                       {uploadInvoice.complex_value.header_title}
@@ -1090,6 +1424,15 @@ const OrderComponent = ({
                             >
                               <View
                                 style={{
+                                  position: "absolute",
+                                  width: "100%",
+                                  height: "100%",
+                                  opacity: 0.7,
+                                  backgroundColor: "#101828",
+                                }}
+                              />
+                              <View
+                                style={{
                                   display: "flex",
                                   backgroundColor: WHITE,
                                   justifyContent: "center",
@@ -1100,6 +1443,205 @@ const OrderComponent = ({
                                 <Image
                                   source={{
                                     uri: uploadInvoice.complex_value.value,
+                                  }}
+                                  style={{
+                                    height: scaleHeight(600),
+                                    width: scaleWidth(300),
+                                  }}
+                                  alt="invoice image"
+                                />
+                              </View>
+                            </Pressable>
+                          ),
+                        ])
+                      }
+                    >
+                      <Text
+                        style={{
+                          ...scaleFont(14),
+                          color: "#025ACE",
+                          fontWeight: "500",
+                          paddingBottom: scaleHeight(4),
+                        }}
+                      >
+                        {uploadInvoice.complex_value.text}
+                      </Text>
+                    </Pressable>
+                  </View>
+                )}
+
+                {warrenty &&
+                !warrenty.complex_value &&
+                button &&
+                button.button_type == "save" ? (
+                  <View style={{ paddingLeft: scaleHeight(4) }}>
+                    <Text
+                      style={{
+                        ...scaleFont(12),
+                        color: "#667085",
+                        fontWeight: "400",
+                        paddingTop: scaleHeight(4),
+                        paddingBottom: scaleHeight(12),
+                      }}
+                    >
+                      Upload Warranty Card
+                    </Text>
+                    <Pressable
+                      style={{
+                        height: scaleHeight(100),
+                        borderColor: "#667085",
+                        borderWidth: scaleWidth(2),
+                        borderStyle: "dashed",
+                        borderRadius: scaleBorder(4),
+                        ...scalePadding(20),
+                        marginBottom: scaleHeight(16),
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#F9FAFB",
+                      }}
+                      onPress={async () => {
+                        let { assets, canceled } = await getDocumentAsync({});
+
+                        if (!canceled) {
+                          if (assets[0].size / 1024 > warrenty.max_file_size) {
+                            setVal({
+                              error: {
+                                // type: uploadInvoice.file_type_error,
+                                size: warrenty.max_file_size_error,
+                              },
+                            });
+                          } else {
+                            setVal({
+                              [warrenty.key]: {
+                                uri: assets[0].uri,
+                                type: assets[0].mimeType,
+                                name: assets[0].name,
+                              },
+                            });
+                          }
+                        }
+                      }}
+                    >
+                      {val.invoice ? (
+                        <>
+                          <ImageBackground
+                            source={{ uri: val.invoice.uri }}
+                            style={{
+                              height: scaleHeight(60),
+                              width: scaleWidth(40),
+                              position: "relative",
+                            }}
+                          >
+                            <Image
+                              source={require("../../assets/icons/cross.svg")}
+                              style={{
+                                height: scaleHeight(20),
+                                width: scaleWidth(18),
+                                position: "absolute",
+                                backgroundColor: "#FFF",
+                                right: -10,
+                                top: -9,
+                              }}
+                            />
+                          </ImageBackground>
+                        </>
+                      ) : (
+                        <View
+                          style={{
+                            height: scaleHeight(32),
+                            width: scaleWidth(32),
+                            borderColor: "#667085",
+                            borderWidth: scaleWidth(2),
+                            borderRadius: scaleBorder(100),
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Image
+                            source={require("../../assets/icons/upload.svg")}
+                            style={{
+                              height: scaleHeight(16),
+                              width: scaleWidth(16),
+                            }}
+                          />
+                        </View>
+                      )}
+                    </Pressable>
+                    <InvoiceInfo
+                      val={val.info}
+                      styles={{
+                        color: "#101828",
+                      }}
+                    />
+                    <InvoiceInfo val={val.error} />
+
+                    <FullButton
+                      width={scaleWidth(280)}
+                      onPress={async () => {
+                        let response = await putOrder({
+                          yaper_id,
+                          [warrenty.key]: val[warrenty.key],
+                          variant_id,
+                          context: "order_details",
+                        });
+
+                        setOrder((await getOrder({ yaper_id }))?.data);
+                        setVal({});
+                      }}
+                      title={button.label}
+                      disabled={val[warrenty.key] == undefined}
+                    />
+                  </View>
+                ) : (
+                  <View style={{ ...scalePadding(4) }}>
+                    <Text
+                      style={{
+                        ...scaleFont(12),
+                        color: "#101828",
+                        fontWeight: "500",
+                        paddingTop: scaleHeight(8),
+                      }}
+                    >
+                      {warrenty.complex_value.header_title}
+                    </Text>
+                    <Pressable
+                      onPress={() =>
+                        setModal([
+                          () => (
+                            <Pressable
+                              style={{
+                                display: "flex",
+                                width: "100%",
+                                position: "absolute",
+                                height: "100%",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              onPress={() => setModal([])}
+                            >
+                              <View
+                                style={{
+                                  position: "absolute",
+                                  width: "100%",
+                                  height: "100%",
+                                  opacity: 0.7,
+                                  backgroundColor: "#101828",
+                                }}
+                              />
+                              <View
+                                style={{
+                                  display: "flex",
+                                  backgroundColor: WHITE,
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  ...scalePadding(8),
+                                }}
+                              >
+                                <Image
+                                  source={{
+                                    uri: warrenty.complex_value.value,
                                   }}
                                   style={{
                                     height: scaleHeight(600),
@@ -1117,18 +1659,18 @@ const OrderComponent = ({
                           ...scaleFont(14),
                           color: "#025ACE",
                           fontWeight: "500",
-                          paddingTop: scaleHeight(4),
                           paddingBottom: scaleHeight(4),
                         }}
                       >
-                        {uploadInvoice.complex_value.text}
+                        {warrenty.complex_value.text}
                       </Text>
                     </Pressable>
                   </View>
-                ))}
-            </>
-          ),
-        }[state]}
+                )}
+              </>
+            ),
+          }[state]}
+      </View>
     </View>
   );
 };

@@ -4,19 +4,19 @@ import store from "./store";
 import { init, wrap } from "@sentry/react-native";
 import { getAppVariables } from "./utils/environment";
 import { useEffect } from "react";
-import { OneSignal } from "react-native-onesignal";
 import { requestPermissionsAsync } from "expo-notifications";
+import { initializeNotification } from "./utils/analytics";
 
 function HomeLayout() {
   useEffect(() => {
     (async () => {
       let { sentryDSN, sentryDebug, oneSignalKey } = await getAppVariables();
-      // init({
-      //   dsn: sentryDSN,
-      //   debug: sentryDebug,
-      // });
+      init({
+        dsn: sentryDSN,
+        debug: sentryDebug,
+      });
       let { granted } = await requestPermissionsAsync();
-      granted && OneSignal.initialize(oneSignalKey);
+      granted && initializeNotification(oneSignalKey);
     })();
   }, []);
 

@@ -20,7 +20,7 @@ export default function App({
       {Splash}
     </View>
   ) : (
-    <SafeAreaView style={{ ...customeStyles.Component }}>
+    <View style={{ ...customeStyles.Component }}>
       <Stack.Screen
         options={{
           headerShown: false,
@@ -37,7 +37,7 @@ export default function App({
           {Component}
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

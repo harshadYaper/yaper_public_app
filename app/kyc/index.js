@@ -19,7 +19,7 @@ export default function KYC() {
   const [loading, setLoading] = useState(true);
   const [component, setComponent] = useState([
     pan_verified ? BankDetails : PAN,
-    "Verify PAN",
+    pan_verified ? "Bank Account Details" : "Verify PAN",
     {},
   ]);
 

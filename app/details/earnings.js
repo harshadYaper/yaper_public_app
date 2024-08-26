@@ -33,8 +33,6 @@ export default function Earnings({ items, expanded = true, onExpand }) {
       style={{
         ...{
           display: "flex",
-          paddingBottom: scaleHeight(12),
-          paddingTop: scaleHeight(12),
         },
         ...(onExpand
           ? {
@@ -43,19 +41,28 @@ export default function Earnings({ items, expanded = true, onExpand }) {
               borderRadius: scaleBorder(8),
               borderWidth: scaleWidth(2),
             }
-          : {}),
+          : {
+              paddingBottom: scaleHeight(12),
+              paddingTop: scaleHeight(12),
+            }),
       }}
     >
       <Pressable
         onPress={() => onExpand && onExpand()}
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingLeft: scaleWidth(6),
-          paddingRight: scaleWidth(6),
-          paddingBottom: scaleHeight(12),
-          paddingTop: scaleHeight(12),
+          ...{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          },
+          ...(onExpand
+            ? { ...scalePadding(12) }
+            : {
+                paddingLeft: scaleWidth(6),
+                paddingRight: scaleWidth(6),
+                paddingBottom: scaleHeight(12),
+                paddingTop: scaleHeight(12),
+              }),
         }}
       >
         <Text
@@ -85,10 +92,14 @@ export default function Earnings({ items, expanded = true, onExpand }) {
       {expanded && (
         <View
           style={{
-            backgroundColor: WHITE,
-            borderColor: "#E4E4E4",
-            borderRadius: scaleBorder(8),
-            borderWidth: scaleWidth(2),
+            ...(onExpand
+              ? {}
+              : {
+                  backgroundColor: WHITE,
+                  borderColor: "#E4E4E4",
+                  borderRadius: scaleBorder(8),
+                  borderWidth: scaleWidth(2),
+                }),
           }}
         >
           <View

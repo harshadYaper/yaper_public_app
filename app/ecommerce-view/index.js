@@ -159,7 +159,7 @@ export default function EcommerceView() {
                   width: "100%",
                   height: "100%",
                   backgroundColor: "#101828",
-                  opacity: 0.8,
+                  opacity: 0.6,
                 }}
               ></View>
               <View
@@ -173,8 +173,8 @@ export default function EcommerceView() {
                   borderTopRightRadius: scaleBorder(12),
                   paddingLeft: scaleWidth(24),
                   paddingRight: scaleWidth(24),
-                  paddingTop: scaleHeight(8),
-                  paddingBottom: scaleHeight(40),
+                  paddingTop: scaleHeight(24),
+                  paddingBottom: scaleHeight(16),
                 }}
               >
                 {address?.user_message && (

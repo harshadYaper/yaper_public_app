@@ -17,7 +17,7 @@ import {
 import Input from "../../common/input";
 import { useState } from "react";
 import { CARD_IMAGES } from "../../constants/images";
-import { Image } from "expo-image";
+import { Image, ImageBackground } from "expo-image";
 import { MiniButton, SmallButton } from "../../common/button";
 import { WHITE } from "../../constants/colors";
 import { FULL_WIDTH } from "../../constants";
@@ -65,7 +65,6 @@ export default function AddCards({
       <View
         style={{
           display: "flex",
-          alignItems: "left",
           justifyContent: "center",
           width: "100%",
           height: "100%",
@@ -76,38 +75,42 @@ export default function AddCards({
           style={{
             ...scaleFont(20),
             fontWeight: "500",
-            marginBottom: scaleHeight(20),
-            ...scalePadding(6),
+            paddingBottom: scaleHeight(20),
           }}
         >
           Select all your credit cards
         </Text>
+
         <Input
           inputArray={[searchCardString]}
           onChange={setSearchCardString}
           placeholder="Enter bank/card name"
           keyboardType="numeric"
           errorMessage=""
-          style={{}}
+          style={{ InputGroup: { justifyContent: "flex-start" } }}
         />
+
         <TouchableOpacity onPress={() => setMyCards()}>
           <Text
             style={{
-              ...scaleFont(20),
+              ...scaleFont(14),
               fontWeight: "500",
-              marginTop: scaleHeight(20),
-              marginBottom: scaleHeight(20),
               color: "#025ACE",
               fontWeight: "500",
-              ...scalePadding(6),
+              paddingTop: scaleHeight(20),
+              paddingBottom: scaleHeight(20),
             }}
           >
             Skip, I don't own any credit card
           </Text>
         </TouchableOpacity>
         <FlatList
-          data={["SBI", "AXIS BANK", "HDFC BANK", "ICICI BANK"]}
+          data={["SBI", "Axis Bank", "HDFC Bank", "ICICI Bank"]}
           horizontal
+          contentContainerStyle={{
+            paddingTop: scaleHeight(20),
+            paddingBottom: scaleHeight(40),
+          }}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
@@ -119,16 +122,17 @@ export default function AddCards({
               <View
                 style={{
                   height: scaleHeight(40),
-                  minWidth: scaleWidth(94),
                   marginRight: scaleWidth(8),
-                  marginBottom: scaleHeight(20),
                   borderRadius: scaleBorder(8),
                   borderColor: "#D0D5DD",
                   borderWidth: scaleWidth(2),
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  ...scalePadding(10),
+                  paddingBottom: scaleHeight(10),
+                  paddingTop: scaleHeight(10),
+                  paddingLeft: scaleWidth(16),
+                  paddingRight: scaleWidth(16),
                   backgroundColor: filterBanks.includes(item)
                     ? "#025ACE"
                     : WHITE,
@@ -151,10 +155,7 @@ export default function AddCards({
         <FlatList
           contentContainerStyle={{
             paddingBottom: scaleHeight(selectedCards.length > 0 ? 100 : 50),
-            minHeight: "60%",
-          }}
-          style={{
-            marginTop: scaleHeight(12),
+            minHeight: "100%",
           }}
           data={getFilteredCard()}
           renderItem={({ item: { bank, cards } }) => {
@@ -169,9 +170,10 @@ export default function AddCards({
                 <View style={{ marginTop: scaleHeight(12) }}>
                   <Text
                     style={{
-                      marginBottom: scaleHeight(16),
+                      paddingBottom: scaleHeight(16),
                       ...scaleFont(10),
                       fontWeight: "500",
+                      color: "#646675",
                     }}
                   >
                     {bank?.name}
@@ -184,16 +186,16 @@ export default function AddCards({
                     }) => (
                       <View
                         style={{
-                          width: scaleWidth(160),
                           marginRight: scaleWidth(12),
                           marginBottom: scaleHeight(12),
                         }}
                       >
                         <Text
                           style={{
-                            marginBottom: scaleHeight(8),
+                            paddingBottom: scaleHeight(8),
                             ...scaleFont(9),
                             fontWeight: "300",
+                            color: "#0D1F3C",
                           }}
                         >
                           {display_name}
@@ -211,7 +213,7 @@ export default function AddCards({
                                 : CARD_IMAGES.placeholder_card.uri
                             }
                             style={{
-                              height: scaleHeight(100),
+                              height: scaleHeight(111),
                               width: scaleWidth(160),
                             }}
                           />
@@ -269,14 +271,13 @@ export default function AddCards({
                   setSelectedCards((p) => [...p.filter((i) => i.id !== id)]);
                 }}
                 style={{
-                  ...scaleMargin(2),
                   position: "relative",
-                  ...scalePadding(4),
+                  marginRight: scaleWidth(8),
                 }}
               >
                 {index <= 2 && (
                   <>
-                    <Image
+                    <ImageBackground
                       contentFit={"contain"}
                       source={
                         slug && CARD_IMAGES[slug]
@@ -287,20 +288,20 @@ export default function AddCards({
                         height: scaleHeight(40),
                         width: scaleWidth(64),
                       }}
-                    />
-                    <Image
-                      source={require("../../../assets/cross.svg")}
-                      style={{
-                        ...scaleMargin(3),
-                        color: WHITE,
-                        height: scaleHeight(12),
-                        width: scaleWidth(12),
-                        position: "absolute",
-                        // backgroundColor: "red",
-                        top: -scaleHeight(3),
-                        right: -scaleWidth(3),
-                      }}
-                    />
+                    >
+                      <Image
+                        source={require("../../../assets/cross.svg")}
+                        style={{
+                          ...scaleMargin(3),
+                          color: WHITE,
+                          height: scaleHeight(14),
+                          width: scaleWidth(12),
+                          position: "absolute",
+                          top: -scaleHeight(7),
+                          right: -scaleWidth(6),
+                        }}
+                      />
+                    </ImageBackground>
                   </>
                 )}
                 {index == 3 && (

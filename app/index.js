@@ -10,6 +10,8 @@ import { getData } from "./storage";
 import { getAppVariables } from "./utils/environment";
 import Auth from "./auth";
 import { mapUserInSegment } from "./utils/analytics";
+import { loadAsync } from "expo-font";
+import { Inter_400Regular } from "@expo-google-fonts/inter";
 
 export default function Yaper() {
   const { intro: showedIntro } = useSelector((state) => state.intro) || false;
@@ -22,6 +24,7 @@ export default function Yaper() {
 
   async function onAppStartup() {
     try {
+      await loadAsync({ Inter_400Regular });
       dispatch({
         type: "NETWORK",
         payload: {

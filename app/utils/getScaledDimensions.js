@@ -1,4 +1,5 @@
 import { Dimensions, PixelRatio, Platform } from "react-native";
+import { isIOS } from "./environment";
 
 const {
   width: SCREEN_WIDTH,
@@ -14,13 +15,16 @@ const normalizedHeight = SCREEN_HEIGHT / 812;
 const getScaledDimensions = (size, normalValue) => {
   return (
     Math.round(PixelRatio.roundToNearestPixel(size * normalValue)) -
-    (Platform.OS === "ios" ? 0 : 1)
+    (isIOS ? 0 : 1)
   );
 };
 
-export const scaleFont = (size) => ({
+export const scaleFont = (size, centerText) => ({
   fontSize: size / fontScale,
-  lineHeight: scaleHeight((2 * size) / fontScale),
+  lineHeight: scaleHeight(
+    ((isIOS && centerText ? 2 : 1) * 1.5 * size) / fontScale
+  ),
+  fontFamily: "Inter_400Regular",
 });
 
 export const scaleBorder = (size) => size;

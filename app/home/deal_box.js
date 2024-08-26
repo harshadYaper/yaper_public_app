@@ -37,7 +37,6 @@ export default function DealBox({
     <TouchableOpacity
       disabled={disabled}
       style={{
-        height: scaleHeight(160),
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderColor: "#E4E4E4",
@@ -118,13 +117,11 @@ export default function DealBox({
             >
               Card to use
             </Text>
-            {bank && (
-              <Image
-                contentFit={"contain"}
-                source={{ uri: bank?.logo }}
-                style={{ width: scaleWidth(64), height: scaleWidth(12) }}
-              />
-            )}
+            <Image
+              contentFit={"contain"}
+              source={{ uri: bank.logo }}
+              style={{ width: scaleWidth(64), height: scaleWidth(12) }}
+            />
           </View>
         )}
         <View style={{ ...styles.FLEX, ...scalePadding(4) }}>

@@ -1,7 +1,12 @@
 import { Alert, View } from "react-native";
 import Input from "../common/input";
 import { useEffect, useState } from "react";
-import { scaleHeight, scalePadding } from "../utils/getScaledDimensions";
+import {
+  scaleFont,
+  scaleHeight,
+  scalePadding,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 import { FullButton } from "../common/button";
 import { getUser, updatePAN } from "../api";
 import saveData from "../auth/save_data";
@@ -45,23 +50,24 @@ export default function PAN({ setComponent }) {
         width: "100%",
         height: "100%",
         justifyContent: "space-between",
-        ...scalePadding(20),
+        ...scalePadding(25),
+        paddingTop: scaleHeight(32),
       }}
     >
       <View>
         {PAN_DETAILS.map(({ label, placeholder, key }) => (
-          <Input
-            key={label}
-            inputArray={[data[key]]}
-            onChange={(val) => setData((p) => ({ ...p, [key]: val }))}
-            label={label}
-            placeholder={placeholder}
-            style={{
-              InputGroup: {
-                marginBottom: scaleHeight(20),
-              },
-            }}
-          />
+          <View style={{ paddingBottom: scaleHeight(24) }}>
+            <Input
+              key={label}
+              inputArray={[data[key]]}
+              onChange={(val) => setData((p) => ({ ...p, [key]: val }))}
+              label={label}
+              placeholder={placeholder}
+              style={{
+                Label: { ...scaleFont(14), paddingLeft: scaleWidth(0) },
+              }}
+            />
+          </View>
         ))}
       </View>
       <FullButton

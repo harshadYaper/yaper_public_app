@@ -73,7 +73,8 @@ export default function Navigation({
                   textAlign: "center",
                   textAlignVertical: "center",
                   color: nav == navigation ? "#025ACE" : "#667085",
-                  ...scaleFont(14),
+                  ...scaleFont(10),
+                  fontWeight: nav == navigation ? "700" : "500",
                 }}
               >
                 {label}

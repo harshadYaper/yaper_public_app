@@ -5,7 +5,6 @@ import { Image } from "expo-image";
 import {
   scaleFont,
   scaleHeight,
-  scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { FullButton } from "../common/button";
@@ -30,7 +29,10 @@ export default function Refer() {
             alignItems: "center",
             width: "100%",
             height: "100%",
-            ...scalePadding(16),
+            paddingLeft: scaleWidth(24),
+            paddingRight: scaleWidth(24),
+            paddingTop: scaleHeight(48),
+            paddingBottom: scaleHeight(48),
           }}
         >
           <Image
@@ -39,70 +41,80 @@ export default function Refer() {
           />
           <View
             style={{
-              height: scaleHeight(80),
-              width: "80%",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              backgroundColor: "#CEE3FF",
+              paddingTop: scaleHeight(40),
+              paddingBottom: scaleHeight(40),
+              width: "100%",
             }}
           >
             <View
               style={{
+                width: "100%",
                 display: "flex",
-                justifyContent: "center",
+                flexDirection: "row",
+                justifyContent: "space-around",
                 alignItems: "center",
+                backgroundColor: "#CEE3FF",
+                borderRadius: 8,
+                paddingLeft: scaleWidth(20),
+                paddingRight: scaleWidth(20),
+                paddingTop: scaleHeight(12),
+                paddingBottom: scaleHeight(12),
               }}
             >
-              <Text
+              <View
                 style={{
-                  ...scalePadding(4),
-                  color: "#667085",
-                  ...scaleFont(12),
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                No of Referrals
-              </Text>
-              <Text
-                style={{
-                  ...scalePadding(4),
-                  color: "#000000",
-                  ...scaleFont(12),
-                  fontWeight: "700",
-                }}
-              >
-                {referral_count}
-              </Text>
-            </View>
+                <Text
+                  style={{
+                    color: "#667085",
+                    ...scaleFont(12),
+                    paddingBottom: scaleHeight(8),
+                  }}
+                >
+                  No of Referrals
+                </Text>
+                <Text
+                  style={{
+                    color: "#000000",
+                    ...scaleFont(12),
+                    fontWeight: "700",
+                  }}
+                >
+                  {referral_count}
+                </Text>
+              </View>
 
-            <View
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
+              <View
                 style={{
-                  ...scalePadding(4),
-                  color: "#667085",
-                  ...scaleFont(12),
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                Total Earnings
-              </Text>
-              <Text
-                style={{
-                  ...scalePadding(4),
-                  color: "#000000",
-                  ...scaleFont(12),
-                  fontWeight: "700",
-                }}
-              >
-                {RUPEE}
-                {referral_earning}
-              </Text>
+                <Text
+                  style={{
+                    paddingBottom: scaleHeight(8),
+                    color: "#667085",
+                    ...scaleFont(12),
+                  }}
+                >
+                  Total Earnings
+                </Text>
+                <Text
+                  style={{
+                    color: "#000000",
+                    ...scaleFont(12),
+                    fontWeight: "700",
+                  }}
+                >
+                  {RUPEE}
+                  {referral_earning}
+                </Text>
+              </View>
             </View>
           </View>
           <Text
@@ -111,6 +123,7 @@ export default function Refer() {
               fontWeight: "500",
               color: "#101828",
               textAlign: "center",
+              paddingBottom: scaleHeight(24),
             }}
           >
             Refer your friends & get {RUPEE}
@@ -122,6 +135,7 @@ export default function Refer() {
               ...scaleFont(12),
               color: "#667085",
               textAlign: "center",
+              paddingBottom: scaleHeight(48),
             }}
           >
             If your friends signup and help a shopper by placing an order,

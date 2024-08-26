@@ -7,10 +7,15 @@ import Navigation from "./navigation";
 import Filters from "./filters";
 import AdditionalFilters from "./additional_filters";
 import Deals, { DealsHeader } from "./deals";
-import Orders from "./orders";
+import Orders, { OrdersHeader } from "./orders";
 import Transactions, { TransactionsHeader } from "./transactions";
 import Supports, { SupportsHeader } from "./supports";
-import { scaleHeight } from "../utils/getScaledDimensions";
+import {
+  scaleBorder,
+  scaleFont,
+  scaleHeight,
+  scaleWidth,
+} from "../utils/getScaledDimensions";
 import { isEmpty } from "../utils/helper";
 
 const navMenu = [
@@ -25,6 +30,8 @@ const navMenu = [
       display: "flex",
       width: "100%",
     },
+    showProfile: true,
+    filterStyles: {},
   },
   {
     label: "Orders",
@@ -32,6 +39,23 @@ const navMenu = [
     navigation: "orders",
     api: getOrders,
     Component: Orders,
+    HeaderComponent: OrdersHeader,
+    HeaderComponentStyles: {
+      display: "flex",
+      width: "100%",
+      paddingTop: scaleHeight(60),
+      paddingBottom: scaleHeight(20),
+    },
+    filterStyles: {
+      Label: { ...scaleFont(16), fontWeight: "600", color: "#344054" },
+      Image: {
+        height: scaleHeight(20),
+        width: scaleWidth(20),
+      },
+      Filter: {
+        borderRadius: scaleBorder(8),
+      },
+    },
   },
   {
     label: "Transactions",
@@ -40,6 +64,13 @@ const navMenu = [
     api: getWallet,
     Component: Transactions,
     HeaderComponent: TransactionsHeader,
+    HeaderComponentStyles: {
+      display: "flex",
+      width: "100%",
+      paddingTop: scaleHeight(60),
+      paddingBottom: scaleHeight(20),
+    },
+    filterStyles: {},
   },
   {
     label: "Support",
@@ -48,7 +79,12 @@ const navMenu = [
     api: getSupportChats,
     Component: Supports,
     HeaderComponent: SupportsHeader,
-    HeaderComponentStyles: { height: scaleHeight(60) },
+    HeaderComponentStyles: {
+      display: "flex",
+      width: "100%",
+      paddingTop: scaleHeight(60),
+    },
+    filterStyles: {},
   },
 ];
 
@@ -135,6 +171,9 @@ export default function Template({}) {
               .HeaderComponentStyles
           }
           HeaderComponentData={data.otherData}
+          showProfile={
+            navMenu.find(({ navigation }) => navigation == nav).showProfile
+          }
         />
       )}
 
@@ -144,6 +183,9 @@ export default function Template({}) {
           filters={filters}
           fetchData={fetchData}
           navigation={nav}
+          filterStyles={
+            navMenu.find(({ navigation }) => navigation == nav).filterStyles
+          }
         />
       )}
 

@@ -6,7 +6,6 @@ import {
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { Image } from "expo-image";
-import { isEmpty } from "../utils/helper";
 import { WHITE } from "../constants/colors";
 
 function Button({
@@ -28,29 +27,18 @@ function Button({
         onPress();
       }}
       style={{
-        width,
-        height,
-        backgroundColor: disabled ? ClickedbackgroundColor : backgroundColor,
-        borderRadius,
-        justifyContent: "center",
-        display: "flex",
-        alignItems: "center",
+        ...{
+          width,
+          height,
+          backgroundColor: disabled ? ClickedbackgroundColor : backgroundColor,
+          borderRadius,
+          display: "flex",
+          alignItems: "center",
+        },
       }}
       disabled={disabled}
     >
-      {isEmpty(imageSource) ? (
-        <Text
-          style={{
-            ...scaleFont(14),
-            textAlign: "center",
-            textAlignVertical: "center",
-            color: textColor,
-            ...fontStyles,
-          }}
-        >
-          {title}
-        </Text>
-      ) : (
+      {imageSource ? (
         <Image
           contentFit={"contain"}
           source={imageSource}
@@ -59,6 +47,20 @@ function Button({
             width: scaleWidth(36),
           }}
         />
+      ) : (
+        <Text
+          style={{
+            ...scaleFont(14, true),
+            textAlign: "center",
+            width: "100%",
+            height: "100%",
+            textAlignVertical: "center",
+            color: textColor,
+            ...fontStyles,
+          }}
+        >
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
@@ -122,7 +124,6 @@ export const MiniButton = ({
   textColor = WHITE,
   ClickedbackgroundColor = "#D0D5DD",
   onPress,
-  title = ">",
   disabled = false,
   fontStyles = scaleFont(24),
   imageSource = require("../../assets/right-arrow.svg"),
@@ -135,7 +136,6 @@ export const MiniButton = ({
     textColor,
     ClickedbackgroundColor,
     onPress,
-    title,
     disabled,
     fontStyles,
     imageSource,

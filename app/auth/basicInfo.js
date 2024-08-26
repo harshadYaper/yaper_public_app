@@ -7,6 +7,7 @@ import {
   scaleFont,
   scaleHeight,
   scalePadding,
+  scaleWidth,
 } from "../utils/getScaledDimensions";
 import { isEmpty } from "../utils/helper";
 import { saveUserData } from "../api";
@@ -79,27 +80,27 @@ export default function BasicInfo({ setComponent }) {
             Let us know about you
           </Text>
           {data.map(({ label }, ind) => (
-            <Input
-              key={label}
-              inputArray={[data.find((d) => d.label == label)[label]]}
-              onChange={(val) => {
-                setData((p) =>
-                  data.map((d) =>
-                    d.label !== label ? d : { ...d, value: val }
-                  )
-                );
-              }}
-              placeholder={label}
-              label={label}
-              errorMessage=""
-              style={
-                ind !== 0 && {
+            <View style={{ paddingBottom: scaleHeight(32) }}>
+              <Input
+                key={label}
+                inputArray={[data.find((d) => d.label == label)[label]]}
+                onChange={(val) => {
+                  setData((p) =>
+                    data.map((d) =>
+                      d.label !== label ? d : { ...d, value: val }
+                    )
+                  );
+                }}
+                placeholder={label}
+                label={label}
+                errorMessage=""
+                style={{
                   Label: {
-                    marginTop: scaleHeight(32),
+                    paddingLeft: scaleWidth(0),
                   },
-                }
-              }
-            />
+                }}
+              />
+            </View>
           ))}
         </View>
         <View>
@@ -117,7 +118,7 @@ export default function BasicInfo({ setComponent }) {
               onPress={() => setShowStaticPage("Terms and Conditions")}
               style={{
                 textDecorationLine: "underline",
-                ...scaleFont(14),
+                ...scaleFont(10),
               }}
             >
               terms of service{" "}
@@ -127,7 +128,7 @@ export default function BasicInfo({ setComponent }) {
               onPress={() => setShowStaticPage("Privacy Policy")}
               style={{
                 textDecorationLine: "underline",
-                ...scaleFont(14),
+                ...scaleFont(10),
               }}
             >
               privacy policy.

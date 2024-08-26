@@ -11,12 +11,14 @@ import { Image } from "expo-image";
 import Input from "../common/input";
 import { useEffect, useState } from "react";
 import { isEmpty } from "../utils/helper";
+import { isIOS } from "../utils/environment";
 
 export default function AdditionalFilters({
   setFilters,
   filters,
   fetchData,
   navigation,
+  filterStyles,
 }) {
   const handleKey = (key) => {
     setFilters((p) =>
@@ -38,7 +40,10 @@ export default function AdditionalFilters({
       images: [
         require("../../assets/FiltersLines.svg"),
         require("../../assets/CaretDown.svg"),
-      ],
+      ].slice(
+        0,
+        { home: 2, orders: 1, transactions: 0, support: 0 }[navigation]
+      ),
       key: "filter",
     },
     {
@@ -65,27 +70,25 @@ export default function AdditionalFilters({
     <View
       style={{
         ...scalePadding(4),
-        marginTop: scaleHeight(8),
-        marginBottom: scaleHeight(8),
         width: "100%",
-        height: scaleHeight(50),
+        height: scaleHeight(60),
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-around",
+        alignItems: "center",
       }}
     >
       {navigation == "orders" && (
         <View
           style={{
             paddingLeft: scaleWidth(12),
-            paddingRight: scaleWidth(12),
           }}
         >
           <Input
             inputArray={[searchString]}
             onChange={(val) => setSearchString(val)}
             placeholder="Search orders"
-            width={240}
+            width={isIOS ? 242 : 252} //240 + 12 from padding
             style={{
               Input: {
                 ...scalePadding(10),
@@ -103,70 +106,79 @@ export default function AdditionalFilters({
           contentContainerStyle={{
             justifyContent: "space-around",
             alignItems: "center",
-            width: "100%",
             height: "100%",
           }}
           showsHorizontalScrollIndicator={false}
           data={ADDITIONAL_FILTER}
-          renderItem={({ item: { label, onPress, images, key } }) => {
+          renderItem={({ item: { label, onPress, images, key }, index }) => {
             let isSelected = filters[key];
             return (
-              <TouchableOpacity
+              <View
                 style={{
-                  backgroundColor: isSelected ? "#025ACE" : WHITE,
-                  borderColor: "#D0D5DD",
-                  borderWidth: scaleWidth(2),
-                  borderRadius: scaleBorder(20),
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  ...scalePadding(8),
-                  paddingRight: scaleWidth(12),
-                  paddingLeft: scaleWidth(12),
+                  paddingLeft: scaleWidth(index == 0 ? 12 : 20),
                 }}
-                onPress={onPress}
               >
-                {images && (
-                  <Image
-                    contentFit={"contain"}
-                    source={images[0]}
-                    height={scaleHeight(16)}
-                    width={scaleWidth(16)}
-                  />
-                )}
-                <Text
+                <TouchableOpacity
                   style={{
-                    ...scaleFont(14),
-                    fontWeight: "500",
-                    paddingRight: scaleWidth(4),
-                    paddingLeft: scaleWidth(4),
-                    color: isSelected ? WHITE : "#667085",
+                    backgroundColor: isSelected ? "#025ACE" : WHITE,
+                    borderColor: "#D0D5DD",
+                    borderWidth: scaleWidth(2),
+                    borderRadius: scaleBorder(20),
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    ...scalePadding(10),
+                    paddingRight: scaleWidth(12),
+                    paddingLeft: scaleWidth(12),
+                    ...filterStyles.Filter,
                   }}
+                  onPress={onPress}
                 >
-                  {label}
-                </Text>
-                {images && (
-                  <Image
-                    contentFit={"contain"}
-                    source={images[1]}
-                    height={scaleHeight(16)}
-                    width={scaleWidth(16)}
-                    // style={{ tintColor: isSelected ? WHITE : "#667085" }}
-                  />
-                )}
-                {isSelected && (
-                  <Image
-                    contentFit={"contain"}
-                    source={require("../../assets/icons/X.svg")}
+                  {images && (
+                    <Image
+                      contentFit={"contain"}
+                      source={images[0]}
+                      style={{
+                        height: scaleHeight(16),
+                        width: scaleWidth(16),
+                        ...filterStyles.Image,
+                      }}
+                    />
+                  )}
+                  <Text
                     style={{
-                      height: scaleHeight(16),
-                      width: scaleWidth(16),
-                      tintColor: "#FFFFFF",
+                      ...scaleFont(14),
+                      fontWeight: "500",
+                      paddingRight: scaleWidth(4),
+                      paddingLeft: scaleWidth(4),
+                      color: isSelected ? WHITE : "#667085",
+                      ...filterStyles.Label,
                     }}
-                  />
-                )}
-              </TouchableOpacity>
+                  >
+                    {label}
+                  </Text>
+                  {images && images[1] && (
+                    <Image
+                      contentFit={"contain"}
+                      source={images[1]}
+                      height={scaleHeight(16)}
+                      width={scaleWidth(16)}
+                    />
+                  )}
+                  {isSelected && (
+                    <Image
+                      contentFit={"contain"}
+                      source={require("../../assets/icons/X.svg")}
+                      style={{
+                        height: scaleHeight(16),
+                        width: scaleWidth(16),
+                        tintColor: "#FFFFFF",
+                      }}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
             );
           }}
           keyExtractor={({ label }) => label}
@@ -181,7 +193,6 @@ export default function AdditionalFilters({
             alignItems: "center",
             flexDirection: "row",
             width: "100%",
-            paddingRight: scaleWidth(12),
           }}
         >
           <FlatList
@@ -189,7 +200,6 @@ export default function AdditionalFilters({
             contentContainerStyle={{
               justifyContent: "space-between",
               alignItems: "center",
-              height: "100%",
               paddingLeft: scaleWidth(12),
               paddingRight: scaleWidth(12),
             }}
@@ -235,29 +245,6 @@ export default function AdditionalFilters({
             }}
             keyExtractor={({ label }) => label}
           />
-          <View
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              backgroundColor: "#FFFFFF",
-              ...scalePadding(12),
-              borderColor: "#D0D5DD",
-              borderWidth: scaleWidth(2),
-              borderRadius: scaleBorder(8),
-            }}
-          >
-            <Image
-              source={require("../../assets/Download.svg")}
-              style={{
-                height: scaleHeight(20),
-                width: scaleWidth(20),
-                marginRight: scaleWidth(8),
-              }}
-            />
-            <Text style={{ ...scaleFont(12), color: "#101828" }}>Export</Text>
-          </View>
         </View>
       )}
     </View>

@@ -44,7 +44,7 @@ export default function StaticPage({ showStaticPage, setShowStaticPage }) {
             backgroundColor: WHITE,
             position: "absolute",
             bottom: 0,
-            ...scalePadding(16),
+            ...scalePadding(12),
           }}
         >
           <View
@@ -73,7 +73,8 @@ export default function StaticPage({ showStaticPage, setShowStaticPage }) {
                 ...scaleFont(20),
                 fontWeight: "600",
                 color: "#0D1F3C",
-                ...scalePadding(12),
+                paddingBottom: scaleHeight(16),
+                paddingTop: scaleHeight(32),
               }}
             >
               {showStaticPage}

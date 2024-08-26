@@ -62,7 +62,7 @@ export function DealsHeader() {
   const [index, setIndex] = useState(0);
 
   const handlePress = () => {
-    setIndex((p) => (p == data.length - 1 ? 0 : p + 1));
+    setIndex((p) => (p == data?.length - 1 ? 0 : p + 1));
   };
 
   useEffect(() => {

@@ -26,9 +26,10 @@ export const LeftComp = () => {
     >
       <Image
         contentFit={"contain"}
-        source={require("../../assets/profile.svg")}
+        source={require("../../assets/profile.png")}
         height={scaleHeight(32)}
         width={scaleWidth(32)}
+        style={{ borderRadius: scaleBorder(32) }}
       />
       <Text
         style={{
@@ -51,7 +52,6 @@ export const RightComp = () => (
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
-      height: scaleHeight(40),
       backgroundColor: WHITE,
       color: "black",
       borderRadius: scaleBorder(16),
@@ -67,9 +67,11 @@ export const RightComp = () => (
     <Image
       contentFit={"contain"}
       source={require("../../assets/icons/Gift.svg")}
-      height={scaleHeight(20)}
-      width={scaleWidth(20)}
-      style={{ tintColor: "#025ACE" }}
+      style={{
+        tintColor: "#025ACE",
+        height: scaleHeight(20),
+        width: scaleWidth(20),
+      }}
     />
     <Text
       style={{
@@ -91,19 +93,40 @@ export default function Header({
   HeaderComponent,
   HeaderComponentStyles,
   HeaderComponentData,
+  showProfile,
 }) {
   return (
-    <View
-      style={{
-        display: "flex",
-        maxHeight: scaleHeight(150),
-        width: "100%",
-        borderRadius: scaleBorder(8),
-        ...HeaderComponentStyles,
-        ...scalePadding(12),
-      }}
-    >
-      <HeaderComponent {...HeaderComponentData} />
-    </View>
+    <>
+      {showProfile && (
+        <View
+          style={{
+            backgroundColor: "#CEE3FF",
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingLeft: scaleWidth(16),
+            paddingRight: scaleWidth(16),
+            paddingTop: scaleHeight(60),
+            paddingBottom: scaleHeight(24),
+          }}
+        >
+          <LeftComp />
+          <RightComp />
+        </View>
+      )}
+      <View
+        style={{
+          display: "flex",
+          width: "100%",
+          borderRadius: scaleBorder(8),
+          ...scalePadding(12),
+          ...HeaderComponentStyles,
+        }}
+      >
+        <HeaderComponent {...HeaderComponentData} />
+      </View>
+    </>
   );
 }

@@ -156,6 +156,10 @@ export default function Template() {
           label: "FAQs",
           onPress: () => {
             setShowStaticPage("FAQs");
+            // router.push({
+            //   pathname: "/profile/static-pages",
+            //   params: { showStaticPage: "FAQs" },
+            // }),
           },
         },
       ],
@@ -167,12 +171,20 @@ export default function Template() {
           label: "Terms of Service",
           onPress: () => {
             setShowStaticPage("Terms and Conditions");
+            // router.push({
+            //   pathname: "/profile/static-pages",
+            //   params: { showStaticPage: "Terms and Conditions" },
+            // });
           },
         },
         {
           label: "Privacy Policy",
           onPress: () => {
             setShowStaticPage("Privacy Policy");
+            // router.push({
+            //   pathname: "/profile/static-pages",
+            //   params: { showStaticPage: "Privacy Policy" },
+            // });
           },
         },
       ],
@@ -266,11 +278,21 @@ export default function Template() {
         )}
       </ScrollView>
       {showWebToken && (
-        <WebToken
-          showWebToken={showWebToken}
-          handleModal={handleModal}
-          handleWebLogin={handleWebLogin}
-        />
+        <>
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#667085",
+              opacity: 0.7,
+            }}
+          ></View>
+          <WebToken
+            showWebToken={showWebToken}
+            handleModal={handleModal}
+            handleWebLogin={handleWebLogin}
+          />
+        </>
       )}
       {showStaticPage && (
         <StaticPage

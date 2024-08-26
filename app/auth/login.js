@@ -1,4 +1,11 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useEffect, useState } from "react";
 
 import Input from "../common/input";
@@ -12,6 +19,7 @@ import {
 import { login } from "../api";
 import OTP from "./otp";
 import { Image } from "expo-image";
+import { isIOS } from "../utils/environment";
 
 export default function Login({ setComponent, mobile }) {
   const [mobileNumber, setMobileNumber] = useState(mobile);
@@ -49,7 +57,7 @@ export default function Login({ setComponent, mobile }) {
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        height: "100%",
+        height: isIOS && Keyboard.isVisible() ? "65%" : "100%",
         ...scalePadding(24),
       }}
     >
