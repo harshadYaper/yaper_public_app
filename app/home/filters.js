@@ -18,6 +18,7 @@ import { Image } from "expo-image";
 import { PrimaryCheckBox } from "../common/checkbox";
 import { PrimaryRadio } from "../common/radio";
 import { SmallButton } from "../common/button";
+import { isIOS } from "../utils/environment";
 
 export default function Filters({
   filters = [],
@@ -34,7 +35,7 @@ export default function Filters({
 
   return (
     <>
-      <View
+      <Pressable
         style={{
           backgroundColor: "#101828",
           position: "absolute",
@@ -43,10 +44,11 @@ export default function Filters({
           width: "100%",
           zIndex: 10,
         }}
-      ></View>
+        onPress={handleClose}
+      />
       <View
         style={{
-          height: scaleHeight(680),
+          height: "80%",
           width: FULL_WIDTH,
           backgroundColor: WHITE,
           position: "absolute",
@@ -119,7 +121,17 @@ export default function Filters({
             {filters.map((filter) => (
               <TouchableOpacity
                 onPress={() => {
-                  setOpenFilterOption(filter);
+                  setOpenFilterOption({
+                    ...filter,
+                    options: filter.options.map((o) =>
+                      filter.type == "ms" &&
+                      selectedFilters[filter.id]
+                        ?.split(",")
+                        ?.includes(o.id.toString())
+                        ? { ...o, selected: true }
+                        : o
+                    ),
+                  });
                 }}
                 key={filter?.id}
                 style={{
@@ -143,7 +155,7 @@ export default function Filters({
                       openFilterOption?.id == filter?.id
                         ? "#101828"
                         : "#667085",
-                    fontWeight: openFilterOption?.id == filter?.id ? 500 : 400,
+                    fontWeight: openFilterOption?.id == filter?.id ? 700 : 400,
                     ...scaleFont(12),
                   }}
                 >
@@ -161,7 +173,7 @@ export default function Filters({
           >
             {
               {
-                ms: openFilterOption.options.map(({ name, id, selected }) => (
+                ms: openFilterOption.options.map(({ name, id }) => (
                   <PrimaryCheckBox
                     key={name + id}
                     onPress={() => {
@@ -173,7 +185,12 @@ export default function Filters({
                       }));
                     }}
                     label={name}
-                    selected={selected}
+                    selected={
+                      openFilterOption.type == "ms" &&
+                      selectedFilters[openFilterOption.id]
+                        ?.split(",")
+                        .includes(id.toString())
+                    }
                     styles={{
                       paddingTop: scaleHeight(12),
                       paddingBottom: scaleHeight(12),
@@ -206,15 +223,18 @@ export default function Filters({
         </View>
         <View
           style={{
-            height: scaleHeight(48),
-            width: "100%",
-            paddingLeft: scaleWidth(16),
-            paddingRight: scaleWidth(16),
-            paddingTop: scaleHeight(16),
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
+            ...{
+              width: "100%",
+              paddingLeft: scaleWidth(16),
+              paddingRight: scaleWidth(16),
+              paddingTop: scaleHeight(16),
+
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            },
+            ...(isIOS ? { paddingBottom: scaleHeight(16) } : {}),
           }}
         >
           <Pressable onPress={() => setFilters({})}>

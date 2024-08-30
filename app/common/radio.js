@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   scaleBorder,
   scaleFont,
@@ -7,7 +7,7 @@ import {
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity } from "react-native";
 import { WHITE } from "../constants/colors";
 
 function Radio({
@@ -25,8 +25,17 @@ function Radio({
 }) {
   const [checked, setChecked] = useState(selected);
 
+  useEffect(() => {
+    setChecked(selected);
+  }, [selected]);
+
+  const handlePress = () => {
+    setChecked(!checked);
+    onPress();
+  };
+
   return (
-    <View
+    <Pressable
       style={{
         display: "flex",
         flexDirection: "row",
@@ -34,12 +43,10 @@ function Radio({
         ...styles,
         alignItems: "center",
       }}
+      onPress={handlePress}
     >
       <TouchableOpacity
-        onPress={() => {
-          setChecked(!checked);
-          onPress();
-        }}
+        onPress={handlePress}
         disabled={disabled}
         style={{
           width: scaleWidth(width),
@@ -65,7 +72,7 @@ function Radio({
         />
       </TouchableOpacity>
       <Text style={{ ...scaleFont(14) }}>{label}</Text>
-    </View>
+    </Pressable>
   );
 }
 

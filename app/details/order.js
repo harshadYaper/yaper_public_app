@@ -29,8 +29,11 @@ import { getDocumentAsync } from "expo-document-picker";
 import { PrimaryCheckBox } from "../common/checkbox";
 import { PrimaryRadio } from "../common/radio";
 import Timer from "../common/timer";
+import { useSelector } from "react-redux";
+import { putData } from "../storage";
+import OrderPlaced from "./order_placed";
 
-export default function Order() {
+export default function Order({ setComponent, setOrderComponent }) {
   const { id, order_number, variant_id } = useLocalSearchParams();
   const [order, setOrder] = useState({});
   const [expanded, setExpanded] = useState();
@@ -53,6 +56,7 @@ export default function Order() {
     button,
     secondary_button,
     third_button,
+    deal_id,
   } = GetDetails(order?.items);
 
   useEffect(() => {
@@ -211,6 +215,10 @@ export default function Order() {
           secondary_button={secondary_button}
           remaining_time={order?.meta?.timer?.remaining_time}
           current_state={order?.state}
+          deal_id={deal_id}
+          deal_name={name}
+          setComponent={setComponent}
+          setOrderComponent={setOrderComponent}
         />
 
         {offer && bank && (
@@ -251,6 +259,10 @@ const DealStatus = ({
   secondary_button,
   remaining_time,
   current_state,
+  deal_id,
+  deal_name,
+  setComponent,
+  setOrderComponent,
 }) => {
   const getData = (key) =>
     fields?.find((f) => f.key == key) || order_meta?.find((o) => o.key == key);
@@ -392,6 +404,10 @@ const DealStatus = ({
                     uploadInvoice={uploadInvoice}
                     warrenty={warrenty}
                     remaining_time={remaining_time}
+                    deal_id={deal_id}
+                    deal_name={deal_name}
+                    setComponent={setComponent}
+                    setOrderComponent={setOrderComponent}
                   />
                 )}
               </View>
@@ -419,10 +435,15 @@ const OrderComponent = ({
   uploadInvoice,
   warrenty,
   remaining_time,
+  deal_id,
+  deal_name,
+  setComponent,
+  setOrderComponent,
 }) => {
   const [val, setVal] = useState({});
 
   const [expand, setExpand] = useState(!orderNumber.value);
+  const { pan_verified } = useSelector((state) => state.user) || {};
 
   const {
     editable,
@@ -640,9 +661,21 @@ const OrderComponent = ({
                             variant_id,
                             context: "order_details",
                           });
+
                           if (response?.order_number == val[key]) {
-                            setOrder((await getOrder({ yaper_id }))?.data);
-                            setVal({});
+                            if (response?.show_success_screen)
+                              setComponent([
+                                OrderPlaced,
+                                {
+                                  setOrderComponent,
+                                  orderNumber: response?.order_number,
+                                  walletAmount: response?.wallet_amount,
+                                },
+                              ]);
+                            else {
+                              setOrder((await getOrder({ yaper_id }))?.data);
+                              setVal({});
+                            }
                           }
                         }}
                         disabled={
@@ -654,14 +687,13 @@ const OrderComponent = ({
                     {secondary_button && (
                       <Pressable
                         onPress={async () => {
-                          // To do
-                          // await putData("PARAMS", {
-                          //   deal_id,
-                          //   deal_name: description,
-                          // });
-                          // router.navigate({
-                          //   pathname: pan_verified ? "/ecommerce-view" : "/kyc",
-                          // });
+                          await putData("PARAMS", {
+                            deal_id,
+                            deal_name,
+                          });
+                          router.navigate({
+                            pathname: pan_verified ? "/ecommerce-view" : "/kyc",
+                          });
                         }}
                       >
                         <Text
@@ -1270,403 +1302,46 @@ const OrderComponent = ({
                   </View>
                 )}
                 {uploadInvoice &&
-                !uploadInvoice.complex_value &&
-                button &&
-                button.button_type == "save" ? (
-                  <View style={{ paddingLeft: scaleHeight(4) }}>
-                    <Text
-                      style={{
-                        ...scaleFont(12),
-                        color: "#667085",
-                        fontWeight: "400",
-                        paddingTop: scaleHeight(4),
-                        paddingBottom: scaleHeight(12),
-                      }}
-                    >
-                      Upload Invoice to confirm delivery
-                    </Text>
-                    <Pressable
-                      style={{
-                        height: scaleHeight(100),
-                        borderColor: "#667085",
-                        borderWidth: scaleWidth(2),
-                        borderStyle: "dashed",
-                        borderRadius: scaleBorder(4),
-                        ...scalePadding(20),
-                        marginBottom: scaleHeight(16),
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "#F9FAFB",
-                      }}
-                      onPress={async () => {
-                        let { assets, canceled } = await getDocumentAsync({});
-                        if (!canceled) {
-                          if (
-                            assets[0].size / 1024 >
-                            uploadInvoice.max_file_size
-                          ) {
-                            setVal({
-                              error: {
-                                // type: uploadInvoice.file_type_error,
-                                size: uploadInvoice.max_file_size_error,
-                              },
-                            });
-                          } else {
-                            setVal({
-                              [uploadInvoice.key]: {
-                                uri: assets[0].uri,
-                                type: assets[0].mimeType,
-                                name: assets[0].name,
-                              },
-                            });
-                          }
-                        }
-                      }}
-                    >
-                      {val.invoice ? (
-                        <>
-                          <ImageBackground
-                            source={{ uri: val.invoice.uri }}
-                            style={{
-                              height: scaleHeight(60),
-                              width: scaleWidth(40),
-                              position: "relative",
-                            }}
-                          >
-                            <Image
-                              source={require("../../assets/icons/cross.svg")}
-                              style={{
-                                height: scaleHeight(20),
-                                width: scaleWidth(18),
-                                position: "absolute",
-                                backgroundColor: "#FFF",
-                                right: -10,
-                                top: -9,
-                              }}
-                            />
-                          </ImageBackground>
-                        </>
-                      ) : (
-                        <View
-                          style={{
-                            height: scaleHeight(32),
-                            width: scaleWidth(32),
-                            borderColor: "#667085",
-                            borderWidth: scaleWidth(2),
-                            borderRadius: scaleBorder(100),
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Image
-                            source={require("../../assets/icons/upload.svg")}
-                            style={{
-                              height: scaleHeight(16),
-                              width: scaleWidth(16),
-                            }}
-                          />
-                        </View>
-                      )}
-                    </Pressable>
-                    <InvoiceInfo
-                      val={val.info}
-                      styles={{
-                        color: "#101828",
-                      }}
+                  (!uploadInvoice.complex_value &&
+                  button &&
+                  button.button_type == "save" ? (
+                    <UploadFile
+                      label={"Upload Invoice to confirm delivery"}
+                      tag={uploadInvoice.key}
+                      max_file_size={uploadInvoice.max_file_size}
+                      max_file_size_error={uploadInvoice.max_file_size_error}
+                      val={val}
+                      setVal={setVal}
+                      setOrder={setOrder}
+                      buttonLabel={button.label}
                     />
-                    <InvoiceInfo val={val.error} />
-
-                    <FullButton
-                      width={scaleWidth(280)}
-                      onPress={async () => {
-                        let response = await putOrder({
-                          yaper_id,
-                          [uploadInvoice.key]: val[uploadInvoice.key],
-                          variant_id,
-                          context: "order_details",
-                        });
-
-                        setOrder((await getOrder({ yaper_id }))?.data);
-                        setVal({});
-                      }}
-                      title={button.label}
-                      disabled={val[uploadInvoice.key] == undefined}
+                  ) : (
+                    <ShowFile
+                      complex_value={uploadInvoice.complex_value}
+                      setModal={setModal}
                     />
-                  </View>
-                ) : (
-                  <View style={{ ...scalePadding(4) }}>
-                    <Text
-                      style={{
-                        ...scaleFont(12),
-                        color: "#101828",
-                        fontWeight: "500",
-                        paddingTop: scaleHeight(8),
-                      }}
-                    >
-                      {uploadInvoice.complex_value.header_title}
-                    </Text>
-                    <Pressable
-                      onPress={() =>
-                        setModal([
-                          () => (
-                            <Pressable
-                              style={{
-                                display: "flex",
-                                width: "100%",
-                                position: "absolute",
-                                height: "100%",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                              onPress={() => setModal([])}
-                            >
-                              <View
-                                style={{
-                                  position: "absolute",
-                                  width: "100%",
-                                  height: "100%",
-                                  opacity: 0.7,
-                                  backgroundColor: "#101828",
-                                }}
-                              />
-                              <View
-                                style={{
-                                  display: "flex",
-                                  backgroundColor: WHITE,
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  ...scalePadding(8),
-                                }}
-                              >
-                                <Image
-                                  source={{
-                                    uri: uploadInvoice.complex_value.value,
-                                  }}
-                                  style={{
-                                    height: scaleHeight(600),
-                                    width: scaleWidth(300),
-                                  }}
-                                  alt="invoice image"
-                                />
-                              </View>
-                            </Pressable>
-                          ),
-                        ])
-                      }
-                    >
-                      <Text
-                        style={{
-                          ...scaleFont(14),
-                          color: "#025ACE",
-                          fontWeight: "500",
-                          paddingBottom: scaleHeight(4),
-                        }}
-                      >
-                        {uploadInvoice.complex_value.text}
-                      </Text>
-                    </Pressable>
-                  </View>
-                )}
+                  ))}
 
                 {warrenty &&
-                !warrenty.complex_value &&
-                button &&
-                button.button_type == "save" ? (
-                  <View style={{ paddingLeft: scaleHeight(4) }}>
-                    <Text
-                      style={{
-                        ...scaleFont(12),
-                        color: "#667085",
-                        fontWeight: "400",
-                        paddingTop: scaleHeight(4),
-                        paddingBottom: scaleHeight(12),
-                      }}
-                    >
-                      Upload Warranty Card
-                    </Text>
-                    <Pressable
-                      style={{
-                        height: scaleHeight(100),
-                        borderColor: "#667085",
-                        borderWidth: scaleWidth(2),
-                        borderStyle: "dashed",
-                        borderRadius: scaleBorder(4),
-                        ...scalePadding(20),
-                        marginBottom: scaleHeight(16),
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "#F9FAFB",
-                      }}
-                      onPress={async () => {
-                        let { assets, canceled } = await getDocumentAsync({});
-
-                        if (!canceled) {
-                          if (assets[0].size / 1024 > warrenty.max_file_size) {
-                            setVal({
-                              error: {
-                                // type: uploadInvoice.file_type_error,
-                                size: warrenty.max_file_size_error,
-                              },
-                            });
-                          } else {
-                            setVal({
-                              [warrenty.key]: {
-                                uri: assets[0].uri,
-                                type: assets[0].mimeType,
-                                name: assets[0].name,
-                              },
-                            });
-                          }
-                        }
-                      }}
-                    >
-                      {val.invoice ? (
-                        <>
-                          <ImageBackground
-                            source={{ uri: val.invoice.uri }}
-                            style={{
-                              height: scaleHeight(60),
-                              width: scaleWidth(40),
-                              position: "relative",
-                            }}
-                          >
-                            <Image
-                              source={require("../../assets/icons/cross.svg")}
-                              style={{
-                                height: scaleHeight(20),
-                                width: scaleWidth(18),
-                                position: "absolute",
-                                backgroundColor: "#FFF",
-                                right: -10,
-                                top: -9,
-                              }}
-                            />
-                          </ImageBackground>
-                        </>
-                      ) : (
-                        <View
-                          style={{
-                            height: scaleHeight(32),
-                            width: scaleWidth(32),
-                            borderColor: "#667085",
-                            borderWidth: scaleWidth(2),
-                            borderRadius: scaleBorder(100),
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Image
-                            source={require("../../assets/icons/upload.svg")}
-                            style={{
-                              height: scaleHeight(16),
-                              width: scaleWidth(16),
-                            }}
-                          />
-                        </View>
-                      )}
-                    </Pressable>
-                    <InvoiceInfo
-                      val={val.info}
-                      styles={{
-                        color: "#101828",
-                      }}
+                  (!warrenty.complex_value &&
+                  button &&
+                  button.button_type == "save" ? (
+                    <UploadFile
+                      label={"Upload Warranty Card"}
+                      tag={warrenty.key}
+                      max_file_size={warrenty.max_file_size}
+                      max_file_size_error={warrenty.max_file_size_error}
+                      val={val}
+                      setVal={setVal}
+                      setOrder={setOrder}
+                      buttonLabel={button.label}
                     />
-                    <InvoiceInfo val={val.error} />
-
-                    <FullButton
-                      width={scaleWidth(280)}
-                      onPress={async () => {
-                        let response = await putOrder({
-                          yaper_id,
-                          [warrenty.key]: val[warrenty.key],
-                          variant_id,
-                          context: "order_details",
-                        });
-
-                        setOrder((await getOrder({ yaper_id }))?.data);
-                        setVal({});
-                      }}
-                      title={button.label}
-                      disabled={val[warrenty.key] == undefined}
+                  ) : (
+                    <ShowFile
+                      complex_value={warrenty.complex_value}
+                      setModal={setModal}
                     />
-                  </View>
-                ) : (
-                  <View style={{ ...scalePadding(4) }}>
-                    <Text
-                      style={{
-                        ...scaleFont(12),
-                        color: "#101828",
-                        fontWeight: "500",
-                        paddingTop: scaleHeight(8),
-                      }}
-                    >
-                      {warrenty.complex_value.header_title}
-                    </Text>
-                    <Pressable
-                      onPress={() =>
-                        setModal([
-                          () => (
-                            <Pressable
-                              style={{
-                                display: "flex",
-                                width: "100%",
-                                position: "absolute",
-                                height: "100%",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                              onPress={() => setModal([])}
-                            >
-                              <View
-                                style={{
-                                  position: "absolute",
-                                  width: "100%",
-                                  height: "100%",
-                                  opacity: 0.7,
-                                  backgroundColor: "#101828",
-                                }}
-                              />
-                              <View
-                                style={{
-                                  display: "flex",
-                                  backgroundColor: WHITE,
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  ...scalePadding(8),
-                                }}
-                              >
-                                <Image
-                                  source={{
-                                    uri: warrenty.complex_value.value,
-                                  }}
-                                  style={{
-                                    height: scaleHeight(600),
-                                    width: scaleWidth(300),
-                                  }}
-                                />
-                              </View>
-                            </Pressable>
-                          ),
-                        ])
-                      }
-                    >
-                      <Text
-                        style={{
-                          ...scaleFont(14),
-                          color: "#025ACE",
-                          fontWeight: "500",
-                          paddingBottom: scaleHeight(4),
-                        }}
-                      >
-                        {warrenty.complex_value.text}
-                      </Text>
-                    </Pressable>
-                  </View>
-                )}
+                  ))}
               </>
             ),
           }[state]}
@@ -1675,7 +1350,7 @@ const OrderComponent = ({
   );
 };
 
-function InvoiceInfo({ val, styles }) {
+function FileInfo({ val, styles }) {
   if (val)
     return (
       <View>
@@ -1709,4 +1384,216 @@ function InvoiceInfo({ val, styles }) {
         )}
       </View>
     );
+}
+
+function UploadedFileModal({ value, setModal }) {
+  return (
+    <Pressable
+      style={{
+        display: "flex",
+        width: "100%",
+        position: "absolute",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      onPress={() => setModal([])}
+    >
+      <View
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          opacity: 0.7,
+          backgroundColor: "#101828",
+        }}
+      />
+      <View
+        style={{
+          display: "flex",
+          backgroundColor: WHITE,
+          justifyContent: "center",
+          alignItems: "center",
+          ...scalePadding(8),
+        }}
+      >
+        <Image
+          source={{ uri: value }}
+          style={{
+            height: scaleHeight(600),
+            width: scaleWidth(300),
+          }}
+          alt="invoice image"
+        />
+      </View>
+    </Pressable>
+  );
+}
+
+function ShowFile({ complex_value: { header_title, value, text }, setModal }) {
+  return (
+    <View style={{ ...scalePadding(4) }}>
+      <Text
+        style={{
+          ...scaleFont(12),
+          color: "#101828",
+          fontWeight: "500",
+          paddingTop: scaleHeight(8),
+        }}
+      >
+        {header_title}
+      </Text>
+      <Pressable
+        onPress={() =>
+          setModal([
+            () => <UploadedFileModal value={value} setModal={setModal} />,
+          ])
+        }
+      >
+        <Text
+          style={{
+            ...scaleFont(14),
+            color: "#025ACE",
+            fontWeight: "500",
+            paddingBottom: scaleHeight(4),
+          }}
+        >
+          {text}
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
+
+function UploadFile({
+  label,
+  tag: key,
+  max_file_size,
+  max_file_size_error,
+  val,
+  setVal,
+  setOrder,
+  buttonLabel,
+}) {
+  return (
+    <View style={{ paddingLeft: scaleHeight(4) }}>
+      <Text
+        style={{
+          ...scaleFont(12),
+          color: "#667085",
+          fontWeight: "400",
+          paddingTop: scaleHeight(4),
+          paddingBottom: scaleHeight(12),
+        }}
+      >
+        {label}
+      </Text>
+      <Pressable
+        style={{
+          height: scaleHeight(100),
+          borderColor: "#667085",
+          borderWidth: scaleWidth(2),
+          borderStyle: "dashed",
+          borderRadius: scaleBorder(4),
+          ...scalePadding(20),
+          marginBottom: scaleHeight(16),
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#F9FAFB",
+        }}
+        onPress={async () => {
+          let { assets, canceled } = await getDocumentAsync({});
+          if (!canceled) {
+            if (assets[0].size / 1024 > max_file_size) {
+              setVal({
+                error: {
+                  // type: uploadInvoice.file_type_error,
+                  size: max_file_size_error,
+                },
+              });
+            } else {
+              setVal({
+                [key]: {
+                  uri: assets[0].uri,
+                  type: assets[0].mimeType,
+                  name: assets[0].name,
+                },
+              });
+            }
+          }
+        }}
+      >
+        {val.invoice ? (
+          <>
+            <ImageBackground
+              source={{ uri: val.invoice.uri }}
+              style={{
+                height: scaleHeight(60),
+                width: scaleWidth(40),
+                position: "relative",
+              }}
+            >
+              <Image
+                source={require("../../assets/icons/cross.svg")}
+                style={{
+                  height: scaleHeight(20),
+                  width: scaleWidth(18),
+                  position: "absolute",
+                  backgroundColor: "#FFF",
+                  right: -10,
+                  top: -9,
+                }}
+              />
+            </ImageBackground>
+          </>
+        ) : (
+          <View
+            style={{
+              height: scaleHeight(32),
+              width: scaleWidth(32),
+              borderColor: "#667085",
+              borderWidth: scaleWidth(2),
+              borderRadius: scaleBorder(100),
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              source={require("../../assets/icons/upload.svg")}
+              style={{
+                height: scaleHeight(16),
+                width: scaleWidth(16),
+              }}
+            />
+          </View>
+        )}
+      </Pressable>
+      <FileInfo
+        val={val.info}
+        styles={{
+          color: "#101828",
+        }}
+      />
+      <FileInfo val={val.error} />
+
+      <FullButton
+        width={scaleWidth(280)}
+        onPress={async () => {
+          let response = await putOrder({
+            yaper_id,
+            [key]: val[key],
+            variant_id,
+            context: "order_details",
+          });
+
+          setOrder((await getOrder({ yaper_id }))?.data);
+          setVal({});
+        }}
+        title={buttonLabel}
+        disabled={val[key] == undefined}
+      />
+    </View>
+  );
 }

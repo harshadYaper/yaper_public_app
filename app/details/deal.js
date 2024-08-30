@@ -8,6 +8,7 @@ import {
   scaleFont,
   scaleHeight,
   scalePadding,
+  scaleWidth,
 } from "../utils/getScaledDimensions";
 import { WHITE } from "../constants/colors";
 import Offers from "./offers";
@@ -95,12 +96,18 @@ export default function Deal() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            borderColor: "#D0D5DD",
+            borderWidth: scaleWidth(2),
           }}
         >
           <FullButton
             title="Accept Deal"
             onPress={async () => {
-              await putData("PARAMS", { deal_id: id, deal_name: name });
+              await putData("PARAMS", {
+                deal_id: id,
+                deal_name: name,
+                store_name: store.name,
+              });
               router.navigate({
                 pathname: pan_verified ? "/ecommerce-view" : "/kyc",
               });

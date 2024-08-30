@@ -23,10 +23,10 @@ export default function Navigation({
         backgroundColor: WHITE,
         position: "absolute",
         bottom: 0,
-        borderTopLeftRadius: scaleBorder(20),
-        borderTopRightRadius: scaleBorder(20),
         ...scalePadding(20),
         paddingBottom: scaleHeight(20),
+        borderColor: "#D0D5DD",
+        borderWidth: scaleWidth(2),
       }}
     >
       <FlatList
@@ -74,7 +74,7 @@ export default function Navigation({
                   textAlignVertical: "center",
                   color: nav == navigation ? "#025ACE" : "#667085",
                   ...scaleFont(10),
-                  fontWeight: nav == navigation ? "700" : "500",
+                  fontWeight: "500",
                 }}
               >
                 {label}

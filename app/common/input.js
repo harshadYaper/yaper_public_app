@@ -21,7 +21,7 @@ export default function Input({
   inputArray,
   style = {},
   usageType,
-  editable,
+  editable = true,
   leftComponent,
   rightComponent,
   secureFields,
@@ -49,7 +49,6 @@ export default function Input({
         }}
       >
         {leftComponent && leftComponent}
-
         {inputArray &&
           inputArray.map((input, ind) => {
             return (
@@ -66,10 +65,11 @@ export default function Input({
                 keyboardType={keyboardType}
                 style={{
                   ...customStyles.Input(width),
+                  ...(!editable && { color: "#667085" }),
                   ...style.Input,
                 }}
                 placeholder={placeholder}
-                placeholderTextColor="#667085"
+                placeholderTextColor="#D8D8DC"
               />
             );
           })}
@@ -100,6 +100,7 @@ const customStyles = StyleSheet.create({
       borderWidth: scaleWidth(2),
       ...scaleFont(16),
       ...scalePadding(6),
+      color: "#101828",
     },
     ...(isIOS && { paddingTop: scaleHeight(0) }),
   }),

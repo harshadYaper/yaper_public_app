@@ -16,6 +16,7 @@ import { router } from "expo-router";
 import { Image } from "expo-image";
 import { truncate } from "../utils/helper";
 import { GRAY } from "../constants/colors";
+import { isIOS } from "../utils/environment";
 
 export default function DealBox({
   id,
@@ -96,7 +97,7 @@ export default function DealBox({
         {title && (
           <Text
             style={{
-              ...scaleFont(10),
+              ...scaleFont(12),
               ...scalePadding(4),
               color: "#101828",
               flexShrink: 1,
@@ -125,7 +126,7 @@ export default function DealBox({
           </View>
         )}
         <View style={{ ...styles.FLEX, ...scalePadding(4) }}>
-          {color_code?.includes("#") && (
+          {color_code?.includes("#") ? (
             <View
               style={{
                 backgroundColor: color_code,
@@ -136,14 +137,20 @@ export default function DealBox({
                 borderColor: GRAY,
               }}
             ></View>
+          ) : (
+            <Image
+              source={require("../../assets/multi-color.svg")}
+              style={{
+                height: scaleHeight(isIOS ? 12 : 14),
+                width: scaleWidth(12),
+              }}
+            />
           )}
           {color && (
             <Text
               style={{
                 ...styles.LABEL,
-                ...(color_code?.includes("#")
-                  ? { paddingLeft: scaleWidth(8) }
-                  : {}),
+                paddingLeft: scaleWidth(8),
               }}
             >
               order {color.toLowerCase()}
@@ -168,15 +175,26 @@ export default function DealBox({
         )}
 
         {url && (
-          <View style={{ ...scalePadding(4), ...styles.FLEX }}>
-            <Text style={styles.LABEL}>Order on</Text>
+          <View
+            style={{
+              ...scalePadding(4),
+              ...styles.FLEX,
+            }}
+          >
+            <Text
+              style={{
+                ...styles.LABEL,
+                paddingRight: scaleWidth(8),
+              }}
+            >
+              Order on
+            </Text>
             <Image
               contentFit={"contain"}
               source={{ uri: url }}
               style={{
                 height: scaleHeight(16),
                 width: scaleWidth(32),
-                paddingLeft: scalePadding(8),
               }}
               alt="Store Image"
             />
@@ -206,7 +224,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   LABEL: {
-    ...scaleFont(10),
+    ...scaleFont(12),
     color: "#667085",
   },
 });

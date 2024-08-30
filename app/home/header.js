@@ -54,7 +54,7 @@ export const RightComp = () => (
       alignItems: "center",
       backgroundColor: WHITE,
       color: "black",
-      borderRadius: scaleBorder(16),
+      borderRadius: scaleBorder(20),
       borderColor: "#D0D5DD",
       borderWidth: scaleWidth(2),
       paddingLeft: scaleWidth(8),
@@ -110,6 +110,8 @@ export default function Header({
             paddingRight: scaleWidth(16),
             paddingTop: scaleHeight(60),
             paddingBottom: scaleHeight(24),
+            borderBottomRightRadius: scaleBorder(24),
+            borderBottomLeftRadius: scaleBorder(24),
           }}
         >
           <LeftComp />

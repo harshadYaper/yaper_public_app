@@ -15,7 +15,9 @@ export default function WebView({ uri, html, styles, injectScript }) {
       javaScriptEnabled
       startInLoadingState
       nestedScrollEnabled
-      injectedJavaScriptObject={injectScript}
+      injectedJavaScript={injectScript}
+      domStorageEnabled
+      sharedCookiesEnabled
       source={{ uri, html }}
     />
   );

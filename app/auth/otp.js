@@ -5,6 +5,7 @@ import Input from "../common/input";
 import { FullButton } from "../common/button";
 import {
   scaleFont,
+  scaleHeight,
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
@@ -17,8 +18,9 @@ import Timer from "../common/timer";
 import BasicInfo from "./basicInfo";
 import { mapUserInSegment } from "../utils/analytics";
 import { isIOS } from "../utils/environment";
+import { Image } from "expo-image";
 
-export default function OTP({ mobile_number, setComponent }) {
+export default function OTP({ mobile_number, setComponent, setLogin }) {
   const OTP_LENGTH = 4;
   const [otp, setOtp] = useState(array_generator(OTP_LENGTH, undefined));
   const [validOTP, setValidOTP] = useState(false);
@@ -83,64 +85,87 @@ export default function OTP({ mobile_number, setComponent }) {
         justifyContent: "space-between",
         width: "100%",
         height: isIOS && Keyboard.isVisible() ? "65%" : "100%",
-        ...scalePadding(24),
       }}
     >
       <View
         style={{
           display: "flex",
           width: "100%",
-          ...scalePadding(8),
+          paddingTop: scaleHeight(60),
         }}
       >
-        <Text
-          style={{
-            ...scaleFont(20),
-            fontWeight: "500",
-            marginBottom: "10%",
-            marginTop: "10%",
-            ...scalePadding(6),
-          }}
+        <TouchableOpacity
+          onPress={() => setLogin()}
+          style={{ ...scalePadding(16), paddingBottom: scaleHeight(0) }}
         >
-          We have sent you an OTP
-        </Text>
-
-        <Input
-          inputArray={otp}
-          usageType="OTP"
-          reference={ref}
-          onChange={otpValid}
-          hint={`${OTP_LENGTH} digit OTP sent on +${mobile_number}`}
-          keyboardType="numeric"
-          maxLength={1}
-          errorMessage=""
-          width={44}
-          style={{
-            Input: {
-              textAlign: "center",
-              marginRight: scaleWidth(12),
-            },
-            InputGroup: {
-              justifyContent: "flex-start",
-            },
-          }}
-          autofocusInd={0}
-        />
-        <TouchableOpacity onPress={handleResend} disabled={!(resendTimer == 0)}>
-          <Timer
-            time={resendTimer}
-            styles={{
-              ...scaleFont(12),
-              color: resendTimer == 0 ? "#336AB4" : "#ABB0BC",
-              ...scalePadding(6),
-              textAlign: "",
+          <Image
+            source={require("../../assets/icons/CaretLeft.svg")}
+            style={{
+              height: scaleHeight(24),
+              width: scaleWidth(24),
+              tintColor: "#101828",
             }}
-            content={resendTimer == 0 && "Resend code"}
           />
         </TouchableOpacity>
-      </View>
+        <View
+          style={{
+            display: "flex",
+            width: "100%",
+            ...scalePadding(24),
+          }}
+        >
+          <Text
+            style={{
+              ...scaleFont(20),
+              fontWeight: "500",
+              ...scalePadding(6),
+              paddingBottom: scaleHeight(40),
+            }}
+          >
+            We have sent you an OTP
+          </Text>
 
-      <FullButton disabled={!validOTP || loading} onPress={handleSubmit} />
+          <Input
+            inputArray={otp}
+            usageType="OTP"
+            reference={ref}
+            onChange={otpValid}
+            hint={`${OTP_LENGTH} digit OTP sent on +${mobile_number}`}
+            keyboardType="numeric"
+            maxLength={1}
+            errorMessage=""
+            width={44}
+            style={{
+              Input: {
+                textAlign: "center",
+                marginRight: scaleWidth(12),
+              },
+              InputGroup: {
+                justifyContent: "flex-start",
+              },
+            }}
+            autofocusInd={0}
+          />
+          <TouchableOpacity
+            onPress={handleResend}
+            disabled={!(resendTimer == 0)}
+          >
+            <Timer
+              time={resendTimer}
+              styles={{
+                ...scaleFont(12),
+                color: resendTimer == 0 ? "#336AB4" : "#ABB0BC",
+                ...scalePadding(6),
+                textAlign: "",
+              }}
+              content={resendTimer == 0 && "Resend code"}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={{ paddingBottom: scaleHeight(24) }}>
+        <FullButton disabled={!validOTP || loading} onPress={handleSubmit} />
+      </View>
     </View>
   );
 }

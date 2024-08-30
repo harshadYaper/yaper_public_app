@@ -3,7 +3,9 @@ import { Text } from "react-native";
 import { scaleFont } from "../utils/getScaledDimensions";
 
 export default function Timer({ time, styles, content, showMins = true }) {
-  const [timer, setTimer] = useState(time);
+  const [timer, setTimer] = useState();
+
+  useEffect(() => setTimer(time), [time]);
 
   const timeFormatter = (val) => (val <= 9 ? "0" + val.toString() : val);
 

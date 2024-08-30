@@ -397,7 +397,7 @@ export function TransactionsHeader({ balance }) {
       </View>
       <View
         style={{
-          paddingTop: scalePadding(10),
+          paddingTop: scaleHeight(10),
           paddingLeft: scaleWidth(6),
           paddingRight: scaleWidth(6),
         }}

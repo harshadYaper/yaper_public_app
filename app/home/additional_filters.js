@@ -47,12 +47,12 @@ export default function AdditionalFilters({
       key: "filter",
     },
     {
-      label: "No GST deals",
+      label: "Non GST deals",
       onPress: () => handleKey("gst_deals"),
       key: "gst_deals",
     },
     {
-      label: "No EMI deals",
+      label: "Non EMI deals",
       onPress: () => handleKey("emi_deals"),
       key: "emi_deals",
     },
@@ -106,17 +106,21 @@ export default function AdditionalFilters({
           contentContainerStyle={{
             justifyContent: "space-around",
             alignItems: "center",
-            height: "100%",
+            width: "100%",
           }}
           showsHorizontalScrollIndicator={false}
           data={ADDITIONAL_FILTER}
           renderItem={({ item: { label, onPress, images, key }, index }) => {
-            let isSelected = filters[key];
+            let isSelected =
+              filters[key] ||
+              (key == "filter" &&
+                Object.keys(filters).filter(
+                  (f) => !ADDITIONAL_FILTER.map((af) => af.key).includes(f)
+                ).length !== 0);
+
             return (
               <View
-                style={{
-                  paddingLeft: scaleWidth(index == 0 ? 12 : 20),
-                }}
+                style={{ ...(index !== 0 && { paddingLeft: scaleWidth(8) }) }}
               >
                 <TouchableOpacity
                   style={{
@@ -128,7 +132,7 @@ export default function AdditionalFilters({
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    ...scalePadding(10),
+                    ...scalePadding(8),
                     paddingRight: scaleWidth(12),
                     paddingLeft: scaleWidth(12),
                     ...filterStyles.Filter,
@@ -142,6 +146,7 @@ export default function AdditionalFilters({
                       style={{
                         height: scaleHeight(16),
                         width: scaleWidth(16),
+                        ...(isSelected && { tintColor: "#FFFFFF" }),
                         ...filterStyles.Image,
                       }}
                     />
@@ -152,8 +157,9 @@ export default function AdditionalFilters({
                       fontWeight: "500",
                       paddingRight: scaleWidth(4),
                       paddingLeft: scaleWidth(4),
-                      color: isSelected ? WHITE : "#667085",
+                      color: "#667085",
                       ...filterStyles.Label,
+                      ...(isSelected && { color: WHITE }),
                     }}
                   >
                     {label}
@@ -162,8 +168,11 @@ export default function AdditionalFilters({
                     <Image
                       contentFit={"contain"}
                       source={images[1]}
-                      height={scaleHeight(16)}
-                      width={scaleWidth(16)}
+                      style={{
+                        height: scaleHeight(16),
+                        width: scaleWidth(16),
+                        ...(isSelected && { tintColor: "#FFFFFF" }),
+                      }}
                     />
                   )}
                   {isSelected && (

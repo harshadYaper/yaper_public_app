@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   scaleBorder,
   scaleFont,
@@ -7,7 +7,7 @@ import {
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { WHITE } from "../constants/colors";
 
 function CheckBox({
@@ -24,20 +24,27 @@ function CheckBox({
 }) {
   const [checked, setChecked] = useState(selected);
 
+  useEffect(() => {
+    setChecked(selected);
+  }, [selected]);
+
+  const handlePress = () => {
+    setChecked(!checked);
+    onPress();
+  };
+
   return (
-    <View
+    <Pressable
       style={{
         display: "flex",
         flexDirection: "row",
         ...scalePadding(6),
         ...styles,
       }}
+      onPress={handlePress}
     >
       <TouchableOpacity
-        onPress={() => {
-          setChecked(!checked);
-          onPress();
-        }}
+        onPress={handlePress}
         disabled={disabled}
         style={{
           width: size,
@@ -58,10 +65,11 @@ function CheckBox({
           width={scaleWidth(14)}
         />
       </TouchableOpacity>
+
       <Text style={{ paddingLeft: scaleWidth(12), ...scaleFont(14) }}>
         {label}
       </Text>
-    </View>
+    </Pressable>
   );
 }
 

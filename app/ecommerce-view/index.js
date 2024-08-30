@@ -11,7 +11,7 @@ import {
 import { getData } from "../storage";
 import { createOrder } from "../api";
 import WebView from "../common/web-view";
-import { Image } from "expo-image";
+import { Image, ImageBackground } from "expo-image";
 import App from "../app";
 import { router } from "expo-router";
 import {
@@ -72,26 +72,30 @@ export default function EcommerceView() {
   }
 
   const { total_price, discount, cart_amount, quantity, address } = order || {};
-  const { deal_id, deal_name } = params || {};
+  const { deal_id, deal_name, store_name } = params || {};
 
   const [loading, setLoading] = useState(true);
 
-  const DetailsComp = ({ label, value, showAdditional }) => {
+  const DetailsComp = ({ label, value, showAdditional, styles }) => {
     return (
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "50%",
-          flexShrink: 1,
-          ...scalePadding(4),
-          alignItems: "center",
+          ...{
+            display: "flex",
+            flexDirection: "row",
+            paddingBottom: scaleHeight(2),
+            alignItems: "center",
+            width: "50%",
+            paddingRight: scaleWidth(16),
+          },
+          ...styles,
         }}
       >
         <Text
           style={{
-            ...scaleFont(8),
+            ...scaleFont(10),
             color: "#FFFFFF",
+            paddingRight: scaleWidth(8),
           }}
         >
           {label}
@@ -101,20 +105,20 @@ export default function EcommerceView() {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            width: "80%",
+            flex: 1,
           }}
         >
           <Text
             style={{
               ...scaleFont(10),
-              flexShrink: 1,
+              fontWeight: "500",
               color: "#FFFFFF",
             }}
           >
-            {truncate(value)}
+            {truncate(value, 70)}
           </Text>
-          {showAdditional && <CopyToClipboard value={value} />}
         </View>
+        {showAdditional && <CopyToClipboard value={value} />}
       </View>
     );
   };
@@ -174,7 +178,7 @@ export default function EcommerceView() {
                   paddingLeft: scaleWidth(24),
                   paddingRight: scaleWidth(24),
                   paddingTop: scaleHeight(24),
-                  paddingBottom: scaleHeight(16),
+                  paddingBottom: scaleHeight(24),
                 }}
               >
                 {address?.user_message && (
@@ -191,6 +195,52 @@ export default function EcommerceView() {
                     >
                       {address.user_message}
                     </Text>
+                    <View
+                      style={{
+                        paddingBottom: scaleHeight(32),
+                        width: "100%",
+                      }}
+                    >
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          width: "100%",
+                          alignItems: "center",
+                          ...scalePadding(12),
+                          backgroundColor: "#F6E3C0",
+                          borderRadius: scaleBorder(8),
+                          borderWidth: scaleWidth(2),
+                          borderColor: "#FDB022",
+                        }}
+                      >
+                        <View style={{ paddingRight: scaleWidth(12) }}>
+                          <Image
+                            source={require("../../assets/Info.svg")}
+                            style={{
+                              height: scaleHeight(28),
+                              width: scaleWidth(28),
+                              tintColor: "#FDB022",
+                            }}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            color: "#101828",
+                            fontWeight: "500",
+                            ...scaleFont(12),
+                            textAlign: "left",
+                            flex: 1,
+                            textAlignVertical: "center",
+                          }}
+                        >
+                          You will be redirected to {store_name} to complete the
+                          order. Details like address, name and contact number
+                          will be provided on next screen
+                        </Text>
+                      </View>
+                    </View>
                     <FullButton
                       onPress={() => setProceed(true)}
                       title="Proceed"
@@ -200,129 +250,183 @@ export default function EcommerceView() {
               </View>
             </>
           ) : (
-            <View
-              style={{
-                position: "absolute",
-                bottom: 0,
-                backgroundColor: showDetails ? "transparent" : "#101828",
-                width: "100%",
-                alignItems: "center",
-                ...scalePadding(4),
-              }}
-            >
-              <Pressable
+            <>
+              <View
                 style={{
-                  height: scaleHeight(60),
-                  width: scaleWidth(60),
-                  borderColor: "#101828",
-                  backgroundColor: "#101828",
-                  borderWidth: scaleWidth(2),
-                  borderRadius: scaleBorder(50),
-                  justifyContent: "center",
+                  position: "absolute",
+                  bottom: 0,
+                  width: "100%",
                   alignItems: "center",
                 }}
-                onPress={() => setShowDetails((p) => !p)}
               >
-                <View
+                <Pressable
                   style={{
-                    width: scaleWidth(40),
-                    height: scaleHeight(40),
-                    borderColor: "#FFFFFF",
-                    borderWidth: scaleWidth(4),
-                    borderRadius: scaleBorder(50),
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {order?.timer?.remaining_time && (
-                    <Timer
-                      time={order.timer.remaining_time}
-                      styles={{
-                        color: "#FFFFFF",
-                      }}
-                      showMins={false}
-                    />
-                  )}
-                </View>
-              </Pressable>
-              {!showDetails && (
-                <TouchableOpacity
-                  style={{
-                    display: "flex",
                     width: "100%",
+                    borderColor: "#101828",
                     justifyContent: "center",
                     alignItems: "center",
-                    height: scaleHeight(120),
                   }}
-                  onPress={() => setScreen((s) => 1 - s)}
+                  onPress={() => setShowDetails((p) => !p)}
                 >
-                  <View
+                  <ImageBackground
+                    source={require("../../assets/ecom-shape.svg")}
                     style={{
-                      display: "flex",
-                      width: "100%",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        ...scaleFont(12),
-                        fontWeight: "700",
-                        color: "#FFFFFF",
-                        ...scalePadding(4),
-                      }}
-                    >
-                      {screen == 0 ? deal_name : "Delivery Details"}
-                    </Text>
-                    <FlatList
-                      contentContainerStyle={{}}
-                      style={{ width: "100%" }}
-                      data={
-                        screen == 0
-                          ? [
-                              { label: "Total Price", value: total_price },
-                              { label: "Cart Amount", value: cart_amount },
-                              { label: "Discount", value: discount },
-                            ]
-                          : addressFormatter(address)
-                      }
-                      numColumns={2}
-                      renderItem={({ item: { label, value } }) => (
-                        <DetailsComp
-                          label={label}
-                          value={value}
-                          showAdditional={screen !== 0}
-                        />
-                      )}
-                      keyExtractor={({ label }) => label}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
+                      height: scaleHeight(80),
                       width: "100%",
                       justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
-                    {range(MAX_SCREENS).map((i) => (
-                      <Pressable
-                        key={"SCREENS" + i}
+                    <Image
+                      source={
+                        showDetails
+                          ? require("../../assets/icons/CaretCircleUp.svg")
+                          : require("../../assets/icons/CaretCircleDown.svg")
+                      }
+                      style={{
+                        height: scaleHeight(30),
+                        width: scaleWidth(28),
+                        tintColor: "#FFFFFF",
+                      }}
+                    />
+                  </ImageBackground>
+                </Pressable>
+
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: showDetails ? "transparent" : "#101828",
+                  }}
+                >
+                  {!showDetails && (
+                    <>
+                      <View
                         style={{
-                          height: scaleHeight(4),
-                          borderRadius: scaleBorder(2),
-                          width: scaleWidth(screen == i ? 32 : 4),
-                          backgroundColor: "#FFFFFF",
-                          marginLeft: scaleWidth(4),
-                          marginRight: scaleWidth(4),
+                          display: "flex",
+                          paddingLeft: scaleWidth(20),
+                          paddingRight: scaleWidth(20),
+                          height: "100%",
                         }}
-                        onPress={() => setScreen((p) => 1 - p)}
-                      />
-                    ))}
-                  </View>
-                </TouchableOpacity>
-              )}
-            </View>
+                      >
+                        <View
+                          style={{
+                            display: "flex",
+                            width: scaleWidth(40),
+                            height: scaleHeight(40),
+                            borderColor: "#FFFFFF",
+                            borderWidth: scaleWidth(4),
+                            borderRadius: scaleBorder(50),
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          {order?.timer?.remaining_time && (
+                            <Timer
+                              time={order.timer.remaining_time}
+                              styles={{
+                                color: "#FFFFFF",
+                              }}
+                              showMins={false}
+                            />
+                          )}
+                        </View>
+                      </View>
+                      <TouchableOpacity
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          minHeight: scaleHeight(160),
+                          flex: 1,
+                        }}
+                        onPress={() => setScreen((s) => 1 - s)}
+                      >
+                        <View
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            width: "100%",
+                            flex: 1,
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              ...scaleFont(10),
+                              fontWeight: "700",
+                              color: "#FFFFFF",
+                              paddingBottom: scaleHeight(screen == 0 ? 24 : 8),
+                            }}
+                          >
+                            {screen == 0 ? deal_name : "Delivery Details"}
+                          </Text>
+                          <FlatList
+                            contentContainerStyle={{
+                              flex: 1,
+                            }}
+                            style={{ flex: 1 }}
+                            data={
+                              screen == 0
+                                ? [
+                                    {
+                                      label: "Total Price",
+                                      value: total_price,
+                                    },
+                                    {
+                                      label: "Cart Amount",
+                                      value: cart_amount,
+                                    },
+                                    { label: "Discount", value: discount },
+                                  ]
+                                : addressFormatter(address)
+                            }
+                            numColumns={2}
+                            renderItem={({ item: { label, value } }) => (
+                              <DetailsComp
+                                label={label}
+                                value={value}
+                                showAdditional={screen !== 0}
+                                styles={
+                                  screen == 0 && { paddingTop: scaleHeight(24) }
+                                }
+                              />
+                            )}
+                            keyExtractor={({ label }) => label}
+                          />
+                        </View>
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            paddingBottom: scaleHeight(16),
+                          }}
+                        >
+                          {range(MAX_SCREENS).map((i) => (
+                            <Pressable
+                              key={"SCREENS" + i}
+                              style={{
+                                height: scaleHeight(4),
+                                borderRadius: scaleBorder(2),
+                                width: scaleWidth(screen == i ? 32 : 4),
+                                backgroundColor: "#FFFFFF",
+                                marginLeft: scaleWidth(4),
+                                marginRight: scaleWidth(4),
+                              }}
+                              onPress={() => setScreen((p) => 1 - p)}
+                            />
+                          ))}
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </View>
+              </View>
+            </>
           )}
         </View>
       }

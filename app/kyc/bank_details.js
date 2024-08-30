@@ -14,6 +14,7 @@ import { isEmpty, sleep, snakeToTitleize } from "../utils/helper";
 import { useDispatch } from "react-redux";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
+import { isIOS } from "../utils/environment";
 
 export default function BankDetails({ account_holder_name }) {
   const { bank_accounts, pan_holder_name } = useSelector((state) => state.user);
@@ -95,7 +96,7 @@ export default function BankDetails({ account_holder_name }) {
       <View>
         {PAN_DETAILS.map(
           ({ label, placeholder, key, editable, secureFields }) => (
-            <View style={{ paddingBottom: scaleHeight(24) }}>
+            <View key={key} style={{ paddingBottom: scaleHeight(24) }}>
               <Input
                 key={label}
                 secureFields={secureFields}
@@ -110,6 +111,12 @@ export default function BankDetails({ account_holder_name }) {
                 }
                 style={{
                   Label: { ...scaleFont(14), paddingLeft: scaleWidth(0) },
+                  Input: {
+                    paddingLeft: scaleWidth(16),
+                    paddingRight: scaleWidth(16),
+                    paddingTop: scaleHeight(isIOS ? 5 : 10),
+                    paddingBottom: scaleHeight(10),
+                  },
                 }}
                 label={label}
                 placeholder={placeholder}

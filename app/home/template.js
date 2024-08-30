@@ -123,6 +123,7 @@ export default function Template({}) {
         balance: apiData?.data.wallet?.current_balance_ui,
       },
     }));
+    setOpenFilterOption([...(apiData?.filter || [])][0]);
 
     setFetching(false);
   };
@@ -146,10 +147,6 @@ export default function Template({}) {
         }));
     }
   }, [openFilterOption]);
-
-  useEffect(() => {
-    data && setOpenFilterOption(data?.filter?.[0]);
-  }, [data]);
 
   return (
     <View

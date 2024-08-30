@@ -18,14 +18,24 @@ export default function Details() {
   const [Component, params] = component;
   const { key, id, deal_id } = useLocalSearchParams();
 
+  const setOrderComponent = () => {
+    setComponent([Order, {}]);
+  };
+
   useEffect(() => {
     setLoading(false);
-    key == "order" && setComponent([Order, {}]);
+    key == "order" && setOrderComponent();
   }, []);
 
   return (
     <App
-      Component={<Component {...params} />}
+      Component={
+        <Component
+          setComponent={setComponent}
+          setOrderComponent={setOrderComponent}
+          {...params}
+        />
+      }
       Splash={<></>}
       styles={customeStyles}
       loading={loading}

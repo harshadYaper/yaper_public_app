@@ -2,7 +2,7 @@ const extract = (obj, type) => obj?.find((i) => i.type == type) || {};
 
 export default function GetDetails(obj) {
   const { variant, store } = extract(obj, "product_details");
-  const { title, bank, offer } = extract(obj, "offer_details");
+  const { title, bank, offer, deal_id } = extract(obj, "offer_details");
   const { items } = extract(obj, "earning_details");
   const { address } = extract(obj, "delivery_details");
   const {
@@ -23,6 +23,7 @@ export default function GetDetails(obj) {
     bank,
     offer,
     items,
+    deal_id,
     logo,
     name,
     properties,

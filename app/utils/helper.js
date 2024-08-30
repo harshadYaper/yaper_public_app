@@ -27,11 +27,11 @@ export const truncate = (string, length = 50, trunc_string = "...") =>
     : undefined;
 
 export const isEmpty = (val) =>
-  val == undefined ||
-  val == null ||
-  val == "" ||
+  Object.keys(val).length == 0 ||
   val.length == 0 ||
-  Object.keys(val).length == 0;
+  val == "" ||
+  val == null ||
+  val == undefined;
 
 export const sleep = async (val) =>
   new Promise((resolve) => setTimeout(resolve, val));

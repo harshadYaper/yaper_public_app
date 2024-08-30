@@ -13,6 +13,7 @@ import saveData from "../auth/save_data";
 import { sleep } from "../utils/helper";
 import BankDetails from "./bank_details";
 import { useDispatch } from "react-redux";
+import { isIOS } from "../utils/environment";
 
 export default function PAN({ setComponent }) {
   const [data, setData] = useState({});
@@ -56,7 +57,7 @@ export default function PAN({ setComponent }) {
     >
       <View>
         {PAN_DETAILS.map(({ label, placeholder, key }) => (
-          <View style={{ paddingBottom: scaleHeight(24) }}>
+          <View key={key} style={{ paddingBottom: scaleHeight(24) }}>
             <Input
               key={label}
               inputArray={[data[key]]}
@@ -65,6 +66,12 @@ export default function PAN({ setComponent }) {
               placeholder={placeholder}
               style={{
                 Label: { ...scaleFont(14), paddingLeft: scaleWidth(0) },
+                Input: {
+                  paddingLeft: scaleWidth(16),
+                  paddingRight: scaleWidth(16),
+                  paddingTop: scaleHeight(isIOS ? 5 : 10),
+                  paddingBottom: scaleHeight(10),
+                },
               }}
             />
           </View>
