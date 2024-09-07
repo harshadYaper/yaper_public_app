@@ -40,46 +40,50 @@ export default function Details() {
       styles={customeStyles}
       loading={loading}
       options={{
-        headerTitleAlign: "center",
-        headerTitleStyle: {
-          color: "#101828",
-          ...scaleFont(16),
+        ...{
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            color: "#101828",
+            ...scaleFont(16),
 
-          fontWeight: "500",
+            fontWeight: "500",
+          },
+          headerShown: true,
+          title: key == "order" ? "Order Details" : "Deal Details",
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Image
+                source={require("../../assets/icons/CaretLeft.svg")}
+                style={{
+                  height: scaleHeight(24),
+                  width: scaleWidth(24),
+                  tintColor: "#101828",
+                }}
+              />
+            </TouchableOpacity>
+          ),
         },
-        headerShown: true,
-        title: key == "order" ? "Order Details" : "Deal Details",
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => router.back()}>
-            <Image
-              source={require("../../assets/icons/CaretLeft.svg")}
-              style={{
-                height: scaleHeight(24),
-                width: scaleWidth(24),
-                tintColor: "#101828",
-              }}
-            />
-          </TouchableOpacity>
-        ),
-        headerRight: () => (
-          <TouchableOpacity
-            onPress={
-              async () =>
-                await Share.share({
-                  message: `https://yaper.co/deal/${deal_id || id}`,
-                }) // change this
-            }
-          >
-            <Image
-              source={require("../../assets/icons/Share.svg")}
-              style={{
-                height: scaleHeight(24),
-                width: scaleWidth(24),
-                tintColor: "#101828",
-              }}
-            />
-          </TouchableOpacity>
-        ),
+        ...(key !== "order" && {
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={
+                async () =>
+                  await Share.share({
+                    message: `https://yaper.co/deal/${deal_id || id}`,
+                  }) // change this
+              }
+            >
+              <Image
+                source={require("../../assets/icons/Share.svg")}
+                style={{
+                  height: scaleHeight(24),
+                  width: scaleWidth(24),
+                  tintColor: "#101828",
+                }}
+              />
+            </TouchableOpacity>
+          ),
+        }),
       }}
     />
   );

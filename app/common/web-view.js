@@ -1,7 +1,12 @@
+import { Linking, Platform } from "react-native";
 import RNWebView from "react-native-webview";
 
 export default function WebView({ uri, html, styles, injectScript }) {
-  return (
+  return Platform.OS === "web" ? (
+    <>
+      <iframe src={uri} height={"100%"} width={"100%"} />
+    </>
+  ) : (
     <RNWebView
       style={{
         opacity: 0.99,
@@ -19,6 +24,11 @@ export default function WebView({ uri, html, styles, injectScript }) {
       domStorageEnabled
       sharedCookiesEnabled
       source={{ uri, html }}
+      onShouldStartLoadWithRequest={(event) => {
+        let isLink = event.url.startsWith("mailto");
+        isLink && Linking.openURL(event.url);
+        return !isLink;
+      }}
     />
   );
 }

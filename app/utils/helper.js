@@ -26,12 +26,18 @@ export const truncate = (string, length = 50, trunc_string = "...") =>
       : string
     : undefined;
 
-export const isEmpty = (val) =>
-  Object.keys(val).length == 0 ||
-  val.length == 0 ||
-  val == "" ||
-  val == null ||
-  val == undefined;
+export const isEmpty = (val) => {
+  switch (typeof val) {
+    case "object":
+      return val == null || val.length == 0 || Object.keys(val).length == 0;
+    case "string":
+      return val.length == 0;
+    case "undefined":
+      return val == undefined;
+    default:
+      return false;
+  }
+};
 
 export const sleep = async (val) =>
   new Promise((resolve) => setTimeout(resolve, val));

@@ -35,6 +35,7 @@ export default function Orders({
   setPageNumber,
   fetchData,
   fetching,
+  endOfData,
 }) {
   const { pan_verified } = useSelector((state) => state.user) || {};
 
@@ -216,54 +217,6 @@ export default function Orders({
                       </Text>
                     </View>
                   )}
-                  {/* <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    width: "100%",
-                  }}
-                >
-                  {secondary_button && (
-                    <FullButton
-                      width={scaleWidth(60)}
-                      height={scaleHeight(30)}
-                      title={secondary_button.button_text}
-                      fontStyles={scaleFont(10)}
-                      onPress={async () => {
-                        await putData("PARAMS", {
-                          deal_id,
-                          deal_name: description,
-                        });
-                        router.navigate({
-                          pathname: pan_verified ? "/ecommerce-view" : "/kyc",
-                        });
-                      }}
-                    />
-                  )}
-
-                  {third_button && (
-                    <>
-                      {console.log(third_button.request)}
-                      <FullButton
-                        width={scaleWidth(80)}
-                        height={scaleHeight(30)}
-                        title={third_button.button_text}
-                        fontStyles={scaleFont(10)}
-                        backgroundColor={"#F04438"}
-                        onPress={async () => {
-                          await customRequest({
-                            url: third_button.request.href,
-                            method: third_button.request.type,
-                            payload: { variant_id },
-                          });
-                          fetchData({ resetData: true });
-                        }}
-                      />
-                    </>
-                  )}
-                </View> */}
 
                   {timer && (
                     <Text
@@ -299,8 +252,7 @@ export default function Orders({
           }
         />
       )}
-      onEndReachedThreshold={0.4}
-      onEndReached={() => setPageNumber((p) => p + 1)}
+      onEndReached={() => !endOfData && setPageNumber((p) => p + 1)}
       refreshControl={
         <RefreshControl
           refreshing={fetching}

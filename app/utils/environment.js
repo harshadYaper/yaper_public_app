@@ -17,8 +17,8 @@ export const getEnvironment = async () => {
 };
 
 export const setEnvironment = async (environment) => {
-  await putData("ENVIRONMENT", environment);
   await clearData({});
+  await putData("ENVIRONMENT", environment);
   await reloadAsync();
 };
 

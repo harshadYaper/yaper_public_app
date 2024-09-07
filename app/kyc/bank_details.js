@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import { isIOS } from "../utils/environment";
+import showToast from "../utils/toast";
 
 export default function BankDetails({ account_holder_name }) {
   const { bank_accounts, pan_holder_name } = useSelector((state) => state.user);
@@ -145,6 +146,7 @@ export default function BankDetails({ account_holder_name }) {
               user: (await getUser({}))?.user,
             });
             sleep(2000);
+            showToast({ message: "Bank details updated", type: "success" });
           } else {
             Alert.alert(
               "error",

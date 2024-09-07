@@ -1,10 +1,8 @@
 import { Image } from "expo-image";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import {
-  scaleBorder,
   scaleFont,
   scaleHeight,
-  scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { WHITE } from "../constants/colors";
@@ -23,8 +21,10 @@ export default function Navigation({
         backgroundColor: WHITE,
         position: "absolute",
         bottom: 0,
-        ...scalePadding(20),
-        paddingBottom: scaleHeight(20),
+        paddingLeft: scaleWidth(20),
+        paddingRight: scaleWidth(20),
+        paddingTop: scaleHeight(4),
+        paddingBottom: scaleHeight(12),
         borderColor: "#D0D5DD",
         borderWidth: scaleWidth(2),
       }}
@@ -46,6 +46,11 @@ export default function Navigation({
               setFilters({});
               setPageNumber(1);
               setNav(navigation);
+            }}
+            style={{
+              width: scaleWidth(64),
+              height: scaleHeight(64),
+              justifyContent: "space-around",
             }}
           >
             <View

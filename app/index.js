@@ -12,6 +12,7 @@ import Auth from "./auth";
 import { mapUserInSegment } from "./utils/analytics";
 import { loadAsync } from "expo-font";
 import { Inter_400Regular } from "@expo-google-fonts/inter";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 export default function Yaper() {
   const { intro: showedIntro } = useSelector((state) => state.intro) || false;
@@ -35,7 +36,7 @@ export default function Yaper() {
       dispatch({
         type: "SHOWED_INTRO",
         payload: {
-          intro: true, //await getData("SHOWED_INTRO")
+          intro: await getData("SHOWED_INTRO"),
         },
       });
 
@@ -59,8 +60,9 @@ export default function Yaper() {
         payload: { log: (await getAppVariables()).log },
       });
 
-      await sleep(1500); // need to remove this
       user && (await mapUserInSegment(user));
+
+      await sleep(1500); // need to remove this
     } catch (e) {
       console.log(e);
     } finally {
@@ -68,26 +70,31 @@ export default function Yaper() {
     }
   }
   useEffect(() => {
+    clearInterval();
     onAppStartup();
   }, []);
 
-  return appIsloading ? (
-    <App
-      Splash={<Splash />}
-      styles={{
-        LoadingSplash: {
-          backgroundColor: "#025ACE",
-        },
-      }}
-      loading={appIsloading}
-    />
-  ) : showedIntro ? (
-    token ? (
-      <Home />
-    ) : (
-      <Auth />
-    )
-  ) : (
-    <Welcome />
+  return (
+    <RootSiblingParent>
+      {appIsloading ? (
+        <App
+          Splash={<Splash />}
+          styles={{
+            LoadingSplash: {
+              backgroundColor: "#025ACE",
+            },
+          }}
+          loading={appIsloading}
+        />
+      ) : token ? (
+        showedIntro ? (
+          <Home />
+        ) : (
+          <Welcome />
+        )
+      ) : (
+        <Auth />
+      )}
+    </RootSiblingParent>
   );
 }

@@ -3,7 +3,6 @@ import {
   scaleBorder,
   scaleFont,
   scaleHeight,
-  scaleMargin,
   scalePadding,
   scaleWidth,
 } from "../utils/getScaledDimensions";
@@ -15,7 +14,7 @@ export default function FAQs({ videos }) {
     <View
       style={{
         display: "flex",
-        marginBottom: scaleHeight(120),
+        paddingBottom: scaleHeight(120),
         paddingTop: scaleHeight(12),
       }}
     >
@@ -46,7 +45,7 @@ export default function FAQs({ videos }) {
           style={{
             display: "flex",
             flexDirection: "row",
-            marginBottom: scaleHeight(12),
+            paddingBottom: scaleHeight(12),
           }}
         >
           <Text style={{ flex: 1, ...scaleFont(14) }}></Text>
@@ -78,7 +77,7 @@ export default function FAQs({ videos }) {
           style={{
             display: "flex",
             flexDirection: "row",
-            marginBottom: scaleHeight(12),
+            paddingBottom: scaleHeight(12),
           }}
         >
           <Text
@@ -90,40 +89,9 @@ export default function FAQs({ videos }) {
           >
             {videos?.headers?.en}
           </Text>
-          <Pressable
-            onPress={() => Linking.openURL(videos?.urls?.en)}
-            style={{
-              width: scaleWidth(60),
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={require("../../assets/Vector.svg")}
-              style={{
-                height: scaleHeight(22),
-                width: scaleWidth(20),
-                ...scalePadding(2),
-              }}
-            />
-          </Pressable>
-          <Pressable
-            onPress={() => Linking.openURL(videos?.urls?.hi)}
-            style={{
-              width: scaleWidth(60),
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={require("../../assets/Vector.svg")}
-              style={{
-                height: scaleHeight(22),
-                width: scaleWidth(20),
-                ...scalePadding(2),
-              }}
-            />
-          </Pressable>
+
+          <VideoComp url={videos?.urls?.en} />
+          <VideoComp url={videos?.urls?.hi} />
         </View>
 
         <View
@@ -141,46 +109,32 @@ export default function FAQs({ videos }) {
           >
             Why is TDS deducted from payments?
           </Text>
-          <Pressable
-            onPress={() =>
-              Linking.openURL("https://www.youtube.com/shorts/HhnvsgCtO9w")
-            }
-            style={{
-              width: scaleWidth(60),
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={require("../../assets/Vector.svg")}
-              style={{
-                height: scaleHeight(22),
-                width: scaleWidth(20),
-                ...scalePadding(2),
-              }}
-            />
-          </Pressable>
-          <Pressable
-            onPress={() =>
-              Linking.openURL("https://www.youtube.com/shorts/ImOEm_UrJLM")
-            }
-            style={{
-              width: scaleWidth(60),
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={require("../../assets/Vector.svg")}
-              style={{
-                height: scaleHeight(22),
-                width: scaleWidth(20),
-                ...scalePadding(2),
-              }}
-            />
-          </Pressable>
+
+          <VideoComp url={"https://www.youtube.com/shorts/HhnvsgCtO9w"} />
+          <VideoComp url={"https://www.youtube.com/shorts/ImOEm_UrJLM"} />
         </View>
       </View>
     </View>
+  );
+}
+
+function VideoComp({ url }) {
+  return (
+    <Pressable
+      onPress={() => Linking.openURL(url)}
+      style={{
+        width: scaleWidth(60),
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Image
+        source={require("../../assets/Vector.svg")}
+        style={{
+          height: scaleHeight(20),
+          width: scaleWidth(20),
+        }}
+      />
+    </Pressable>
   );
 }

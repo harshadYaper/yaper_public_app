@@ -3,18 +3,23 @@ import { isEmpty } from "../utils/helper";
 
 export async function putData(key, value) {
   try {
-    !isEmpty(value) && (await AsyncStorage.setItem(key, JSON.stringify(value)));
+    let transformedKey =
+      key == "ENVIRONMENT" ? key : key + "_" + (await getData("ENVIRONMENT"));
+    !isEmpty(value) &&
+      (await AsyncStorage.setItem(transformedKey, JSON.stringify(value)));
   } catch (error) {
-    console.log("PUT ASYNC STORE :::", error);
+    console.log("PUT ASYNC STORE :::", error, key);
   }
 }
 
 export async function getData(key) {
   try {
-    let val = await AsyncStorage.getItem(key, null);
-    return isEmpty(val) ? undefined : JSON.parse(val);
+    let transformedKey =
+      key == "ENVIRONMENT" ? key : key + "_" + (await getData("ENVIRONMENT"));
+    let val = await AsyncStorage.getItem(transformedKey, undefined);
+    return !isEmpty(val) && JSON.parse(val);
   } catch (error) {
-    console.log("GET ASYNC STORE :::", error);
+    console.log("GET ASYNC STORE :::", error, key);
   }
 }
 

@@ -32,11 +32,13 @@ import Timer from "../common/timer";
 import { useSelector } from "react-redux";
 import { putData } from "../storage";
 import OrderPlaced from "./order_placed";
+import { isIOS } from "../utils/environment";
 
 export default function Order({ setComponent, setOrderComponent }) {
   const { id, order_number, variant_id } = useLocalSearchParams();
   const [order, setOrder] = useState({});
   const [expanded, setExpanded] = useState();
+  const [reasons, setReasons] = useState([]);
   const [modal, setModal] = useState([]);
   const [Modal] = modal;
 
@@ -83,6 +85,7 @@ export default function Order({ setComponent, setOrderComponent }) {
             title={name}
             image={logo}
             url={store?.logo}
+            productUrl={order?.meta?.url}
             bank={bank}
             color_code={color_code}
             color={color}
@@ -173,18 +176,29 @@ export default function Order({ setComponent, setOrderComponent }) {
                               </Text>
                               <PrimaryCheckBox
                                 onPress={async () => {
-                                  await customRequest({
-                                    url: third_button.request.href,
-                                    method: third_button.request.type,
-                                    payload: { variant_id },
-                                  });
-                                  router.back();
+                                  setReasons((p) =>
+                                    p.includes(reason)
+                                      ? [...p.filter((r) => r != reason)]
+                                      : [...p, reason]
+                                  );
                                 }}
+                                selected={reasons.includes(reason)}
                               />
                             </View>
                           ))}
                         </View>
-                        <Pressable onPress={() => setModal([])}>
+                        <Pressable
+                          onPress={async () => {
+                            let resp = await customRequest({
+                              url: third_button.request.href,
+                              method: third_button.request.type,
+                              payload: { variant_id },
+                            });
+                            if (resp.data == "Successfully Expired")
+                              router.back();
+                            setModal([]);
+                          }}
+                        >
                           <Text
                             style={{
                               ...scaleFont(14),
@@ -510,7 +524,7 @@ const OrderComponent = ({
                 borderWidth: scaleBorder(4),
                 borderColor: "#667085",
                 borderRadius: 20,
-                height: scaleHeight(44),
+                height: scaleHeight(isIOS ? 40 : 44),
                 width: scaleWidth(40),
                 justifyContent: "center",
                 alignItems: "center",

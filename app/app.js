@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 export default function App({
   Component,
@@ -9,35 +10,41 @@ export default function App({
   options,
   nestMode = "safearea",
 }) {
-  return loading ? (
-    <View style={{ ...styles.LoadingSplash, ...customeStyles.LoadingSplash }}>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-          ...options,
-        }}
-      />
-      {Splash}
-    </View>
-  ) : (
-    <View style={{ ...customeStyles.Component }}>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-          ...options,
-        }}
-      />
-      {nestMode == "safearea" ? (
-        Component
-      ) : (
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
+  return (
+    <RootSiblingParent>
+      {loading ? (
+        <View
+          style={{ ...styles.LoadingSplash, ...customeStyles.LoadingSplash }}
         >
-          {Component}
-        </ScrollView>
+          <Stack.Screen
+            options={{
+              headerShown: false,
+              ...options,
+            }}
+          />
+          {Splash}
+        </View>
+      ) : (
+        <View style={{ ...customeStyles.Component }}>
+          <Stack.Screen
+            options={{
+              headerShown: false,
+              ...options,
+            }}
+          />
+          {nestMode == "safearea" ? (
+            Component
+          ) : (
+            <ScrollView
+              contentContainerStyle={{ flexGrow: 1 }}
+              keyboardShouldPersistTaps="handled"
+            >
+              {Component}
+            </ScrollView>
+          )}
+        </View>
       )}
-    </View>
+    </RootSiblingParent>
   );
 }
 

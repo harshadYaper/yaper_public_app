@@ -8,6 +8,7 @@ import {
   scaleWidth,
 } from "../utils/getScaledDimensions";
 import { Image } from "expo-image";
+import showToast from "../utils/toast";
 
 export default function CopyToClipboard({
   value,
@@ -29,4 +30,9 @@ export default function CopyToClipboard({
       />
     </TouchableOpacity>
   );
+}
+
+export async function copyToClipboard({ value, message }) {
+  await setStringAsync(value.toString());
+  showToast({ message, type: "success" });
 }

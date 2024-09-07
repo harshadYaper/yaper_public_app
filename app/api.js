@@ -268,3 +268,43 @@ export async function getBank({ ifsc_code }) {
     url: `/${ifsc_code}`,
   });
 }
+
+export async function getTickets({ page_number }) {
+  return await makeRequest({
+    method: "GET",
+    url: "/v1/tickets",
+    payload: { page_number },
+  });
+}
+
+export async function createTicket({
+  object_type = "invoice",
+  object_id = "123",
+  title,
+}) {
+  return await makeRequest({
+    method: "POST",
+    url: "/v1/tickets",
+    payload: { object_type, object_id, title },
+  });
+}
+
+export async function createConversation({ ticket_id, message, documents }) {
+  return await makeRequest({
+    method: "POST",
+    url: "/v1/conversations",
+    payload: {
+      ticket_id,
+      message,
+      documents: documents.map((document) => JSON.stringify(document)),
+    },
+  });
+}
+
+export async function getConversations({ ticket_id, page_number }) {
+  return await makeRequest({
+    method: "GET",
+    url: "/v1/conversations",
+    payload: { ticket_id, page_number },
+  });
+}

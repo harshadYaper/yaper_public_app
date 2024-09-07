@@ -1,4 +1,10 @@
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   scaleBorder,
   scaleFont,
@@ -176,15 +182,31 @@ export default function AdditionalFilters({
                     />
                   )}
                   {isSelected && (
-                    <Image
-                      contentFit={"contain"}
-                      source={require("../../assets/icons/X.svg")}
-                      style={{
-                        height: scaleHeight(16),
-                        width: scaleWidth(16),
-                        tintColor: "#FFFFFF",
+                    <Pressable
+                      onPress={() => {
+                        setFilters((p) => ({
+                          ...Object.keys(p)
+                            .map(
+                              (k) =>
+                                key == "filter" &&
+                                ["gst_deals", "emi_deals"].includes(k) && {
+                                  [k]: p[k],
+                                }
+                            )
+                            .reduce((a, b) => ({ ...a, ...b })),
+                        }));
                       }}
-                    />
+                    >
+                      <Image
+                        contentFit={"contain"}
+                        source={require("../../assets/icons/X.svg")}
+                        style={{
+                          height: scaleHeight(16),
+                          width: scaleWidth(16),
+                          tintColor: "#FFFFFF",
+                        }}
+                      />
+                    </Pressable>
                   )}
                 </TouchableOpacity>
               </View>

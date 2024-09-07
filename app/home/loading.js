@@ -9,7 +9,8 @@ export default function Loading({ fetching, reachedEnd }) {
         style={{
           width: "100%",
           alignItems: "center",
-          paddingBottom: scaleHeight(10),
+          paddingBottom: scaleHeight(20),
+          paddingTop: scaleHeight(20),
         }}
       >
         <Image

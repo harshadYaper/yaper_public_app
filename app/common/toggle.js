@@ -22,7 +22,6 @@ export default function Toggle({ options, setVal, val, parameter, onChange }) {
           borderColor: STONE,
           backgroundColor: STONE,
           borderRadius: scaleBorder(20),
-          maxWidth: scaleWidth(160),
         }}
       >
         {options.map((option) => (
@@ -35,12 +34,17 @@ export default function Toggle({ options, setVal, val, parameter, onChange }) {
                 onChange(value);
               }
             }}
+            style={{ ...scalePadding(4) }}
           >
             <View
               style={{
                 display: "flex",
                 flexDirection: "row",
-                ...scalePadding(5),
+                ...scalePadding(4),
+                backgroundColor: option == val[parameter] ? "#F67280" : STONE,
+                borderColor: option == val[parameter] ? "#F67280" : STONE,
+                borderRadius: scaleBorder(10),
+                borderWidth: scaleWidth(2),
               }}
             >
               <Text
@@ -48,11 +52,6 @@ export default function Toggle({ options, setVal, val, parameter, onChange }) {
                   ...scaleFont(14),
                   textAlign: "center",
                   color: option == val[parameter] ? WHITE : "#848482",
-                  backgroundColor: option == val[parameter] ? "#F67280" : STONE,
-                  borderRadius: scaleBorder(10),
-                  borderColor: option == val[parameter] ? "#F67280" : STONE,
-                  ...scalePadding(5),
-                  borderWidth: scaleWidth(2),
                 }}
               >
                 {snakeToTitleize(option)}

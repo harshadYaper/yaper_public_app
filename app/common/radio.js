@@ -9,6 +9,7 @@ import {
 } from "../utils/getScaledDimensions";
 import { Pressable, Text, TouchableOpacity } from "react-native";
 import { WHITE } from "../constants/colors";
+import { isIOS } from "../utils/environment";
 
 function Radio({
   width,
@@ -78,7 +79,7 @@ function Radio({
 
 export const PrimaryRadio = ({
   width = 20,
-  height = 22,
+  height = isIOS ? 20 : 22,
   backgroundColor = WHITE,
   borderRadius = scaleBorder(100),
   onPress,

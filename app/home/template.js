@@ -95,6 +95,7 @@ export default function Template({}) {
   const [data, setData] = useState({ data: [], filter: [] });
   const [openFilterOption, setOpenFilterOption] = useState();
   const [pageNumber, setPageNumber] = useState(1);
+  const [endOfData, setEndOfData] = useState(false);
   const { Component } = navMenu.find((n) => n.navigation == nav);
 
   const fetchData = async ({ resetData = false }) => {
@@ -109,6 +110,14 @@ export default function Template({}) {
           .map(([k, v]) => ({ [k]: v }))
           .reduce((a, b) => ({ ...a, ...b }), undefined),
       });
+
+    setEndOfData(
+      isEmpty(
+        nav == "transactions"
+          ? apiData?.data.wallet?.transactions
+          : apiData?.data
+      )
+    );
 
     setData((p) => ({
       data: [
@@ -193,6 +202,7 @@ export default function Template({}) {
           setPageNumber={setPageNumber}
           fetchData={fetchData}
           fetching={fetching}
+          endOfData={endOfData}
         />
       )}
       <Navigation

@@ -17,8 +17,8 @@ import { clearData } from "../storage";
 import StaticPage from "./static-page";
 import saveData from "../auth/save_data";
 import Toggle from "../common/toggle";
-import { getAppVariables } from "../utils/environment";
-import { openZendeskTickets } from "../utils/analytics";
+import { getAppVariables, setEnvironment } from "../utils/environment";
+import showToast from "../utils/toast";
 
 export default function Template() {
   const { email, first_name, last_name, phone, whatsapp_consent } =
@@ -37,30 +37,34 @@ export default function Template() {
       setVal({ env, log: log ? "log_on" : "log_off" });
     })();
   }, []);
-
   useEffect(() => {
     (async () => {
-      // if (val && val.env) {
-      //   let { env, log } = await getAppVariables();
-      //   env !== val.env && setEnvironment(val.env);
-      // }
+      if (val && val.env) {
+        let { env } = await getAppVariables();
+        env !== val.env && setEnvironment(val.env);
+      }
     })();
   }, [val]);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    (async () => {
-      let resp = await updateUserStatus({
-        whatsapp_consent: whatsappConsent,
-      });
-      if (resp.response_message == "Data updated succesfully") {
-        let newUserData = await getUser({});
-        if (newUserData?.response_message == "success") {
-          await saveData({ dispatch, user: newUserData.user });
+    if (whatsapp_consent != whatsappConsent) {
+      (async () => {
+        let resp = await updateUserStatus({
+          whatsapp_consent: whatsappConsent,
+        });
+        if (resp.response_message == "Data updated succesfully") {
+          let newUserData = await getUser({});
+          if (newUserData?.response_message == "success") {
+            await saveData({ dispatch, user: newUserData.user });
+          }
+        } else {
+          setWhatsappConsent(false);
+          showToast({ message: resp.response_message, type: "error" });
         }
-      }
-    })();
+      })();
+    }
   }, [whatsappConsent]);
 
   const handleModal = (val) => {
@@ -102,12 +106,6 @@ export default function Template() {
           label: "Login in to Yaper Web",
           onPress: handleWebLogin,
         },
-        // {
-        //   label: "Manage Address",
-        //   onPress: () => {
-        //     console.log("clicked");
-        //   },
-        // },
         {
           label: "Manage KYC & Bank Account",
           onPress: async () => {
@@ -145,12 +143,14 @@ export default function Template() {
         {
           label: "Contact Support",
           onPress: () => {
-            console.log("clicked");
+            router.push({ pathname: "/support" });
           },
         },
         {
           label: "Support Tickets",
-          onPress: openZendeskTickets,
+          onPress: () => {
+            router.push({ pathname: "/support", params: { key: "tickets" } });
+          },
         },
         {
           label: "FAQs",
@@ -252,7 +252,8 @@ export default function Template() {
         <CategoryView {...PROFILE_OPTIONS.account} />
         <CategoryView {...PROFILE_OPTIONS.support} />
         <CategoryView {...PROFILE_OPTIONS.legal} />
-        {staticMeta?.data?.allow_staging_whitelist.includes(email) && (
+        {(staticMeta?.data?.allow_staging_whitelist.includes(email) ||
+          true) && (
           <View
             style={{
               display: "flex",

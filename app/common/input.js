@@ -25,6 +25,7 @@ export default function Input({
   leftComponent,
   rightComponent,
   secureFields,
+  multiline = false,
 }) {
   return (
     <View key={label}>
@@ -53,6 +54,7 @@ export default function Input({
           inputArray.map((input, ind) => {
             return (
               <TextInput
+                multiline={multiline}
                 secureTextEntry={secureFields}
                 key={usageType + " " + ind}
                 ref={(r) => reference && (reference.current[ind] = r)}
@@ -93,7 +95,7 @@ const customStyles = StyleSheet.create({
     ...{
       width: scaleWidth(width),
       backgroundColor: "white",
-      height: scaleHeight(44),
+      minHeight: scaleHeight(44),
       textAlignVertical: "center",
       borderRadius: scaleBorder(8),
       borderColor: "#D0D5DD",

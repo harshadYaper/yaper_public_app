@@ -20,11 +20,13 @@ export default function Auth() {
   return (
     <App
       Component={
-        <Component
-          setComponent={setComponent}
-          setLogin={setLogin}
-          {...params}
-        />
+        Component && (
+          <Component
+            setComponent={setComponent}
+            setLogin={setLogin}
+            {...params}
+          />
+        )
       }
       Splash={<></>}
       styles={customeStyles}

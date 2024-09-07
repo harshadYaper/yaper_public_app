@@ -24,7 +24,6 @@ export const scaleFont = (size, centerText) => ({
   lineHeight: scaleHeight(
     ((isIOS && centerText ? 2 : 1) * 1.5 * size) / fontScale
   ),
-  fontFamily: "Inter_400Regular",
 });
 
 export const scaleBorder = (size) => size;

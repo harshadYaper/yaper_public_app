@@ -8,8 +8,9 @@ import {
 } from "../utils/getScaledDimensions";
 import { Image } from "expo-image";
 import { useState } from "react";
-import { openZendeskSupport } from "../utils/analytics";
 import { useSelector } from "react-redux";
+import { router } from "expo-router";
+import { putData } from "../storage";
 
 export default function Supports({ data, openFilters }) {
   const { email, first_name, last_name, phone } = useSelector(
@@ -110,27 +111,16 @@ export default function Supports({ data, openFilters }) {
                         paddingBottom: scaleHeight(20),
                         paddingTop: scaleHeight(20),
                       }}
-                      onPress={() => {
-                        if (type == "chat")
-                          openZendeskSupport({
-                            resolution,
-                            isChat: true,
-                            title,
-                            email,
-                            first_name,
-                            last_name,
-                            phone,
+                      onPress={async () => {
+                        if (type == "chat") console.log(type);
+                        else if (type == "ticket") console.log(type);
+                        else if (type == "auto") {
+                          await putData("PARAMS", { resolution });
+                          router.push({
+                            pathname: "/support",
+                            params: { title },
                           });
-                        else if (type == "ticket")
-                          openZendeskSupport({
-                            resolution,
-                            isChat: true,
-                            title,
-                            email,
-                            first_name,
-                            last_name,
-                            phone,
-                          });
+                        }
                       }}
                     >
                       <Text

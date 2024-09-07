@@ -1,5 +1,11 @@
 import { Image, ImageBackground } from "expo-image";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { CARD_IMAGES } from "../../constants/images";
 import {
   scaleBorder,
@@ -11,7 +17,12 @@ import {
 import AddCards from "./add-cards";
 import { truncate } from "../../utils/helper";
 
-export default function MyCards({ cards, selectedCards, setComponent }) {
+export default function MyCards({
+  cards,
+  selectedCards,
+  setComponent,
+  setSelectedCards,
+}) {
   return (
     <FlatList
       numColumns={2}
@@ -117,19 +128,25 @@ export default function MyCards({ cards, selectedCards, setComponent }) {
                   width: scaleWidth(160),
                 }}
               >
-                <Image
-                  contentFit="contain"
-                  source={require("../../../assets/Trash.svg")}
-                  style={{
-                    height: scaleHeight(18),
-                    width: scaleWidth(18),
-                    position: "absolute",
-                    top: 5,
-                    right: 15,
-                    backgroundColor: "#F9FAFB",
-                    borderRadius: 10,
-                  }}
-                />
+                <Pressable
+                  onPress={() =>
+                    setSelectedCards((p) => p.filter((c) => c.id !== id))
+                  }
+                >
+                  <Image
+                    contentFit="contain"
+                    source={require("../../../assets/Trash.svg")}
+                    style={{
+                      height: scaleHeight(18),
+                      width: scaleWidth(18),
+                      position: "absolute",
+                      top: 5,
+                      right: 15,
+                      backgroundColor: "#F9FAFB",
+                      borderRadius: 10,
+                    }}
+                  />
+                </Pressable>
               </ImageBackground>
             </View>
           )}

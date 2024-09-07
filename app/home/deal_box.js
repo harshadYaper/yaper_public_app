@@ -17,6 +17,7 @@ import { Image } from "expo-image";
 import { truncate } from "../utils/helper";
 import { GRAY } from "../constants/colors";
 import { isIOS } from "../utils/environment";
+import { copyToClipboard } from "../common/copy-to-clipboard";
 
 export default function DealBox({
   id,
@@ -24,6 +25,7 @@ export default function DealBox({
   image,
   url,
   card_meta,
+  productUrl,
   bank,
   content,
   color_code,
@@ -57,7 +59,9 @@ export default function DealBox({
         >
           <Image
             contentFit={"contain"}
-            source={{ uri: image }}
+            source={{
+              uri: image,
+            }}
             style={{
               width: scaleWidth(120),
               height: scaleHeight(110),
@@ -95,17 +99,27 @@ export default function DealBox({
           </Text>
         )}
         {title && (
-          <Text
-            style={{
-              ...scaleFont(12),
-              ...scalePadding(4),
-              color: "#101828",
-              flexShrink: 1,
-              ...additionalStyles.title,
-            }}
+          <Pressable
+            onPress={() =>
+              copyToClipboard({
+                value: productUrl,
+                message: "Product link copied",
+              })
+            }
+            disabled={!productUrl}
           >
-            {truncate(title)}
-          </Text>
+            <Text
+              style={{
+                ...scaleFont(12),
+                ...scalePadding(4),
+                color: productUrl ? "#025ACE" : "#101828",
+                flexShrink: 1,
+                ...additionalStyles.title,
+              }}
+            >
+              {truncate(title)}
+            </Text>
+          </Pressable>
         )}
 
         {bank && (

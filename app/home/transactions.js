@@ -22,6 +22,7 @@ export default function Transactions({
   setPageNumber,
   fetching,
   fetchData,
+  endOfData,
 }) {
   return (
     <FlatList
@@ -300,8 +301,7 @@ export default function Transactions({
       keyExtractor={({ order_info, status, time }) =>
         `Transaction ${order_info}- ${status} - ${time}`
       }
-      onEndReached={() => setPageNumber((p) => p + 1)}
-      onEndReachedThreshold={0.4}
+      onEndReached={() => !endOfData && setPageNumber((p) => p + 1)}
       refreshControl={
         <RefreshControl
           refreshing={fetching}

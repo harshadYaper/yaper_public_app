@@ -25,6 +25,7 @@ import { getUser, saveCards } from "../../api";
 import saveData from "../../auth/save_data";
 import { useDispatch } from "react-redux";
 import { sleep } from "../../utils/helper";
+import showToast from "../../utils/toast";
 
 export default function AddCards({
   selectedCards,
@@ -56,6 +57,11 @@ export default function AddCards({
         user: (await getUser({}))?.user,
       });
       sleep(2000);
+      showToast({
+        message: "Cards added successfully",
+        type: "success",
+      });
+
       setMyCards();
     }
   };
@@ -67,7 +73,6 @@ export default function AddCards({
           display: "flex",
           justifyContent: "center",
           width: "100%",
-          height: "100%",
           ...scalePadding(16),
         }}
       >
@@ -155,7 +160,6 @@ export default function AddCards({
         <FlatList
           contentContainerStyle={{
             paddingBottom: scaleHeight(selectedCards.length > 0 ? 100 : 50),
-            minHeight: "100%",
           }}
           data={getFilteredCard()}
           renderItem={({ item: { bank, cards } }) => {

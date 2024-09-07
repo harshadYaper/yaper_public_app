@@ -9,7 +9,7 @@ import {
   scalePadding,
   scaleWidth,
 } from "./utils/getScaledDimensions";
-import { range } from "./utils/helper";
+import { range, sleep } from "./utils/helper";
 import { FullButton } from "./common/button";
 import { putData } from "./storage";
 import { router } from "expo-router";
@@ -27,6 +27,7 @@ export default function Welcome() {
         intro: true,
       },
     });
+    sleep(1000);
     router.navigate({ pathname: "/" });
   };
 

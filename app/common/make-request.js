@@ -3,7 +3,6 @@ import { clearData, getData } from "../storage";
 import { getNetworkStateAsync } from "expo-network";
 import { getAppVariables } from "../utils/environment";
 import { router } from "expo-router";
-import Toast from "../utils/toast";
 import { sendReport, trackEvent } from "../utils/analytics";
 import { isEmpty } from "../utils/helper";
 
@@ -41,8 +40,8 @@ export async function makeRequest({ baseURL, url, payload, method }) {
         url,
         params: payload,
       })
-        .then((r) => r.data)
-        .catch((r) => r.response.data);
+        .then((r) => r?.data)
+        .catch((r) => r?.response?.data);
     } else {
       throw new Error("No internet connection");
     }
@@ -55,8 +54,6 @@ async function requestErrorHandler({ method, url, payload }, error) {
   console.log(error);
   console.log(method, url, payload);
   sendReport(error);
-  Toast(
-    (await getAppVariables()).env == "staging" ? error : "Something Went Wrong"
-  );
+
   trackEvent("Api Failures", { responseCode: 500, message: error.message });
 }
