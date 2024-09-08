@@ -1328,6 +1328,8 @@ const OrderComponent = ({
                       setVal={setVal}
                       setOrder={setOrder}
                       buttonLabel={button.label}
+                      yaper_id={yaper_id}
+                      variant_id={variant_id}
                     />
                   ) : (
                     <ShowFile
@@ -1349,6 +1351,8 @@ const OrderComponent = ({
                       setVal={setVal}
                       setOrder={setOrder}
                       buttonLabel={button.label}
+                      yaper_id={yaper_id}
+                      variant_id={variant_id}
                     />
                   ) : (
                     <ShowFile
@@ -1488,6 +1492,8 @@ function UploadFile({
   setVal,
   setOrder,
   buttonLabel,
+  yaper_id,
+  variant_id,
 }) {
   return (
     <View style={{ paddingLeft: scaleHeight(4) }}>

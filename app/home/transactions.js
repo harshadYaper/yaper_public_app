@@ -1,5 +1,6 @@
 import {
   FlatList,
+  Pressable,
   RefreshControl,
   Text,
   TouchableOpacity,
@@ -15,6 +16,12 @@ import {
 import { Image, ImageBackground } from "expo-image";
 import { RUPEE } from "../constants";
 import Loading from "./loading";
+import { exportWallet } from "../api";
+import showToast from "../utils/toast";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { isEmpty } from "../utils/helper";
 
 export default function Transactions({
   data,
@@ -313,6 +320,37 @@ export default function Transactions({
 }
 
 export function TransactionsHeader({ balance }) {
+  const { email } = useSelector((state) => state.user);
+  const [modal, setModal] = useState();
+  const [dates, setDates] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      if (dates.from && dates.to) {
+        let response = await exportWallet({
+          from: new Date(dates.from),
+          to: new Date(dates.to),
+        });
+
+        if (response.response_message == "success") {
+          showToast({
+            message: `Transactions will be send on ${email}, may take upto 30 mins.`,
+            type: "success",
+            duration: 3000,
+          });
+        } else {
+          showToast({
+            message: response.response_message,
+            type: "error",
+          });
+        }
+
+        setDates({});
+        setModal();
+      }
+    })();
+  }, [dates]);
+
   return (
     <>
       <Text
@@ -371,7 +409,37 @@ export function TransactionsHeader({ balance }) {
         <Text style={{ ...scaleFont(16), fontWeight: "500", color: "#667085" }}>
           All Transactions
         </Text>
-        <View
+        {modal && (
+          <RNDateTimePicker
+            mode="date"
+            display="calendar"
+            value={new Date()}
+            maximumDate={new Date()}
+            themeVariant="light"
+            onChange={({ nativeEvent: { timestamp }, type }) => {
+              if (type == "dismissed") {
+                setModal();
+                setDates({});
+              }
+              if (type == "set") {
+                if (isEmpty(dates.from)) {
+                  setDates({ from: timestamp });
+                  showToast({
+                    message: "Please select To date",
+                    type: "info",
+                    duration: 5000,
+                  });
+                } else {
+                  setDates((d) => ({
+                    ...d,
+                    to: timestamp,
+                  }));
+                }
+              }
+            }}
+          />
+        )}
+        <Pressable
           style={{
             display: "flex",
             justifyContent: "center",
@@ -383,6 +451,14 @@ export function TransactionsHeader({ balance }) {
             borderWidth: scaleWidth(2),
             borderRadius: scaleBorder(8),
           }}
+          onPress={async () => {
+            setModal(true);
+            showToast({
+              message: "Please select From date",
+              type: "info",
+              duration: 5000,
+            });
+          }}
         >
           <Image
             source={require("../../assets/Download.svg")}
@@ -393,7 +469,7 @@ export function TransactionsHeader({ balance }) {
             }}
           />
           <Text style={{ ...scaleFont(12), color: "#101828" }}>Export</Text>
-        </View>
+        </Pressable>
       </View>
       <View
         style={{

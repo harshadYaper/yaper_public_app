@@ -205,6 +205,7 @@ export default function Template({}) {
           endOfData={endOfData}
         />
       )}
+
       <Navigation
         navMenu={navMenu}
         setNav={setNav}
@@ -212,6 +213,7 @@ export default function Template({}) {
         setData={setData}
         setFilters={setFilters}
         setPageNumber={setPageNumber}
+        fetching={fetching}
       />
       {filters.filter && (
         <Filters

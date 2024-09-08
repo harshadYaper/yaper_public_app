@@ -147,6 +147,14 @@ export async function getWallet({ page_number, filters }) {
   });
 }
 
+export async function exportWallet({ from, to }) {
+  return await makeRequest({
+    method: "POST",
+    url: "/v1/wallets/export",
+    payload: { from, to },
+  });
+}
+
 export async function getWebToken({}) {
   return await makeRequest({
     method: "POST",

@@ -6,7 +6,11 @@ import {
   scaleWidth,
 } from "./getScaledDimensions";
 
-export default function showToast({ message, type = "default" }) {
+export default function showToast({
+  message,
+  type = "default",
+  duration = 500,
+}) {
   const CONFIG = {
     success: {
       backgroundColor: "#12B76A",
@@ -28,7 +32,7 @@ export default function showToast({ message, type = "default" }) {
   message &&
     RNToast.show(message, {
       ...{
-        duration: 500,
+        duration,
         animation: true,
         hideOnPress: true,
         containerStyle: {

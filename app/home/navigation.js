@@ -14,6 +14,7 @@ export default function Navigation({
   setData,
   setFilters,
   setPageNumber,
+  fetching,
 }) {
   return (
     <View
@@ -27,6 +28,7 @@ export default function Navigation({
         paddingBottom: scaleHeight(12),
         borderColor: "#D0D5DD",
         borderWidth: scaleWidth(2),
+        opacity: fetching ? 0.4 : 1,
       }}
     >
       <FlatList
@@ -41,6 +43,7 @@ export default function Navigation({
         horizontal
         renderItem={({ item: { label, icon, navigation } }) => (
           <TouchableOpacity
+            disabled={fetching}
             onPress={() => {
               setData({ data: [], filter: [] });
               setFilters({});
