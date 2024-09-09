@@ -11,7 +11,14 @@ import { useEffect, useState } from "react";
 import { getInfoCards } from "../api";
 import { Image } from "expo-image";
 
-export default function Deals({ data, openFilters, fetching, fetchData }) {
+export default function Deals({
+  data,
+  openFilters,
+  fetching,
+  fetchData,
+  styles,
+  onPress,
+}) {
   return (
     <FlatList
       contentContainerStyle={{}}
@@ -21,6 +28,7 @@ export default function Deals({ data, openFilters, fetching, fetchData }) {
         marginBottom: scaleHeight(90),
         ...scalePadding(12),
         width: "100%",
+        ...styles,
       }}
       data={data || []}
       renderItem={({
@@ -44,6 +52,7 @@ export default function Deals({ data, openFilters, fetching, fetchData }) {
           content={content}
           color_code={color_code}
           color={color}
+          onPress={onPress}
         />
       )}
       keyExtractor={({ id }) => `Deal ${id}`}

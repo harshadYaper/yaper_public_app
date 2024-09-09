@@ -23,10 +23,6 @@ import {
 } from "../utils/helper";
 import { router } from "expo-router";
 import Timer from "../common/timer";
-import { FullButton } from "../common/button";
-import { useSelector } from "react-redux";
-import { putData } from "../storage";
-import { customRequest } from "../api";
 import Loading from "./loading";
 
 export default function Orders({
@@ -36,9 +32,9 @@ export default function Orders({
   fetchData,
   fetching,
   endOfData,
+  onPress,
+  styles,
 }) {
-  const { pan_verified } = useSelector((state) => state.user) || {};
-
   return (
     <FlatList
       contentContainerStyle={{}}
@@ -48,6 +44,7 @@ export default function Orders({
         opacity: openFilters ? 0.1 : 1,
         marginBottom: scaleHeight(100),
         ...scalePadding(12),
+        ...styles,
       }}
       data={data || []}
       renderItem={({ item, index }) => (
@@ -55,7 +52,6 @@ export default function Orders({
           data={item}
           renderItem={({
             item: {
-              id,
               order_number,
               logo,
               description,
@@ -64,8 +60,6 @@ export default function Orders({
               payload: { variant_id },
               timer,
               meta: { deal_id }, //check web_view:true also
-              secondary_button,
-              third_button,
               show_help, //check
               user_notes,
             },
@@ -85,18 +79,19 @@ export default function Orders({
                   flexDirection: "row",
                   ...scalePadding(8),
                 }}
-                onPress={() =>
-                  router.push({
-                    pathname: "/details",
-                    params: {
-                      id,
-                      key: "order",
-                      order_number,
-                      variant_id,
-                      deal_id,
-                    },
-                  })
-                }
+                onPress={() => {
+                  if (onPress) onPress(order_number);
+                  else
+                    router.push({
+                      pathname: "/details",
+                      params: {
+                        key: "order",
+                        order_number,
+                        variant_id,
+                        deal_id,
+                      },
+                    });
+                }}
               >
                 <View
                   style={{

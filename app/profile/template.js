@@ -54,13 +54,14 @@ export default function Template() {
         let resp = await updateUserStatus({
           whatsapp_consent: whatsappConsent,
         });
+
         if (resp.response_message == "Data updated succesfully") {
           let newUserData = await getUser({});
           if (newUserData?.response_message == "success") {
             await saveData({ dispatch, user: newUserData.user });
           }
         } else {
-          setWhatsappConsent(false);
+          setWhatsappConsent((p) => !p);
           showToast({ message: resp.response_message, type: "error" });
         }
       })();
@@ -140,12 +141,12 @@ export default function Template() {
     support: {
       category: "SUPPORT",
       options: [
-        {
-          label: "Contact Support",
-          onPress: () => {
-            router.push({ pathname: "/support" });
-          },
-        },
+        // {
+        //   label: "Contact Support",
+        //   onPress: () => {
+        //     router.push({ pathname: "/support" });
+        //   },
+        // },
         {
           label: "Support Tickets",
           onPress: () => {

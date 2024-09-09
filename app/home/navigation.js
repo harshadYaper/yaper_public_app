@@ -45,10 +45,12 @@ export default function Navigation({
           <TouchableOpacity
             disabled={fetching}
             onPress={() => {
-              setData({ data: [], filter: [] });
-              setFilters({});
-              setPageNumber(1);
-              setNav(navigation);
+              if (nav != navigation) {
+                setData({ data: [], filter: [] });
+                setFilters({});
+                setPageNumber(1);
+                setNav(navigation);
+              }
             }}
             style={{
               width: scaleWidth(64),

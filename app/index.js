@@ -70,7 +70,6 @@ export default function Yaper() {
     }
   }
   useEffect(() => {
-    clearInterval();
     onAppStartup();
   }, []);
 

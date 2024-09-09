@@ -35,6 +35,7 @@ export default function DealBox({
   quantity,
   showCancel,
   additionalStyles = {},
+  onPress,
 }) {
   return (
     <TouchableOpacity
@@ -49,7 +50,10 @@ export default function DealBox({
         ...styles.FLEX,
         ...scalePadding(8),
       }}
-      onPress={() => router.push({ pathname: "/details", params: { id } })}
+      onPress={() => {
+        if (onPress) onPress(id);
+        else router.push({ pathname: "/details", params: { id } });
+      }}
     >
       {image && (
         <View

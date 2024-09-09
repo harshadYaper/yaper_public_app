@@ -236,11 +236,11 @@ export default function AdditionalFilters({
             }}
             showsHorizontalScrollIndicator={false}
             data={[
-              { label: "Recieved", value: "payment_withdrawn" },
+              { label: "Recieved", value: "payment_received" },
               { label: "Cancelled", value: "payment_cancelled" },
             ]}
             renderItem={({ item: { label, value }, index }) => {
-              let isSelected = filters.payment_state == value;
+              let isSelected = filters.state == value;
               return (
                 <TouchableOpacity
                   style={{
@@ -257,9 +257,17 @@ export default function AdditionalFilters({
                     paddingLeft: scaleWidth(8),
                     marginRight: scaleWidth(index == 0 ? 8 : 0),
                   }}
-                  onPress={() =>
-                    setFilters((p) => ({ ...p, payment_state: value }))
-                  }
+                  onPress={() => {
+                    setFilters((p) => {
+                      return {
+                        ...p,
+                        state:
+                          p.state == value
+                            ? ["payment_received", "payment_cancelled"]
+                            : value,
+                      };
+                    });
+                  }}
                 >
                   <Text
                     style={{

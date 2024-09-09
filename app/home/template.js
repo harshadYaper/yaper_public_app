@@ -100,6 +100,7 @@ export default function Template({}) {
 
   const fetchData = async ({ resetData = false }) => {
     setFetching(true);
+    resetData && setPageNumber(1);
 
     let apiData = await navMenu
       .find(({ navigation }) => navigation == nav)
@@ -138,14 +139,23 @@ export default function Template({}) {
   };
 
   useEffect(() => {
-    fetchData({});
-  }, [nav, pageNumber]);
+    fetchData({ resetData: true });
+  }, [nav]);
 
   useEffect(() => {
-    if (openFilterOption) {
+    fetchData({});
+  }, [pageNumber]);
+
+  useEffect(() => {
+    if (nav == "transactions" && filters.state) fetchData({ resetData: true });
+  }, [filters]);
+
+  useEffect(() => {
+    if (openFilterOption && nav !== "transactions") {
       let selectedoption = openFilterOption.options
         .filter((o) => o.selected)
         .map((o) => o.id);
+
       !isEmpty(selectedoption) &&
         setFilters((p) => ({
           ...p,
@@ -215,6 +225,7 @@ export default function Template({}) {
         setPageNumber={setPageNumber}
         fetching={fetching}
       />
+
       {filters.filter && (
         <Filters
           filters={data?.filter}

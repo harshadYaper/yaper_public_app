@@ -25,6 +25,7 @@ import { FullButton } from "../common/button";
 import { range, truncate } from "../utils/helper";
 import CopyToClipboard from "../common/copy-to-clipboard";
 import Timer from "../common/timer";
+import { isIOS } from "../utils/environment";
 
 export default function EcommerceView() {
   const [params, setParams] = useState();
@@ -315,7 +316,7 @@ export default function EcommerceView() {
                           style={{
                             display: "flex",
                             width: scaleWidth(40),
-                            height: scaleHeight(40),
+                            height: scaleHeight(isIOS ? 40 : 44),
                             borderColor: "#FFFFFF",
                             borderWidth: scaleWidth(4),
                             borderRadius: scaleBorder(50),

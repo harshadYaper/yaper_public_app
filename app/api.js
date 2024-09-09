@@ -115,19 +115,25 @@ export async function putOrder({
   delivery_support,
   add_delivery_support,
   invoice,
+  warrenty,
 }) {
+  let formData = new FormData();
+
+  formData.append("variant_id", variant_id);
+  formData.append("order_number", order_number);
+  formData.append("context", context);
+  formData.append("tracking_number", tracking_number);
+  formData.append("delivery_support", delivery_support);
+  formData.append("add_delivery_support", add_delivery_support);
+  formData.append("invoice", invoice);
+  formData.append("warrenty", warrenty);
+
   return await makeRequest({
     method: "PUT",
     url: `/v2/orders/${yaper_id}`,
-    payload: {
-      order_number,
-      variant_id,
-      context,
-      tracking_number,
-      delivery_support,
-      add_delivery_support,
-      invoice: JSON.stringify(invoice),
-    },
+    data: formData,
+    customHeaders: { "Content-Type": "multipart/form-data" },
+    transformRequest: (data) => data,
   });
 }
 
@@ -143,7 +149,7 @@ export async function getWallet({ page_number, filters }) {
   return await makeRequest({
     method: "GET",
     url: `/v1/wallets?page_number=${page_number}`,
-    payload: { filters },
+    payload: { ...filters },
   });
 }
 
@@ -285,11 +291,7 @@ export async function getTickets({ page_number }) {
   });
 }
 
-export async function createTicket({
-  object_type = "invoice",
-  object_id = "123",
-  title,
-}) {
+export async function createTicket({ object_type, object_id, title }) {
   return await makeRequest({
     method: "POST",
     url: "/v1/tickets",
@@ -298,14 +300,18 @@ export async function createTicket({
 }
 
 export async function createConversation({ ticket_id, message, documents }) {
+  let formData = new FormData();
+
+  documents.map(async (document) => formData.append("documents[]", document));
+  formData.append("ticket_id", ticket_id);
+  formData.append("message", message);
+
   return await makeRequest({
     method: "POST",
     url: "/v1/conversations",
-    payload: {
-      ticket_id,
-      message,
-      documents: documents.map((document) => JSON.stringify(document)),
-    },
+    data: formData,
+    customHeaders: { "Content-Type": "multipart/form-data" },
+    transformRequest: (data) => data,
   });
 }
 

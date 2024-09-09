@@ -21,6 +21,7 @@ export default function Tickets({}) {
     setEndOfData(empty);
     setData((p) => (resetData ? apiData : [...p, ...apiData]));
   };
+  
 
   useEffect(() => {
     fetchData({ resetData: true });
@@ -32,7 +33,9 @@ export default function Tickets({}) {
         contentContainerStyle={{ width: "100%" }}
         data={data}
         onEndReached={() => !endOfData && setPageNumber((p) => p + 1)}
-        renderItem={({ item: { title, created_at, id } }) => (
+        renderItem={({
+          item: { title, created_at, id, object_id, object_type, status },
+        }) => (
           <View
             style={{
               ...scalePadding(4),
@@ -49,7 +52,12 @@ export default function Tickets({}) {
               onPress={() => {
                 router.push({
                   pathname: "/support",
-                  params: { title, ticket_id: id },
+                  params: {
+                    title,
+                    ticket_id: id,
+                    object_id,
+                    object_type,
+                  },
                 });
               }}
             >

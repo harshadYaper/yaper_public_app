@@ -22,7 +22,15 @@ export const checkToken = async () => {
     router.replace({ pathname: "/auth" });
 };
 
-export async function makeRequest({ baseURL, url, payload, method }) {
+export async function makeRequest({
+  baseURL,
+  url,
+  payload,
+  method,
+  customHeaders,
+  data,
+  transformRequest,
+}) {
   try {
     !TOKEN_EXEMPT_URLS.includes(url) && (await checkToken());
 
@@ -34,11 +42,13 @@ export async function makeRequest({ baseURL, url, payload, method }) {
       return await axios({
         baseURL: baseURL || `${(await getAppVariables()).baseUrl}/api`,
         timeout: 20000,
-        headers,
+        headers: { ...headers, ...customHeaders },
         cancelToken: axios.CancelToken.source().token,
         method,
         url,
         params: payload,
+        data,
+        transformRequest,
       })
         .then((r) => r?.data)
         .catch((r) => r?.response?.data);

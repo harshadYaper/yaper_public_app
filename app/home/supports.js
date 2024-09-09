@@ -13,10 +13,6 @@ import { router } from "expo-router";
 import { putData } from "../storage";
 
 export default function Supports({ data, openFilters }) {
-  const { email, first_name, last_name, phone } = useSelector(
-    (state) => state.user
-  );
-
   const [activeOption, setActiveOption] = useState();
 
   return (
@@ -112,15 +108,10 @@ export default function Supports({ data, openFilters }) {
                         paddingTop: scaleHeight(20),
                       }}
                       onPress={async () => {
-                        if (type == "chat") console.log(type);
-                        else if (type == "ticket") console.log(type);
-                        else if (type == "auto") {
-                          await putData("PARAMS", { resolution });
-                          router.push({
-                            pathname: "/support",
-                            params: { title },
-                          });
-                        }
+                        router.push({
+                          pathname: "/support",
+                          params: { title },
+                        });
                       }}
                     >
                       <Text
